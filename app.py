@@ -92,12 +92,9 @@ sys.path.insert(0, _os.path.dirname(__file__))
 from fabric_connector import load_data as _load_data
 
 df_all, data_source, data_status = _load_data()
-# Debug — show in terminal
-import sys
-print(f"DATA STATUS: {data_status}", file=sys.stderr)
-print(f"DATA SOURCE: {data_source}", file=sys.stderr)
-if df_all is not None:
-    print(f"ROWS LOADED: {len(df_all)}", file=sys.stderr)
+# Debug — visible on screen
+if data_status != "live":
+    st.warning(f"Debug: {data_source}", icon="⚠️")
 
 if df_all is None:
     st.markdown('''<div style="background:rgba(200,50,50,0.2);border:1px solid rgba(255,80,80,0.4);
