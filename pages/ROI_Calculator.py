@@ -91,25 +91,38 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ── LOAD DATA ──────────────────────────────────────────────────
-@st.cache_data
-def load_data():
-    DATA_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "shalina_combined_data.csv")
-    df = pd.read_csv(DATA_PATH)
-    df['YTD Retailing Value'] = pd.to_numeric(df['YTD Retailing Value'], errors='coerce').fillna(0)
-    nonzero = df[df['YTD Retailing Value'] > 0]['YTD Retailing Value']
-    p25  = nonzero.quantile(0.25)
-    mean = nonzero.mean()
-    p75  = nonzero.quantile(0.75)
-    def classify(val):
-        if val == 0:       return 'Dead Whitespace'
-        elif val < p25:    return 'Underperforming'
-        elif val < mean:   return 'Low Performer'
-        elif val < p75:    return 'Active'
-        else:              return 'High Performer'
-    df['Opportunity'] = df['YTD Retailing Value'].apply(classify)
-    return df, p25, mean, p75
+import sys as _sys
+_sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
+from fabric_connector import load_data as _load_data
 
-df_all_roi, _, _, _ = load_data()
+df_all_roi, _, _ = _load_data()
+
+if df_all_roi is None:
+    st.error("No data available. Please check Fabric connection or add shalina_combined_data.csv.")
+    st.stop()
+
+# Reclassify if needed
+if 'Opportunity' not in df_all_roi.columns:
+    def _classify_roi(df):
+        import numpy as np
+        results = []
+        for country in df['country'].unique():
+            sub = df[df['country'] == country].copy()
+            nonzero = sub[sub['YTD Retailing Value'] > 0]['YTD Retailing Value']
+            if len(nonzero) == 0:
+                sub['Opportunity'] = 'Dead Whitespace'
+                results.append(sub); continue
+            p25 = nonzero.quantile(0.25); mean = nonzero.mean(); p75 = nonzero.quantile(0.75)
+            def clf(v, p25=p25, mean=mean, p75=p75):
+                if v == 0: return 'Dead Whitespace'
+                elif v < p25: return 'Underperforming'
+                elif v < mean: return 'Low Performer'
+                elif v < p75: return 'Active'
+                else: return 'High Performer'
+            sub['Opportunity'] = sub['YTD Retailing Value'].apply(clf)
+            results.append(sub)
+        return pd.concat(results, ignore_index=True)
+    df_all_roi = _classify_roi(df_all_roi)
 
 # Country selector
 roi_cc1, roi_cc2, roi_cc3 = st.columns([1,1,8])

@@ -15,16 +15,24 @@ from dotenv import load_dotenv
 _env_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".env")
 load_dotenv(_env_path)
 
-# ── CONFIG (loaded from .env file) ───────────────────────────────
-TENANT_ID     = os.getenv("FABRIC_TENANT_ID")
-CLIENT_ID     = os.getenv("FABRIC_CLIENT_ID")
-CLIENT_SECRET = os.getenv("FABRIC_CLIENT_SECRET")
-WORKSPACE_ID  = os.getenv("FABRIC_WORKSPACE_ID")   # UAT workspace GUID
-DATASET_ID    = os.getenv("FABRIC_DATASET_ID")      # Semantic model GUID
+# ── CONFIG — reads from .env locally, Streamlit secrets on Cloud ──
+def _get_secret(key):
+    """Try Streamlit secrets first, fall back to env var."""
+    try:
+        import streamlit as st
+        return st.secrets.get(key) or os.getenv(key)
+    except Exception:
+        return os.getenv(key)
+
+TENANT_ID     = _get_secret("FABRIC_TENANT_ID")
+CLIENT_ID     = _get_secret("FABRIC_CLIENT_ID")
+CLIENT_SECRET = _get_secret("FABRIC_CLIENT_SECRET")
+WORKSPACE_ID  = _get_secret("FABRIC_WORKSPACE_ID")
+DATASET_ID    = _get_secret("FABRIC_DATASET_ID")
 
 # ── AUTH ─────────────────────────────────────────────────────────
-FABRIC_USERNAME = os.getenv("FABRIC_USERNAME")   # fallback: user account
-FABRIC_PASSWORD = os.getenv("FABRIC_PASSWORD")   # fallback: user account
+FABRIC_USERNAME = _get_secret("FABRIC_USERNAME")
+FABRIC_PASSWORD = _get_secret("FABRIC_PASSWORD")
 
 def _get_access_token():
     """
