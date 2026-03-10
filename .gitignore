@@ -1,0 +1,5 @@
+.env
+shalina_combined_data.csv
+shalina_real_data.csv
+__pycache__/
+*.pyc
