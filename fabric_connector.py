@@ -15,67 +15,65 @@ from dotenv import load_dotenv
 _env_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".env")
 load_dotenv(_env_path)
 
-# ── CONFIG — reads from .env locally, Streamlit secrets on Cloud ──
+# ── CONFIG — reads lazily so Streamlit secrets are available ─────
 def _get_secret(key):
     """Try Streamlit secrets first, fall back to env var."""
     try:
         import streamlit as st
-        return st.secrets.get(key) or os.getenv(key)
+        val = st.secrets.get(key)
+        if val:
+            return val
     except Exception:
-        return os.getenv(key)
+        pass
+    return os.getenv(key)
 
-TENANT_ID     = _get_secret("FABRIC_TENANT_ID")
-CLIENT_ID     = _get_secret("FABRIC_CLIENT_ID")
-CLIENT_SECRET = _get_secret("FABRIC_CLIENT_SECRET")
-WORKSPACE_ID  = _get_secret("FABRIC_WORKSPACE_ID")
-DATASET_ID    = _get_secret("FABRIC_DATASET_ID")
-
-# ── AUTH ─────────────────────────────────────────────────────────
-FABRIC_USERNAME = _get_secret("FABRIC_USERNAME")
-FABRIC_PASSWORD = _get_secret("FABRIC_PASSWORD")
+def _get_config():
+    """Returns config dict — called lazily inside functions."""
+    return {
+        "TENANT_ID":     _get_secret("FABRIC_TENANT_ID"),
+        "CLIENT_ID":     _get_secret("FABRIC_CLIENT_ID"),
+        "CLIENT_SECRET": _get_secret("FABRIC_CLIENT_SECRET"),
+        "WORKSPACE_ID":  _get_secret("FABRIC_WORKSPACE_ID"),
+        "DATASET_ID":    _get_secret("FABRIC_DATASET_ID"),
+        "USERNAME":      _get_secret("FABRIC_USERNAME"),
+        "PASSWORD":      _get_secret("FABRIC_PASSWORD"),
+    }
 
 def _get_access_token():
-    """
-    Tries service principal auth first.
-    Falls back to username/password (ROPC flow) if USERNAME is set.
-    """
-    url = f"https://login.microsoftonline.com/{TENANT_ID}/oauth2/v2.0/token"
+    cfg = _get_config()
+    url = f"https://login.microsoftonline.com/{cfg['TENANT_ID']}/oauth2/v2.0/token"
 
     # Option 1: Service Principal
-    if CLIENT_SECRET:
+    if cfg['CLIENT_SECRET']:
         payload = {
             "grant_type":    "client_credentials",
-            "client_id":     CLIENT_ID,
-            "client_secret": CLIENT_SECRET,
+            "client_id":     cfg['CLIENT_ID'],
+            "client_secret": cfg['CLIENT_SECRET'],
             "scope":         "https://analysis.windows.net/powerbi/api/.default"
         }
         r = requests.post(url, data=payload, timeout=15)
         if r.status_code == 200:
-            return r.json()["access_token"]
+            return r.json()["access_token"], cfg
 
-    # Option 2: Username / Password (ROPC flow)
-    if FABRIC_USERNAME and FABRIC_PASSWORD:
+    # Option 2: Username / Password
+    if cfg['USERNAME'] and cfg['PASSWORD']:
         payload = {
-            "grant_type":  "password",
-            "client_id":   CLIENT_ID,
-            "username":    FABRIC_USERNAME,
-            "password":    FABRIC_PASSWORD,
-            "scope":       "https://analysis.windows.net/powerbi/api/.default"
+            "grant_type": "password",
+            "client_id":  cfg['CLIENT_ID'],
+            "username":   cfg['USERNAME'],
+            "password":   cfg['PASSWORD'],
+            "scope":      "https://analysis.windows.net/powerbi/api/.default"
         }
         r = requests.post(url, data=payload, timeout=15)
         r.raise_for_status()
-        return r.json()["access_token"]
+        return r.json()["access_token"], cfg
 
     raise Exception("No valid auth credentials configured")
 
 
 # ── DAX QUERY RUNNER ─────────────────────────────────────────────
-def _run_dax(token, dax_query):
-    """
-    Executes a DAX query against the semantic model via Power BI REST API.
-    Returns a DataFrame.
-    """
-    url = f"https://api.powerbi.com/v1.0/myorg/groups/{WORKSPACE_ID}/datasets/{DATASET_ID}/executeQueries"
+def _run_dax(token, dax_query, cfg):
+    url = f"https://api.powerbi.com/v1.0/myorg/groups/{cfg['WORKSPACE_ID']}/datasets/{cfg['DATASET_ID']}/executeQueries"
     headers = {
         "Authorization": f"Bearer {token}",
         "Content-Type":  "application/json"
@@ -91,7 +89,7 @@ def _run_dax(token, dax_query):
 
 
 # ── FETCH NIGERIA DATA ────────────────────────────────────────────
-def _fetch_nigeria(token):
+def _fetch_nigeria(token, cfg):
     dax = """
     EVALUATE
     SELECTCOLUMNS(
@@ -104,14 +102,14 @@ def _fetch_nigeria(token):
         "YTD Retailing Value", 0
     )
     """
-    df = _run_dax(token, dax)
+    df = _run_dax(token, dax, cfg)
     df.columns = ['Shop Name','latitude','longitude','Retailer Subtype','State','YTD Retailing Value']
     df['country'] = 'Nigeria'
     return df
 
 
 # ── FETCH ANGOLA DATA ─────────────────────────────────────────────
-def _fetch_angola(token):
+def _fetch_angola(token, cfg):
     dax = """
     EVALUATE
     SELECTCOLUMNS(
@@ -123,7 +121,7 @@ def _fetch_angola(token):
         "YTD Retailing Value", 'Angola - Chemist'[YTD Sales Value]
     )
     """
-    df = _run_dax(token, dax)
+    df = _run_dax(token, dax, cfg)
     df.columns = ['Shop Name','latitude','longitude','Retailer Subtype','YTD Retailing Value']
     df['country'] = 'Angola'
     return df
@@ -164,12 +162,13 @@ def _classify(df):
 
 # ── LIVE FABRIC LOAD ──────────────────────────────────────────────
 def _load_from_fabric():
-    if not all([TENANT_ID, CLIENT_ID, CLIENT_SECRET, WORKSPACE_ID, DATASET_ID]):
-        return None, "missing_env"
     try:
-        token   = _get_access_token()
-        ng      = _fetch_nigeria(token)
-        ao      = _fetch_angola(token)
+        cfg = _get_config()
+        if not all([cfg['TENANT_ID'], cfg['CLIENT_ID'], cfg['WORKSPACE_ID'], cfg['DATASET_ID']]):
+            return None, "missing_env"
+        token, cfg = _get_access_token()
+        ng      = _fetch_nigeria(token, cfg)
+        ao      = _fetch_angola(token, cfg)
         df      = pd.concat([ng, ao], ignore_index=True)
         df      = _clean(df)
         df      = _classify(df)
