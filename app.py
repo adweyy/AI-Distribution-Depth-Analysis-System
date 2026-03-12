@@ -16,7 +16,6 @@ with st.sidebar:
     </div>
     """, unsafe_allow_html=True)
     st.page_link("app.py",                      label="🏠  Dashboard")
-    st.page_link("pages/ROI_Calculator.py",     label="📊  ROI Calculator")
     st.page_link("pages/Upload_Data.py",        label="☁️  Upload Data")
     st.markdown("""<div style="margin-top:16px;padding:0 8px;">
         <div style="height:1px;background:linear-gradient(90deg,transparent,rgba(33,150,196,0.35),transparent);"></div>
@@ -92,9 +91,6 @@ sys.path.insert(0, _os.path.dirname(__file__))
 from fabric_connector import load_data as _load_data
 
 df_all, data_source, data_status = _load_data()
-# Debug — visible on screen
-if data_status != "live":
-    st.warning(f"Debug: {data_source}", icon="⚠️")
 
 if df_all is None:
     st.markdown('''<div style="background:rgba(200,50,50,0.2);border:1px solid rgba(255,80,80,0.4);
@@ -124,14 +120,16 @@ with col2:
     """, unsafe_allow_html=True)
 
 # ── DATA SOURCE BANNER ────────────────────────────────────────
-is_live = data_status == "live"
-dot_color     = "#4CAF50" if is_live else "#F9A825"
-dot_glow      = "rgba(76,175,80,0.6)"  if is_live else "rgba(249,168,37,0.6)"
-banner_bg     = "rgba(27,138,78,0.12)" if is_live else "rgba(249,168,37,0.10)"
-banner_border = "rgba(76,175,80,0.35)" if is_live else "rgba(249,168,37,0.35)"
-status_label  = "Connected to Microsoft Fabric Warehouse" if is_live else "Connected to Local CSV File"
-status_sub    = "Live data — auto refreshes every hour"   if is_live else "Waiting for Fabric credentials from IT"
-icon          = "🏭" if is_live else "📂"
+is_live   = data_status == "live"
+is_hybrid = data_status == "hybrid"
+
+dot_color     = "#4CAF50" if is_live else ("#6EC6F5" if is_hybrid else "#F9A825")
+dot_glow      = "rgba(76,175,80,0.6)"   if is_live else ("rgba(110,198,245,0.6)" if is_hybrid else "rgba(249,168,37,0.6)")
+banner_bg     = "rgba(27,138,78,0.12)"  if is_live else ("rgba(33,150,196,0.10)" if is_hybrid else "rgba(249,168,37,0.10)")
+banner_border = "rgba(76,175,80,0.35)"  if is_live else ("rgba(33,150,196,0.35)" if is_hybrid else "rgba(249,168,37,0.35)")
+status_label  = "Connected to Microsoft Fabric Warehouse" if is_live else ("🇳🇬 Nigeria: CSV (33,588 outlets + YTD)   |   🇦🇴 Angola: Live Fabric" if is_hybrid else "Connected to Local CSV — Both Countries")
+status_sub    = "Live data — auto refreshes every hour"   if is_live else ("Hybrid mode — Nigeria uses full CSV data, Angola pulls live from Fabric" if is_hybrid else "Fabric unreachable — using CSV fallback for both countries")
+icon          = "🏭" if is_live else ("⚡" if is_hybrid else "📂")
 
 st.markdown(f"""
 <style>
@@ -198,11 +196,15 @@ st.markdown(f"""
     <div class="ds-legend">
         <div class="ds-legend-item">
             <div class="ds-legend-dot" style="background:#4CAF50;box-shadow:0 0 6px rgba(76,175,80,0.7);"></div>
-            Microsoft Fabric Warehouse
+            Live — Microsoft Fabric
+        </div>
+        <div class="ds-legend-item">
+            <div class="ds-legend-dot" style="background:#6EC6F5;box-shadow:0 0 6px rgba(110,198,245,0.7);"></div>
+            Hybrid — CSV + Fabric
         </div>
         <div class="ds-legend-item">
             <div class="ds-legend-dot" style="background:#F9A825;box-shadow:0 0 6px rgba(249,168,37,0.7);"></div>
-            Local CSV File
+            CSV Fallback
         </div>
     </div>
 </div>
@@ -234,7 +236,7 @@ if "nav_page" not in st.session_state:
     st.session_state.nav_page = "Dashboard"
 
 st.markdown('<div class="navbar-wrap"></div>', unsafe_allow_html=True)
-n1, n2, n3, n4 = st.columns(4)
+n1, n2, n3, n4, n5 = st.columns(5)
 with n1:
     if st.button("Dashboard",            use_container_width=True, key="nav_dash"):   st.session_state.nav_page = "Dashboard"
 with n2:
@@ -243,6 +245,8 @@ with n3:
     if st.button("Whitespace Detection", use_container_width=True, key="nav_white"):  st.session_state.nav_page = "Whitespace Detection"
 with n4:
     if st.button("Expansion Strategy",   use_container_width=True, key="nav_expand"): st.session_state.nav_page = "Expansion Strategy"
+with n5:
+    if st.button("RFM Analysis",         use_container_width=True, key="nav_rfm"):    st.session_state.nav_page = "RFM Analysis"
 
 import streamlit.components.v1 as components
 components.html("""
@@ -507,3 +511,231 @@ elif page == "Expansion Strategy":
                      color_discrete_map=color_map, barmode='stack')
     fig_grp.update_layout(**chart_layout)
     st.plotly_chart(fig_grp, use_container_width=True)
+
+# ════════════════════════════════════════════════════════
+# RFM ANALYSIS
+# ════════════════════════════════════════════════════════
+elif page == "RFM Analysis":
+
+    st.markdown("""
+    <div style="background:rgba(10,30,60,0.7);border:1px solid rgba(33,150,196,0.25);border-radius:14px;
+    padding:16px 22px;margin-bottom:20px;backdrop-filter:blur(10px);">
+        <div style="font-family:'Poppins',sans-serif;font-size:15px;font-weight:700;color:#FFFFFF;margin-bottom:6px;">
+            📊 RFM Segmentation Engine
+        </div>
+        <div style="font-size:12px;color:#90B8D0;line-height:1.7;">
+            <strong style="color:#6EC6F5;">Recency</strong> — how recently an outlet purchased &nbsp;|&nbsp;
+            <strong style="color:#A855F7;">Frequency</strong> — estimated purchase regularity based on outlet type &nbsp;|&nbsp;
+            <strong style="color:#F9A825;">Monetary</strong> — total YTD sales value.<br>
+            Each dimension is scored 1–5. Outlets are then grouped into strategic segments to guide sales team actions.
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    rfm = df.copy()
+
+    # ── MONETARY SCORE ─────────────────────────────────
+    # Scored 1-5 by quintile of YTD Retailing Value
+    rfm['M_raw'] = rfm['YTD Retailing Value']
+    active_vals = rfm[rfm['M_raw'] > 0]['M_raw']
+    if len(active_vals) >= 5:
+        q20 = active_vals.quantile(0.20)
+        q40 = active_vals.quantile(0.40)
+        q60 = active_vals.quantile(0.60)
+        q80 = active_vals.quantile(0.80)
+    else:
+        q20, q40, q60, q80 = 0, 0, 0, 0
+
+    def m_score(v):
+        if v == 0:      return 1
+        elif v <= q20:  return 2
+        elif v <= q40:  return 3
+        elif v <= q60:  return 4
+        elif v <= q80:  return 4
+        else:           return 5
+
+    rfm['M'] = rfm['M_raw'].apply(m_score)
+
+    # ── RECENCY SCORE ──────────────────────────────────
+    # Inactive (YTD=0) = 1. Active outlets scored by value tier (proxy for recency of last purchase)
+    def r_score(v):
+        if v == 0:      return 1
+        elif v <= q20:  return 2
+        elif v <= q40:  return 3
+        elif v <= q60:  return 4
+        else:           return 5
+
+    rfm['R'] = rfm['M_raw'].apply(r_score)
+
+    # ── FREQUENCY SCORE ────────────────────────────────
+    # Primary = higher visit frequency assumption (5), Secondary/others scored by M tier
+    def f_score(row):
+        subtype = str(row['Retailer Subtype']).lower()
+        m = row['M']
+        if 'primary' in subtype:
+            return min(5, m + 1)
+        elif 'secondary' in subtype:
+            return m
+        else:
+            return max(1, m - 1)
+
+    rfm['F'] = rfm.apply(f_score, axis=1)
+
+    # ── RFM TOTAL & SEGMENT ────────────────────────────
+    rfm['RFM_Score'] = rfm['R'] + rfm['F'] + rfm['M']
+
+    def rfm_segment(row):
+        r, f, m = row['R'], row['F'], row['M']
+        total = r + f + m
+        if r >= 4 and f >= 4 and m >= 4:
+            return 'Champions'
+        elif r >= 3 and f >= 3 and m >= 3:
+            return 'Loyal Customers'
+        elif r >= 3 and f <= 2:
+            return 'Promising'
+        elif r <= 2 and f >= 3 and m >= 3:
+            return 'At Risk'
+        elif r >= 2 and f >= 2 and m <= 2:
+            return 'Need Attention'
+        elif r == 1 and f == 1 and m == 1:
+            return 'Lost'
+        elif total <= 5:
+            return 'Hibernating'
+        else:
+            return 'Potential Loyalist'
+
+    rfm['Segment'] = rfm.apply(rfm_segment, axis=1)
+
+    seg_colors = {
+        'Champions':        '#A855F7',
+        'Loyal Customers':  '#22C55E',
+        'Promising':        '#6EC6F5',
+        'Potential Loyalist':'#F9A825',
+        'Need Attention':   '#F97316',
+        'At Risk':          '#EF4444',
+        'Hibernating':      '#64748B',
+        'Lost':             '#1E293B',
+    }
+
+    seg_actions = {
+        'Champions':         'Reward & retain — top priority for new product launches.',
+        'Loyal Customers':   'Upsell and cross-sell. Ask for referrals to nearby outlets.',
+        'Promising':         'Activate with promotions. Build engagement and habits.',
+        'Potential Loyalist':'Offer loyalty programmes and targeted incentives.',
+        'Need Attention':    'Reactivate with special offers. Reach out before they go cold.',
+        'At Risk':           'Urgent outreach needed — at risk of becoming Lost.',
+        'Hibernating':       'Low-cost re-engagement campaign. Check if outlet still open.',
+        'Lost':              'Confirm outlet status. Consider reassigning territory.',
+    }
+
+    # ── KPI ROW ────────────────────────────────────────
+    seg_counts = rfm['Segment'].value_counts()
+    champs     = seg_counts.get('Champions', 0)
+    at_risk    = seg_counts.get('At Risk', 0)
+    lost       = seg_counts.get('Lost', 0)
+    loyal      = seg_counts.get('Loyal Customers', 0)
+
+    st.markdown(f"""
+    <div class="kpi-row">
+        <div class="kpi-card purple">
+            <div class="kpi-label">Champions</div>
+            <div class="kpi-value">{champs:,}</div>
+            <div class="kpi-delta">RFM score ≥ 12 — top accounts</div>
+        </div>
+        <div class="kpi-card green">
+            <div class="kpi-label">Loyal Customers</div>
+            <div class="kpi-value">{loyal:,}</div>
+            <div class="kpi-delta">Consistent high-value outlets</div>
+        </div>
+        <div class="kpi-card gold">
+            <div class="kpi-label">At Risk</div>
+            <div class="kpi-value">{at_risk:,}</div>
+            <div class="kpi-delta">Were good — need urgent outreach</div>
+        </div>
+        <div class="kpi-card red">
+            <div class="kpi-label">Lost</div>
+            <div class="kpi-value">{lost:,}</div>
+            <div class="kpi-delta">Zero engagement — reassess</div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # ── SEGMENT BREAKDOWN CHART ────────────────────────
+    c1, c2 = st.columns([3, 2])
+    with c1:
+        st.markdown('<div class="section-title">Segment Distribution</div>', unsafe_allow_html=True)
+        seg_df = rfm['Segment'].value_counts().reset_index()
+        seg_df.columns = ['Segment', 'Count']
+        fig_seg = px.bar(seg_df, x='Count', y='Segment', orientation='h',
+                         color='Segment', color_discrete_map=seg_colors,
+                         text='Count')
+        fig_seg.update_traces(textposition='outside', textfont=dict(color='#FFFFFF', size=11))
+        fig_seg.update_layout(**chart_layout)
+        st.plotly_chart(fig_seg, use_container_width=True)
+
+    with c2:
+        st.markdown('<div class="section-title">Avg Monetary by Segment</div>', unsafe_allow_html=True)
+        avg_m = rfm[rfm['M_raw'] > 0].groupby('Segment')['M_raw'].mean().reset_index()
+        avg_m.columns = ['Segment', 'Avg YTD']
+        avg_m = avg_m.sort_values('Avg YTD', ascending=False)
+        fig_avg = px.bar(avg_m, x='Segment', y='Avg YTD',
+                         color='Segment', color_discrete_map=seg_colors)
+        fig_avg.update_layout(**chart_layout)
+        fig_avg.update_xaxes(tickangle=45)
+        st.plotly_chart(fig_avg, use_container_width=True)
+
+    # ── RFM SCATTER: R vs M coloured by Segment ────────
+    st.markdown('<div class="section-title">RFM Score Map — Recency vs Monetary</div>', unsafe_allow_html=True)
+    jitter_df = rfm.copy()
+    jitter_df['R_j'] = jitter_df['R'] + np.random.uniform(-0.3, 0.3, len(jitter_df))
+    jitter_df['M_j'] = jitter_df['M'] + np.random.uniform(-0.3, 0.3, len(jitter_df))
+    sample_rfm = jitter_df.sample(min(4000, len(jitter_df)), random_state=42)
+
+    fig_scatter = px.scatter(
+        sample_rfm, x='R_j', y='M_j',
+        color='Segment', color_discrete_map=seg_colors,
+        hover_name='Shop Name',
+        hover_data={'R': True, 'F': True, 'M': True, 'RFM_Score': True,
+                    'YTD Retailing Value': ':,.1f', 'R_j': False, 'M_j': False},
+        labels={'R_j': 'Recency Score (1=inactive → 5=highly active)',
+                'M_j': 'Monetary Score (1=zero → 5=top quartile)'},
+    )
+    fig_scatter.update_traces(marker=dict(size=7, opacity=0.75, line=dict(width=0)))
+    fig_scatter.update_layout(
+        **{**chart_layout, 'height': 440},
+        xaxis=dict(title='Recency Score', tickvals=[1,2,3,4,5],
+                   gridcolor='rgba(33,150,196,0.1)', color='#6AACE0'),
+        yaxis=dict(title='Monetary Score', tickvals=[1,2,3,4,5],
+                   gridcolor='rgba(33,150,196,0.1)', color='#6AACE0'),
+    )
+    st.plotly_chart(fig_scatter, use_container_width=True)
+
+    # ── SEGMENT ACTION CARDS ───────────────────────────
+    st.markdown('<div class="section-title">Segment Action Playbook</div>', unsafe_allow_html=True)
+    action_cols = st.columns(2)
+    for i, (seg, action) in enumerate(seg_actions.items()):
+        count = seg_counts.get(seg, 0)
+        color = seg_colors.get(seg, '#2196C4')
+        with action_cols[i % 2]:
+            st.markdown(f"""
+            <div class="insight-card" style="border-left:4px solid {color};margin-bottom:10px;">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;">
+                    <div class="insight-title" style="color:{color};">{seg}</div>
+                    <div style="font-family:'Poppins',sans-serif;font-size:18px;font-weight:700;color:#FFFFFF;">{count:,}</div>
+                </div>
+                <div class="insight-detail">{action}</div>
+            </div>
+            """, unsafe_allow_html=True)
+
+    # ── OUTLET TABLE WITH RFM SCORES ───────────────────
+    st.markdown('<div class="section-title">Full Outlet RFM Table</div>', unsafe_allow_html=True)
+    seg_filter = st.selectbox("Filter by Segment", ["All"] + sorted(rfm['Segment'].unique().tolist()), key="rfm_seg_filter")
+    rfm_show = rfm if seg_filter == "All" else rfm[rfm['Segment'] == seg_filter]
+    rfm_table = rfm_show[['Shop Name','Retailer Subtype','R','F','M','RFM_Score','Segment','YTD Retailing Value']].copy()
+    rfm_table = rfm_table.sort_values('RFM_Score', ascending=False).reset_index(drop=True)
+    rfm_table.index += 1
+    rfm_table['YTD Retailing Value'] = rfm_table['YTD Retailing Value'].apply(lambda x: f"₦{x:,.1f}K")
+    st.dataframe(rfm_table, use_container_width=True)
+    csv_rfm = rfm_table.to_csv().encode('utf-8')
+    st.download_button("⬇️ Export RFM Scores", csv_rfm,
+                       f"rfm_analysis_{country.lower()}.csv", "text/csv", key="rfm_export")
