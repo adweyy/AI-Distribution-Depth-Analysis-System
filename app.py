@@ -247,15 +247,382 @@ with n3:
 with n4:
     if st.button("Expansion Strategy",   use_container_width=True, key="nav_expand"): st.session_state.nav_page = "Expansion Strategy"
 
-import sys as _sys, os as _os
-_sys.path.insert(0, _os.path.dirname(_os.path.abspath(__file__)))
-from effects import inject_effects
-inject_effects()
+import streamlit.components.v1 as _fx_c
+_fx_c.html("""<script>
+(function() {
+    const doc = window.parent.document;
 
-import sys as _sys, os as _os
-_sys.path.insert(0, _os.path.dirname(_os.path.abspath(__file__)))
-from effects import inject_effects
-inject_effects()
+    // ── INJECT GLOBAL STYLES ──────────────────────────────────────────
+    function injectStyles() {
+        if (doc.getElementById('shalina-fx-styles')) return;
+        const style = doc.createElement('style');
+        style.id = 'shalina-fx-styles';
+        style.textContent = `
+            /* ── GRAIN TEXTURE OVERLAY ── */
+            body::after {
+                content: '';
+                position: fixed;
+                inset: 0;
+                pointer-events: none;
+                z-index: 9999;
+                opacity: 0.035;
+                background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+                background-size: 200px 200px;
+            }
+
+            /* ── FLOATING GRADIENT ORBS ── */
+            .shalina-orb {
+                position: fixed;
+                border-radius: 50%;
+                pointer-events: none;
+                z-index: 0;
+                filter: blur(80px);
+                animation: orbFloat linear infinite;
+                opacity: 0;
+            }
+            @keyframes orbFloat {
+                0%   { transform: translate(0px, 0px) scale(1);   opacity: 0.18; }
+                25%  { transform: translate(40px, -60px) scale(1.1); opacity: 0.22; }
+                50%  { transform: translate(-30px, 30px) scale(0.95); opacity: 0.15; }
+                75%  { transform: translate(20px, 50px) scale(1.05); opacity: 0.20; }
+                100% { transform: translate(0px, 0px) scale(1);   opacity: 0.18; }
+            }
+
+            /* ── MESH ANIMATED GRADIENT on main bg ── */
+            @keyframes meshShift {
+                0%   { background-position: 0% 50%; }
+                50%  { background-position: 100% 50%; }
+                100% { background-position: 0% 50%; }
+            }
+
+            /* ── TILT 3D CARDS ── */
+            .kpi-card {
+                transform-style: preserve-3d;
+                will-change: transform;
+                transition: transform 0.15s ease, box-shadow 0.15s ease !important;
+            }
+
+            /* ── SPOTLIGHT ON CARDS ── */
+            .kpi-card { position: relative; overflow: hidden; }
+            .kpi-card .spotlight {
+                position: absolute;
+                width: 300px; height: 300px;
+                background: radial-gradient(circle, rgba(255,255,255,0.12) 0%, transparent 70%);
+                border-radius: 50%;
+                pointer-events: none;
+                transform: translate(-50%, -50%);
+                opacity: 0;
+                transition: opacity 0.2s ease;
+            }
+            .kpi-card:hover .spotlight { opacity: 1; }
+
+            /* ── REVEAL ON SCROLL ── */
+            .shalina-reveal {
+                opacity: 0;
+                transform: translateY(28px);
+                transition: opacity 0.6s cubic-bezier(.16,1,.3,1), transform 0.6s cubic-bezier(.16,1,.3,1);
+            }
+            .shalina-reveal.visible {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            /* ── ELASTIC BUTTON ── */
+
+            /* ── GLASSMORPHISM PANELS ── */
+            .header-wrap, .ds-banner, .insight-card, .navbar-wrap {
+                backdrop-filter: blur(24px) saturate(1.4) !important;
+                -webkit-backdrop-filter: blur(24px) saturate(1.4) !important;
+                border: 1px solid rgba(255,255,255,0.10) !important;
+            }
+
+            /* ── ANIMATED GRADIENT BORDER on hover ── */
+            .kpi-card::after {
+                content: '';
+                position: absolute;
+                inset: -1px;
+                border-radius: 14px;
+                padding: 1px;
+                background: linear-gradient(135deg, rgba(33,150,220,0), rgba(110,198,245,0.5), rgba(168,85,247,0.3), rgba(33,150,220,0));
+                background-size: 300% 300%;
+                -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+                mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+                -webkit-mask-composite: xor;
+                mask-composite: exclude;
+                opacity: 0;
+                transition: opacity 0.3s ease;
+                animation: gradBorderSpin 3s linear infinite;
+                pointer-events: none;
+            }
+            .kpi-card:hover::after { opacity: 1; }
+            @keyframes gradBorderSpin {
+                0%   { background-position: 0% 50%; }
+                50%  { background-position: 100% 50%; }
+                100% { background-position: 0% 50%; }
+            }
+
+            /* ── MAGNETIC BUTTON glow ── */
+            [data-testid="stHorizontalBlock"] button:hover {
+                box-shadow: 0 0 24px rgba(33,150,220,0.55), 0 0 8px rgba(110,198,245,0.4), inset 0 0 20px rgba(33,150,220,0.2) !important;
+            }
+
+            /* ── PARTICLE CANVAS ── */
+            #shalina-particles {
+                position: fixed;
+                top: 0; left: 0;
+                width: 100%; height: 100%;
+                pointer-events: none;
+                z-index: 0;
+                opacity: 0.45;
+            }
+        `;
+        doc.head.appendChild(style);
+    }
+
+    // ── FLOATING ORBS ─────────────────────────────────────────────────
+    function addOrbs() {
+        if (doc.getElementById('shalina-orb-1')) return;
+        const orbs = [
+            { id:'shalina-orb-1', w:600, h:600, top:'5%',  left:'10%',  color:'rgba(33,100,200,0.5)',  dur:'18s', delay:'0s'  },
+            { id:'shalina-orb-2', w:500, h:500, top:'50%', left:'70%',  color:'rgba(100,50,200,0.4)',  dur:'24s', delay:'-8s' },
+            { id:'shalina-orb-3', w:400, h:400, top:'80%', left:'20%',  color:'rgba(0,150,220,0.35)',  dur:'20s', delay:'-5s' },
+            { id:'shalina-orb-4', w:350, h:350, top:'20%', left:'55%',  color:'rgba(80,20,180,0.3)',   dur:'15s', delay:'-12s'},
+        ];
+        orbs.forEach(o => {
+            const el = doc.createElement('div');
+            el.id = o.id;
+            el.className = 'shalina-orb';
+            Object.assign(el.style, {
+                width: o.w+'px', height: o.h+'px',
+                top: o.top, left: o.left,
+                background: o.color,
+                animationDuration: o.dur,
+                animationDelay: o.delay,
+            });
+            doc.body.prepend(el);
+        });
+    }
+
+    // ── PARTICLE BACKGROUND ────────────────────────────────────────────
+    function addParticles() {
+        if (doc.getElementById('shalina-particles')) return;
+        const canvas = doc.createElement('canvas');
+        canvas.id = 'shalina-particles';
+        doc.body.prepend(canvas);
+
+        const ctx = canvas.getContext('2d');
+        let W, H, particles = [];
+
+        function resize() {
+            W = canvas.width  = doc.body.clientWidth  || window.parent.innerWidth;
+            H = canvas.height = doc.body.clientHeight || window.parent.innerHeight;
+        }
+        resize();
+        window.parent.addEventListener('resize', resize);
+
+        const N = 80;
+        for (let i = 0; i < N; i++) {
+            particles.push({
+                x: Math.random() * W,
+                y: Math.random() * H,
+                r: Math.random() * 1.8 + 0.4,
+                vx: (Math.random() - 0.5) * 0.35,
+                vy: (Math.random() - 0.5) * 0.35,
+                alpha: Math.random() * 0.5 + 0.15,
+            });
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, W, H);
+            particles.forEach(p => {
+                p.x += p.vx; p.y += p.vy;
+                if (p.x < 0) p.x = W; if (p.x > W) p.x = 0;
+                if (p.y < 0) p.y = H; if (p.y > H) p.y = 0;
+
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(110,198,245,${p.alpha})`;
+                ctx.fill();
+            });
+
+            // Draw connecting lines
+            for (let i = 0; i < N; i++) {
+                for (let j = i + 1; j < N; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const dist = Math.sqrt(dx*dx + dy*dy);
+                    if (dist < 120) {
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.strokeStyle = `rgba(33,150,196,${0.12 * (1 - dist/120)})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.stroke();
+                    }
+                }
+            }
+            requestAnimationFrame(draw);
+        }
+        draw();
+    }
+
+    // ── 3D TILT + SPOTLIGHT on KPI cards ─────────────────────────────
+    function addTiltCards() {
+        const cards = doc.querySelectorAll('.kpi-card');
+        cards.forEach(card => {
+            if (card.dataset.tiltDone) return;
+            card.dataset.tiltDone = '1';
+
+            // Add spotlight div
+            const spot = doc.createElement('div');
+            spot.className = 'spotlight';
+            card.appendChild(spot);
+
+            card.addEventListener('mousemove', e => {
+                const rect = card.getBoundingClientRect();
+                const cx = rect.width / 2, cy = rect.height / 2;
+                const x = e.clientX - rect.left - cx;
+                const y = e.clientY - rect.top  - cy;
+                const rotX = (-y / cy) * 12;
+                const rotY = ( x / cx) * 12;
+                card.style.transform = `perspective(600px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale(1.03)`;
+                card.style.boxShadow = `0 20px 60px rgba(0,0,0,0.5), ${-rotY}px ${-rotX}px 30px rgba(33,150,220,0.2)`;
+                spot.style.left = (e.clientX - rect.left) + 'px';
+                spot.style.top  = (e.clientY - rect.top)  + 'px';
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'perspective(600px) rotateX(0deg) rotateY(0deg) scale(1)';
+                card.style.boxShadow = '';
+            });
+        });
+    }
+
+    // ── REVEAL ON SCROLL ──────────────────────────────────────────────
+    function addRevealOnScroll() {
+        const targets = doc.querySelectorAll(
+            '.kpi-card, .insight-card, .ds-banner, [data-testid="stPlotlyChart"], [data-testid="stDataFrame"]'
+        );
+        targets.forEach(el => {
+            if (el.dataset.revealDone) return;
+            el.dataset.revealDone = '1';
+            el.classList.add('shalina-reveal');
+        });
+
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(e => {
+                if (e.isIntersecting) {
+                    setTimeout(() => e.target.classList.add('visible'), 60);
+                    observer.unobserve(e.target);
+                }
+            });
+        }, { threshold: 0.1 });
+
+        doc.querySelectorAll('.shalina-reveal').forEach(el => observer.observe(el));
+    }
+
+    // ── MOUSE POSITION REACTIVE GRADIENT ─────────────────────────────
+    function addMouseGradient() {
+        if (doc.getElementById('mouse-gradient')) return;
+        const el = doc.createElement('div');
+        el.id = 'mouse-gradient';
+        Object.assign(el.style, {
+            position: 'fixed',
+            width: '800px', height: '800px',
+            borderRadius: '50%',
+            background: 'radial-gradient(circle, rgba(33,100,220,0.07) 0%, transparent 70%)',
+            pointerEvents: 'none',
+            zIndex: '1',
+            transform: 'translate(-50%,-50%)',
+            transition: 'left 0.4s ease, top 0.4s ease',
+            left: '50%', top: '50%',
+        });
+        doc.body.appendChild(el);
+        doc.addEventListener('mousemove', e => {
+            el.style.left = e.clientX + 'px';
+            el.style.top  = e.clientY + 'px';
+        });
+    }
+
+    // ── MAGNETIC BUTTONS ──────────────────────────────────────────────
+    function addMagneticButtons() {
+        const btns = doc.querySelectorAll('[data-testid="stHorizontalBlock"] button');
+        btns.forEach(btn => {
+            if (btn.dataset.magnetDone) return;
+            btn.dataset.magnetDone = '1';
+            btn.style.background = 'rgba(13,40,80,0.75)';
+            btn.style.color = '#FFFFFF';
+            btn.style.border = '1px solid rgba(33,150,196,0.25)';
+            btn.style.borderRadius = '12px';
+            btn.style.fontWeight = '600';
+            btn.style.fontSize = '14px';
+            btn.style.width = '100%';
+
+            btn.addEventListener('mousemove', e => {
+                const rect = btn.getBoundingClientRect();
+                const x = e.clientX - rect.left - rect.width  / 2;
+                const y = e.clientY - rect.top  - rect.height / 2;
+                btn.style.transform = `translate(${x * 0.25}px, ${y * 0.25}px) scale(1.04)`;
+            });
+            btn.addEventListener('mouseleave', () => {
+                btn.style.transform = 'translate(0,0) scale(1)';
+            });
+        });
+    }
+
+    // ── NAVBAR HIDE ───────────────────────────────────────────────────
+    function hideNav() {
+        const nav = doc.querySelector('[data-testid="stSidebarNav"]');
+        if (nav) nav.remove();
+    }
+
+    // ── PERSISTENT RE-INJECTION ───────────────────────────────────────
+    // Streamlit wipes the DOM on every navigation — we poll every 800ms
+    // to re-inject anything that got removed, and re-apply interactive effects.
+
+    function fullInit() {
+        try { injectStyles(); }    catch(e) {}
+        try { addOrbs(); }         catch(e) {}
+        try { addParticles(); }    catch(e) {}
+        try { addMouseGradient(); } catch(e) {}
+        try { addMagneticButtons(); } catch(e) {}
+        try { addTiltCards(); }    catch(e) {}
+        try { addRevealOnScroll(); } catch(e) {}
+        try { hideNav(); }         catch(e) {}
+    }
+
+    function lightRefresh() {
+        // Only re-apply interactive effects to newly rendered elements
+        // (particles/orbs persist on body so no need to re-add)
+        try { addMagneticButtons(); } catch(e) {}
+        try { addTiltCards(); }       catch(e) {}
+        try { addRevealOnScroll(); }  catch(e) {}
+        try { hideNav(); }            catch(e) {}
+
+        // If canvas got removed (Streamlit full re-render), rebuild it
+        if (!doc.getElementById('shalina-particles')) {
+            try { addParticles(); } catch(e) {}
+        }
+        if (!doc.getElementById('shalina-orb-1')) {
+            try { addOrbs(); } catch(e) {}
+        }
+        if (!doc.getElementById('mouse-gradient')) {
+            try { addMouseGradient(); } catch(e) {}
+        }
+        if (!doc.getElementById('shalina-fx-styles')) {
+            try { injectStyles(); } catch(e) {}
+        }
+    }
+
+    // Initial load
+    setTimeout(fullInit, 300);
+    setTimeout(fullInit, 800);
+
+    // Continuous polling — catches every Streamlit re-render
+    setInterval(lightRefresh, 800);
+
+})();
+</script>
+""", height=0)
 
 # ── FILTERS ──────────────────────────────────────────────────
 st.markdown("<div style='margin-top:12px;'></div>", unsafe_allow_html=True)
