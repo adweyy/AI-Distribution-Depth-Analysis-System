@@ -30,59 +30,265 @@ with st.sidebar:
 
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=DM+Sans:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap');
 * { box-sizing: border-box; }
-.stApp { font-family:'DM Sans',sans-serif; color:#E0F0FF; background:linear-gradient(145deg,#071830 0%,#0B2A50 40%,#0A2040 70%,#071830 100%); min-height:100vh; position:relative; }
-.stApp::before { content:''; position:fixed; inset:0; background: radial-gradient(ellipse 90% 50% at 15% 0%,rgba(0,100,200,0.25) 0%,transparent 55%), radial-gradient(ellipse 60% 40% at 85% 15%,rgba(0,150,220,0.15) 0%,transparent 50%), radial-gradient(ellipse 70% 60% at 50% 100%,rgba(0,60,140,0.20) 0%,transparent 55%); pointer-events:none; z-index:0; }
-.main .block-container { background:transparent; padding-top:0rem; max-width:1400px; padding-left:2rem; padding-right:2rem; position:relative; z-index:1; }
-section[data-testid="stSidebar"] { background:linear-gradient(180deg,#0B2E59 0%,#0D3B6E 100%) !important; border-right:1px solid rgba(33,150,196,0.2) !important; }
-section[data-testid="stSidebar"] * { color:#B8D4EE !important; font-family:'DM Sans',sans-serif !important; }
-section[data-testid="stSidebar"] [aria-selected="true"] { color:#fff !important; background:rgba(255,255,255,0.1) !important; border-radius:8px !important; }
-section[data-testid="stSidebar"] a:hover { color:#fff !important; background:rgba(255,255,255,0.08) !important; border-radius:8px !important; }
-[data-testid="collapsedControl"],[data-testid="stSidebarCollapseButton"],button[kind="header"],[data-testid="stSidebarNav"],[data-testid="stSidebarNavItems"],section[data-testid="stSidebar"] nav { display:none !important; }
+
+/* ── DEEP SPACE BACKGROUND ── */
+.stApp {
+    font-family: 'Inter', sans-serif;
+    color: #E2E8F0;
+    background: #080d1a;
+    min-height: 100vh;
+    position: relative;
+}
+.stApp::before {
+    content: '';
+    position: fixed; inset: 0;
+    background:
+        radial-gradient(ellipse 80% 50% at 10% 0%,  rgba(15,80,180,0.20) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 40% at 90% 10%,  rgba(90,20,180,0.15) 0%, transparent 55%),
+        radial-gradient(ellipse 60% 60% at 50% 100%, rgba(10,50,140,0.18) 0%, transparent 60%);
+    pointer-events: none; z-index: 0;
+}
+.main .block-container {
+    background: transparent;
+    padding-top: 0rem; padding-left: 1.5rem; padding-right: 1.5rem;
+    max-width: 1500px; position: relative; z-index: 1;
+}
+
+/* ── SIDEBAR ── */
+section[data-testid="stSidebar"] {
+    background: rgba(8,13,26,0.95) !important;
+    border-right: 1px solid rgba(255,255,255,0.06) !important;
+}
+section[data-testid="stSidebar"] * { color: #94A3B8 !important; font-family: 'Inter', sans-serif !important; }
+section[data-testid="stSidebar"] a:hover { color: #fff !important; background: rgba(255,255,255,0.06) !important; border-radius: 8px !important; }
+[data-testid="collapsedControl"],[data-testid="stSidebarCollapseButton"],button[kind="header"],
+[data-testid="stSidebarNav"],[data-testid="stSidebarNavItems"],section[data-testid="stSidebar"] nav { display:none !important; }
 [data-testid="stToolbar"],[data-testid="stDecoration"],header[data-testid="stHeader"],#MainMenu,footer { display:none !important; }
-.header-wrap { background:rgba(10,30,60,0.7); border-radius:16px; padding:20px 28px; border:1px solid rgba(33,150,196,0.25); box-shadow:0 4px 24px rgba(0,0,0,0.3); backdrop-filter:blur(20px); margin-bottom:12px; }
-.navbar-wrap { background:rgba(10,30,60,0.6); border-radius:12px; padding:6px 10px; border:1px solid rgba(33,150,196,0.2); backdrop-filter:blur(20px); margin-bottom:8px; }
-.section-title { font-family:'Poppins',sans-serif; font-size:12px; font-weight:700; color:#90C8E8; margin-top:24px; margin-bottom:12px; display:flex; align-items:center; gap:10px; text-transform:uppercase; letter-spacing:1.2px; }
-.section-title::before { content:''; display:inline-block; width:4px; height:14px; background:linear-gradient(180deg,#2196C4,#6EC6F5); border-radius:2px; box-shadow:0 0 8px rgba(33,150,196,0.5); }
-.kpi-row { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:22px; margin-top:16px; }
-.kpi-card { border-radius:14px; padding:20px 22px; position:relative; overflow:hidden; min-height:110px; border:1px solid rgba(255,255,255,0.1); box-shadow:0 4px 20px rgba(0,0,0,0.3); transition:transform 0.2s ease; }
-.kpi-card:hover { transform:translateY(-2px); }
-.kpi-card::before { content:''; position:absolute; bottom:-20px; right:-20px; width:100px; height:100px; border-radius:50%; background:rgba(255,255,255,0.10); }
-.kpi-card::after  { content:''; position:absolute; bottom:-40px; right:20px; width:80px; height:80px; border-radius:50%; background:rgba(255,255,255,0.06); }
-.kpi-card.navy  { background:linear-gradient(135deg,#0B2E59 0%,#1A5276 100%); }
-.kpi-card.blue  { background:linear-gradient(135deg,#1A7FC4 0%,#6EC6F5 100%); }
-.kpi-card.gold  { background:linear-gradient(135deg,#F9A825 0%,#F7D080 100%); }
-.kpi-card.red   { background:linear-gradient(135deg,#C0392B 0%,#E74C3C 100%); }
-.kpi-card.green { background:linear-gradient(135deg,#1B8A4E 0%,#4CAF50 100%); }
-.kpi-card.purple{ background:linear-gradient(135deg,#6B21A8 0%,#A855F7 100%); }
-.kpi-label { font-size:10px; color:rgba(255,255,255,0.85); text-transform:uppercase; letter-spacing:1px; margin-bottom:8px; font-weight:700; font-family:'Poppins',sans-serif; }
-.kpi-value { font-size:32px; font-weight:700; color:#fff; line-height:1.1; font-family:'Poppins',sans-serif; }
-.kpi-delta { font-size:11px; color:rgba(255,255,255,0.75); margin-top:5px; }
-.country-btn { display:inline-block; padding:8px 28px; border-radius:30px; font-size:14px; font-weight:700; font-family:'Poppins',sans-serif; cursor:pointer; transition:all 0.2s; border:2px solid rgba(33,150,196,0.4); background:rgba(10,30,60,0.6); color:#90C8E8; margin-right:10px; }
-.country-btn.active-ng { background:linear-gradient(135deg,#1B5E20,#4CAF50); border-color:#4CAF50; color:#fff; box-shadow:0 0 20px rgba(76,175,80,0.4); }
-.country-btn.active-ao { background:linear-gradient(135deg,#7B1FA2,#CE93D8); border-color:#CE93D8; color:#fff; box-shadow:0 0 20px rgba(206,147,216,0.4); }
-.insight-card { background:rgba(10,30,60,0.7); border-radius:14px; padding:16px 20px; border:1px solid rgba(33,150,196,0.15); margin-bottom:10px; box-shadow:0 2px 16px rgba(0,0,0,0.2); backdrop-filter:blur(10px); transition:border-color 0.2s; }
-.insight-card:hover { border-color:rgba(33,150,196,0.4); }
-.insight-title { font-size:14px; font-weight:700; color:#FFFFFF; font-family:'Poppins',sans-serif; margin-bottom:4px; }
-.insight-detail { font-size:12px; color:#90B8D0; line-height:1.6; }
-.badge { display:inline-block; padding:3px 10px; border-radius:20px; font-size:11px; font-weight:600; margin-bottom:8px; }
-.badge-dead  { background:rgba(239,68,68,0.15);  color:#FCA5A5; border:1px solid rgba(239,68,68,0.4); }
-.badge-under { background:rgba(249,168,37,0.15); color:#FCD34D; border:1px solid rgba(249,168,37,0.4); }
-.badge-low   { background:rgba(33,150,196,0.15); color:#90C8E8; border:1px solid rgba(33,150,196,0.4); }
-.badge-high  { background:rgba(168,85,247,0.15); color:#D8B4FE; border:1px solid rgba(168,85,247,0.4); }
-.stSelectbox label { color:#90C8E8 !important; font-size:10px !important; font-weight:700 !important; text-transform:uppercase; letter-spacing:0.8px; }
-[data-baseweb="select"] > div { background:rgba(10,30,60,0.8) !important; border:1px solid rgba(33,150,196,0.3) !important; border-radius:10px !important; color:#E0F0FF !important; }
-[data-baseweb="select"] svg { fill:#6EC6F5 !important; }
-[data-baseweb="popover"] { background:#0B2A50 !important; border:1px solid rgba(33,150,196,0.25) !important; }
-[role="option"] { background:#0B2A50 !important; color:#E0F0FF !important; }
-[role="option"]:hover { background:rgba(33,150,196,0.2) !important; }
-[data-testid="stMetric"] { background:rgba(10,30,60,0.7) !important; border-radius:12px !important; padding:16px !important; border:1px solid rgba(33,150,196,0.2) !important; }
-[data-testid="stMetricLabel"] { color:#90C8E8 !important; font-size:10px !important; font-weight:700 !important; text-transform:uppercase; }
-[data-testid="stMetricValue"] { color:#FFFFFF !important; font-weight:700 !important; font-family:'Poppins',sans-serif !important; }
-[data-testid="stDataFrame"] { border-radius:12px !important; border:1px solid rgba(33,150,196,0.2) !important; }
-.stDownloadButton > button { background:linear-gradient(135deg,#0D3B6E,#1A7FC4) !important; color:white !important; border:none !important; border-radius:8px !important; font-weight:600 !important; padding:10px 24px !important; }
-div[data-testid="stHorizontalBlock"] div[data-testid="column"] .stButton > button { background:rgba(255,255,255,0.06) !important; color:#C8E8FF !important; border:1px solid rgba(255,255,255,0.12) !important; border-radius:8px !important; font-weight:600 !important; font-size:14px !important; width:100% !important; transition:all 0.2s ease !important; }
+
+/* ── MISSION CONTROL TOP BAR ── */
+.mc-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 0 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    margin-bottom: 16px;
+}
+.mc-title-wrap {}
+.mc-eyebrow {
+    font-size: 10px; font-weight: 600; letter-spacing: 3px;
+    text-transform: uppercase; color: #475569; margin-bottom: 4px;
+}
+.mc-title {
+    font-size: 22px; font-weight: 800; color: #F1F5F9;
+    letter-spacing: -0.5px; line-height: 1.1;
+}
+.mc-title span { color: #3B82F6; }
+.mc-status-group { display: flex; gap: 16px; align-items: center; }
+.mc-status-pill {
+    display: flex; align-items: center; gap: 7px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 20px; padding: 5px 12px;
+    font-size: 10px; font-weight: 700; letter-spacing: 1.5px;
+    text-transform: uppercase; color: #94A3B8;
+}
+.mc-status-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: #22C55E;
+    box-shadow: 0 0 8px rgba(34,197,94,0.8), 0 0 16px rgba(34,197,94,0.4);
+    animation: statusPulse 2s ease-in-out infinite;
+}
+.mc-status-dot.amber { background:#F59E0B; box-shadow:0 0 8px rgba(245,158,11,0.8), 0 0 16px rgba(245,158,11,0.4); }
+@keyframes statusPulse {
+    0%,100% { opacity:1; } 50% { opacity:0.4; }
+}
+
+/* ── FILTER BAR ── */
+.filter-bar {
+    display: flex; align-items: center; gap: 12px;
+    background: rgba(255,255,255,0.025);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 10px; padding: 10px 16px;
+    margin-bottom: 14px;
+}
+
+/* ── NAV TABS ── */
+.nav-tab-bar {
+    display: flex; gap: 2px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    margin-bottom: 20px;
+}
+
+/* ── KPI CARDS — MISSION CONTROL STYLE ── */
+.kpi-row { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:20px; }
+.kpi-card {
+    border-radius: 12px; padding: 20px 20px 16px 20px;
+    position: relative; overflow: hidden;
+    min-height: 120px;
+    border: 1px solid rgba(255,255,255,0.08);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: default;
+}
+.kpi-card:hover { transform: translateY(-3px); }
+.kpi-card::before {
+    content: ''; position: absolute;
+    top: -60px; right: -60px;
+    width: 180px; height: 180px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.04);
+    pointer-events: none;
+}
+/* Blue */
+.kpi-card.mc-blue {
+    background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%);
+    box-shadow: 0 4px 24px rgba(59,130,246,0.15), inset 0 1px 0 rgba(59,130,246,0.2);
+    border-color: rgba(59,130,246,0.25);
+}
+/* Orange */
+.kpi-card.mc-orange {
+    background: linear-gradient(135deg, #1a0f00 0%, #5c2400 100%);
+    box-shadow: 0 4px 24px rgba(249,115,22,0.15), inset 0 1px 0 rgba(249,115,22,0.2);
+    border-color: rgba(249,115,22,0.25);
+}
+/* Purple */
+.kpi-card.mc-purple {
+    background: linear-gradient(135deg, #0f0a1a 0%, #3b1f6e 100%);
+    box-shadow: 0 4px 24px rgba(139,92,246,0.15), inset 0 1px 0 rgba(139,92,246,0.2);
+    border-color: rgba(139,92,246,0.25);
+}
+/* Amber */
+.kpi-card.mc-amber {
+    background: linear-gradient(135deg, #1a1400 0%, #5c4500 100%);
+    box-shadow: 0 4px 24px rgba(245,158,11,0.15), inset 0 1px 0 rgba(245,158,11,0.2);
+    border-color: rgba(245,158,11,0.25);
+}
+/* Red */
+.kpi-card.mc-red {
+    background: linear-gradient(135deg, #1a0505 0%, #5c1010 100%);
+    box-shadow: 0 4px 24px rgba(239,68,68,0.15), inset 0 1px 0 rgba(239,68,68,0.2);
+    border-color: rgba(239,68,68,0.25);
+}
+/* Green */
+.kpi-card.mc-green {
+    background: linear-gradient(135deg, #051a0f 0%, #0d5c2a 100%);
+    box-shadow: 0 4px 24px rgba(34,197,94,0.15), inset 0 1px 0 rgba(34,197,94,0.2);
+    border-color: rgba(34,197,94,0.25);
+}
+.kpi-accent-line {
+    height: 2px; width: 40px; border-radius: 1px;
+    margin-bottom: 12px;
+}
+.kpi-label {
+    font-size: 10px; font-weight: 600; letter-spacing: 1.5px;
+    text-transform: uppercase; color: #64748B; margin-bottom: 6px;
+}
+.kpi-value {
+    font-size: 36px; font-weight: 800; color: #F8FAFC;
+    line-height: 1; font-family: 'Inter', sans-serif;
+    letter-spacing: -1px;
+}
+.kpi-delta { font-size: 11px; color: #475569; margin-top: 6px; }
+
+/* ── SECTION TITLE — BORDERLESS ── */
+.section-title {
+    font-size: 11px; font-weight: 700; letter-spacing: 2px;
+    text-transform: uppercase; color: #475569;
+    margin-top: 24px; margin-bottom: 12px;
+    display: flex; align-items: center; gap: 10px;
+}
+.section-title::after {
+    content: ''; flex: 1; height: 1px;
+    background: linear-gradient(90deg, rgba(255,255,255,0.08), transparent);
+}
+
+/* ── INSIGHT CARDS ── */
+.insight-card {
+    background: rgba(255,255,255,0.025);
+    border-radius: 12px; padding: 16px 20px;
+    border: 1px solid rgba(255,255,255,0.07);
+    margin-bottom: 10px;
+    transition: border-color 0.2s, background 0.2s;
+}
+.insight-card:hover {
+    background: rgba(255,255,255,0.04);
+    border-color: rgba(255,255,255,0.12);
+}
+.insight-title { font-size: 14px; font-weight: 700; color: #F1F5F9; margin-bottom: 4px; }
+.insight-detail { font-size: 12px; color: #64748B; line-height: 1.6; }
+
+/* ── BADGES ── */
+.badge { display:inline-block; padding:3px 10px; border-radius:20px; font-size:10px; font-weight:700; margin-bottom:8px; letter-spacing:0.5px; }
+.badge-dead  { background:rgba(239,68,68,0.12);  color:#FCA5A5; border:1px solid rgba(239,68,68,0.3); }
+.badge-under { background:rgba(249,115,22,0.12); color:#FDBA74; border:1px solid rgba(249,115,22,0.3); }
+.badge-low   { background:rgba(59,130,246,0.12); color:#93C5FD; border:1px solid rgba(59,130,246,0.3); }
+.badge-high  { background:rgba(139,92,246,0.12); color:#C4B5FD; border:1px solid rgba(139,92,246,0.3); }
+
+/* ── DATA SOURCE BANNER ── */
+.ds-banner {
+    background: rgba(255,255,255,0.025);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 10px; padding: 10px 16px;
+    margin-bottom: 14px; display: flex;
+    align-items: center; gap: 14px;
+}
+.ds-dot-wrap { position:relative; width:10px; height:10px; flex-shrink:0; }
+.ds-dot { width:10px; height:10px; border-radius:50%; position:relative; z-index:2; animation: statusPulse 2s ease-in-out infinite; }
+.ds-ripple { position:absolute; top:0; left:0; width:10px; height:10px; border-radius:50%; animation: ripple 2s ease-out infinite; z-index:1; }
+@keyframes ripple { 0% { transform:scale(1); opacity:0.6; } 100% { transform:scale(2.8); opacity:0; } }
+.ds-label { font-size:12px; font-weight:600; color:#E2E8F0; }
+.ds-sub { font-size:11px; color:#475569; margin-top:1px; }
+.ds-legend { display:flex; flex-direction:column; gap:4px; align-items:flex-end; margin-left:auto; }
+.ds-legend-item { display:flex; align-items:center; gap:5px; font-size:9px; color:#475569; font-weight:600; text-transform:uppercase; letter-spacing:1px; }
+.ds-legend-dot { width:6px; height:6px; border-radius:50%; flex-shrink:0; }
+
+/* ── COUNTRY BUTTON ── */
+div[data-testid="stHorizontalBlock"] div[data-testid="column"] .stButton > button {
+    background: rgba(255,255,255,0.04) !important;
+    color: #94A3B8 !important;
+    border: 1px solid rgba(255,255,255,0.08) !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important; font-size: 13px !important;
+    width: 100% !important; transition: all 0.2s ease !important;
+    letter-spacing: 0.3px;
+}
+div[data-testid="stHorizontalBlock"] div[data-testid="column"] .stButton > button:hover {
+    background: rgba(59,130,246,0.15) !important;
+    border-color: rgba(59,130,246,0.4) !important;
+    color: #E2E8F0 !important;
+}
+
+/* ── SELECTS ── */
+.stSelectbox label { color:#475569 !important; font-size:10px !important; font-weight:700 !important; text-transform:uppercase; letter-spacing:1px; }
+[data-baseweb="select"] > div { background:rgba(255,255,255,0.04) !important; border:1px solid rgba(255,255,255,0.08) !important; border-radius:8px !important; color:#E2E8F0 !important; }
+[data-baseweb="select"] svg { fill:#475569 !important; }
+[data-baseweb="popover"] { background:#0f172a !important; border:1px solid rgba(255,255,255,0.1) !important; }
+[role="option"] { background:#0f172a !important; color:#E2E8F0 !important; }
+[role="option"]:hover { background:rgba(59,130,246,0.15) !important; }
+
+/* ── TABLE / DATAFRAME ── */
+[data-testid="stDataFrame"] { border-radius:10px !important; border:1px solid rgba(255,255,255,0.07) !important; }
+.stDownloadButton > button { background:rgba(59,130,246,0.15) !important; color:#93C5FD !important; border:1px solid rgba(59,130,246,0.3) !important; border-radius:8px !important; font-weight:600 !important; }
+.stDownloadButton > button:hover { background:rgba(59,130,246,0.25) !important; }
+
+/* ── SPOTLIGHT ── */
+.kpi-card .spotlight {
+    position:absolute; width:250px; height:250px;
+    background:radial-gradient(circle,rgba(255,255,255,0.08) 0%,transparent 70%);
+    border-radius:50%; pointer-events:none;
+    transform:translate(-50%,-50%); opacity:0;
+    transition:opacity 0.2s ease;
+}
+.kpi-card:hover .spotlight { opacity:1; }
+
+/* ── REVEAL ── */
+.shalina-reveal { opacity:0; transform:translateY(40px) scale(0.98); transition:opacity 0.7s cubic-bezier(.16,1,.3,1), transform 0.7s cubic-bezier(.16,1,.3,1); will-change:opacity,transform; }
+.shalina-reveal.visible { opacity:1; transform:translateY(0) scale(1); }
+.shalina-reveal:nth-child(2) { transition-delay:0.08s; }
+.shalina-reveal:nth-child(3) { transition-delay:0.16s; }
+.shalina-reveal:nth-child(4) { transition-delay:0.24s; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -107,18 +313,27 @@ def get_stats(df):
     p75  = nonzero.quantile(0.75) if len(nonzero) else 0
     return p25, mean, p75
 
-# ── HEADER ──────────────────────────────────────────────────
-col1, col2 = st.columns([1, 9])
-with col1:
-    if os.path.exists("shalina_healthcare_logo.png"):
-        st.image("shalina_healthcare_logo.png", width=110)
-with col2:
-    st.markdown("""
-    <div class="header-wrap">
-        <div style="font-family:'DM Sans',sans-serif;font-size:11px;font-weight:600;color:#90C8E8;letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;">Shalina Healthcare</div>
-        <div style="font-family:'Poppins',sans-serif;font-size:36px;font-weight:700;color:#FFFFFF;letter-spacing:-0.5px;line-height:1.1;">AI Distribution Depth Analysis System</div>
+# ── MISSION CONTROL TOP BAR ──────────────────────────────────
+sync_color = "#22C55E" if data_status in ("live","hybrid") else "#F59E0B"
+sync_label = "DATA SYNC: STABLE" if data_status in ("live","hybrid") else "DATA SYNC: CSV"
+st.markdown(f"""
+<div class="mc-topbar">
+    <div class="mc-title-wrap">
+        <div class="mc-eyebrow">Shalina Healthcare &nbsp;·&nbsp; Distribution Intelligence Platform</div>
+        <div class="mc-title">AI Distribution <span>Depth</span> Analysis System</div>
     </div>
-    """, unsafe_allow_html=True)
+    <div class="mc-status-group">
+        <div class="mc-status-pill">
+            <div class="mc-status-dot"></div>
+            SYS: ONLINE
+        </div>
+        <div class="mc-status-pill">
+            <div class="mc-status-dot {'amber' if data_status == 'csv' else ''}"></div>
+            {sync_label}
+        </div>
+    </div>
+</div>
+""", unsafe_allow_html=True)
 
 # ── DATA SOURCE BANNER ────────────────────────────────────────
 is_live   = data_status == "live"
@@ -229,8 +444,8 @@ df_country = df_all[df_all['country'] == country].copy()
 p25, mean_val, p75 = get_stats(df_country)
 
 # Country colour accent
-accent = "#4CAF50" if country == "Nigeria" else "#CE93D8"
-st.markdown(f"<div style='height:3px;background:linear-gradient(90deg,{accent},transparent);border-radius:2px;margin-bottom:12px;'></div>", unsafe_allow_html=True)
+accent = "#3B82F6" if country == "Nigeria" else "#8B5CF6"
+st.markdown(f"<div style='height:2px;background:linear-gradient(90deg,{accent},transparent);margin-bottom:16px;'></div>", unsafe_allow_html=True)
 
 # ── NAVBAR ──────────────────────────────────────────────────
 if "nav_page" not in st.session_state:
@@ -670,12 +885,12 @@ color_map = {
     'High Performer':  '#A855F7'
 }
 chart_layout = dict(
-    paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(10,30,60,0.5)",
-    font=dict(color="#90C8E8", size=11), height=380,
-    xaxis=dict(gridcolor="rgba(33,150,196,0.1)", linecolor="rgba(33,150,196,0.2)", color="#6AACE0"),
-    yaxis=dict(gridcolor="rgba(33,150,196,0.1)", linecolor="rgba(33,150,196,0.2)", color="#6AACE0"),
+    paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(255,255,255,0.02)",
+    font=dict(color="#64748B", size=11), height=380,
+    xaxis=dict(gridcolor="rgba(255,255,255,0.04)", linecolor="rgba(255,255,255,0.06)", color="#64748B"),
+    yaxis=dict(gridcolor="rgba(255,255,255,0.04)", linecolor="rgba(255,255,255,0.06)", color="#64748B"),
     margin=dict(l=0, r=0, t=20, b=0),
-    legend=dict(font=dict(color="#FFFFFF"), bgcolor="rgba(10,30,60,0.7)")
+    legend=dict(font=dict(color="#94A3B8"), bgcolor="rgba(8,13,26,0.8)", bordercolor="rgba(255,255,255,0.08)", borderwidth=1)
 )
 
 map_center = {"lat": 9.0, "lon": 8.0} if country == "Nigeria" else {"lat": -11.0, "lon": 17.5}
@@ -693,22 +908,26 @@ if page == "Dashboard":
 
     st.markdown(f"""
     <div class="kpi-row">
-        <div class="kpi-card navy">
+        <div class="kpi-card mc-blue">
+            <div class="kpi-accent-line" style="background:linear-gradient(90deg,#3B82F6,#60A5FA);"></div>
             <div class="kpi-label">Total Outlets — {country}</div>
             <div class="kpi-value">{total_outlets:,}</div>
             <div class="kpi-delta">Distribution network</div>
         </div>
-        <div class="kpi-card red">
+        <div class="kpi-card mc-red">
+            <div class="kpi-accent-line" style="background:linear-gradient(90deg,#EF4444,#F87171);"></div>
             <div class="kpi-label">Dead Whitespace</div>
             <div class="kpi-value">{dead_outlets:,}</div>
             <div class="kpi-delta">{ws_pct}% of total — zero YTD sales</div>
         </div>
-        <div class="kpi-card purple">
+        <div class="kpi-card mc-purple">
+            <div class="kpi-accent-line" style="background:linear-gradient(90deg,#8B5CF6,#A78BFA);"></div>
             <div class="kpi-label">High Performers</div>
             <div class="kpi-value">{high_performers:,}</div>
             <div class="kpi-delta">Above ₦{p75:,.0f}K YTD</div>
         </div>
-        <div class="kpi-card gold">
+        <div class="kpi-card mc-amber">
+            <div class="kpi-accent-line" style="background:linear-gradient(90deg,#F59E0B,#FCD34D);"></div>
             <div class="kpi-label">Total YTD Revenue</div>
             <div class="kpi-value">₦{total_ytd/1000:,.0f}M</div>
             <div class="kpi-delta">Across all active outlets</div>
@@ -716,17 +935,22 @@ if page == "Dashboard":
     </div>
     """, unsafe_allow_html=True)
 
-    st.markdown('<div class="section-title">Geographic Outlet Distribution Map</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-title">Geographic Outlet Distribution</div>', unsafe_allow_html=True)
     map_df = df.sample(min(5000, len(df)), random_state=42) if len(df) > 5000 else df
     fig_map = px.scatter_mapbox(map_df, lat="latitude", lon="longitude",
         color="Opportunity", color_discrete_map=color_map,
-        size_max=12, zoom=map_zoom, height=500,
+        size="YTD Retailing Value" if map_df["YTD Retailing Value"].sum() > 0 else None,
+        size_max=14, zoom=map_zoom, height=520,
         hover_name="Shop Name",
         hover_data={"YTD Retailing Value":":,.1f","Retailer Subtype":True,"latitude":False,"longitude":False},
         center=map_center)
-    fig_map.update_layout(mapbox_style="open-street-map", paper_bgcolor="rgba(0,0,0,0)",
-        legend=dict(font=dict(color="#FFFFFF",size=12), bgcolor="rgba(10,30,60,0.85)",
-                    bordercolor="rgba(33,150,196,0.3)", borderwidth=1),
+    fig_map.update_traces(marker=dict(opacity=0.85))
+    fig_map.update_layout(
+        mapbox_style="carto-darkmatter",
+        paper_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="rgba(0,0,0,0)",
+        legend=dict(font=dict(color="#94A3B8",size=11), bgcolor="rgba(8,13,26,0.85)",
+                    bordercolor="rgba(255,255,255,0.08)", borderwidth=1),
         margin=dict(l=0,r=0,t=0,b=0))
     st.plotly_chart(fig_map, use_container_width=True)
 
@@ -795,22 +1019,26 @@ elif page == "Whitespace Detection":
 
     st.markdown(f"""
     <div class="kpi-row">
-        <div class="kpi-card red">
+        <div class="kpi-card mc-red">
+            <div class="kpi-accent-line" style="background:linear-gradient(90deg,#EF4444,#F87171);"></div>
             <div class="kpi-label">Dead Whitespace Outlets</div>
             <div class="kpi-value">{len(dead):,}</div>
             <div class="kpi-delta">Zero YTD sales — highest priority</div>
         </div>
-        <div class="kpi-card gold">
+        <div class="kpi-card mc-orange">
+            <div class="kpi-accent-line" style="background:linear-gradient(90deg,#F97316,#FB923C);"></div>
             <div class="kpi-label">Underperforming Outlets</div>
             <div class="kpi-value">{len(under):,}</div>
             <div class="kpi-delta">Below ₦{p25:,.0f}K YTD</div>
         </div>
-        <div class="kpi-card blue">
+        <div class="kpi-card mc-blue">
+            <div class="kpi-accent-line" style="background:linear-gradient(90deg,#3B82F6,#60A5FA);"></div>
             <div class="kpi-label">Total Whitespace</div>
             <div class="kpi-value">{total_ws:,}</div>
             <div class="kpi-delta">{round(total_ws/len(df)*100,1)}% of filtered outlets</div>
         </div>
-        <div class="kpi-card green">
+        <div class="kpi-card mc-green">
+            <div class="kpi-accent-line" style="background:linear-gradient(90deg,#22C55E,#4ADE80);"></div>
             <div class="kpi-label">Revenue Potential</div>
             <div class="kpi-value">₦{revenue_potential/1000:,.0f}M</div>
             <div class="kpi-delta">If activated to avg performance</div>
@@ -826,9 +1054,9 @@ elif page == "Whitespace Detection":
         zoom=map_zoom, height=480, hover_name="Shop Name",
         hover_data={"YTD Retailing Value":":,.1f","Retailer Subtype":True,"latitude":False,"longitude":False},
         center=map_center)
-    fig_ws.update_layout(mapbox_style="open-street-map", paper_bgcolor="rgba(0,0,0,0)",
-        legend=dict(font=dict(color="#FFFFFF",size=12), bgcolor="rgba(10,30,60,0.85)",
-                    bordercolor="rgba(33,150,196,0.3)", borderwidth=1),
+    fig_ws.update_layout(mapbox_style="carto-darkmatter", paper_bgcolor="rgba(0,0,0,0)",
+        legend=dict(font=dict(color="#94A3B8",size=11), bgcolor="rgba(8,13,26,0.85)",
+                    bordercolor="rgba(255,255,255,0.08)", borderwidth=1),
         margin=dict(l=0,r=0,t=0,b=0))
     st.plotly_chart(fig_ws, use_container_width=True)
 
