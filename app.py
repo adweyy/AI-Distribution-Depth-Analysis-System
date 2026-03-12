@@ -702,11 +702,14 @@ elif page == "RFM Analysis":
     )
     fig_scatter.update_traces(marker=dict(size=7, opacity=0.75, line=dict(width=0)))
     fig_scatter.update_layout(
-        **{**chart_layout, 'height': 440},
+        paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(10,30,60,0.5)",
+        font=dict(color="#90C8E8", size=11), height=440,
+        margin=dict(l=0, r=0, t=20, b=0),
+        legend=dict(font=dict(color="#FFFFFF"), bgcolor="rgba(10,30,60,0.7)"),
         xaxis=dict(title='Recency Score', tickvals=[1,2,3,4,5],
-                   gridcolor='rgba(33,150,196,0.1)', color='#6AACE0'),
+                   gridcolor='rgba(33,150,196,0.1)', linecolor='rgba(33,150,196,0.2)', color='#6AACE0'),
         yaxis=dict(title='Monetary Score', tickvals=[1,2,3,4,5],
-                   gridcolor='rgba(33,150,196,0.1)', color='#6AACE0'),
+                   gridcolor='rgba(33,150,196,0.1)', linecolor='rgba(33,150,196,0.2)', color='#6AACE0'),
     )
     st.plotly_chart(fig_scatter, use_container_width=True)
 
