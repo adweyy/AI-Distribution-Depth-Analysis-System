@@ -85,6 +85,8 @@ div[data-testid="stHorizontalBlock"] div[data-testid="column"] .stButton > butto
 
 # ── LOAD DATA ─────────────────────────────────────────────────
 from fabric_connector import load_data as _load_data, load_rfm_data as _load_rfm
+from effects import inject_effects
+inject_effects()
 
 df_all, _, _ = _load_data()
 
