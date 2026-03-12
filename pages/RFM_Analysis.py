@@ -157,13 +157,19 @@ _fx_c.html("""<script>
             /* ── REVEAL ON SCROLL ── */
             .shalina-reveal {
                 opacity: 0;
-                transform: translateY(28px);
-                transition: opacity 0.6s cubic-bezier(.16,1,.3,1), transform 0.6s cubic-bezier(.16,1,.3,1);
+                transform: translateY(48px) scale(0.97);
+                transition: opacity 0.75s cubic-bezier(.16,1,.3,1),
+                            transform 0.75s cubic-bezier(.16,1,.3,1);
+                will-change: opacity, transform;
             }
             .shalina-reveal.visible {
                 opacity: 1;
-                transform: translateY(0);
+                transform: translateY(0) scale(1);
             }
+            /* stagger siblings */
+            .shalina-reveal:nth-child(2) { transition-delay: 0.08s; }
+            .shalina-reveal:nth-child(3) { transition-delay: 0.16s; }
+            .shalina-reveal:nth-child(4) { transition-delay: 0.24s; }
 
             /* ── ELASTIC BUTTON ── */
 
@@ -306,30 +312,28 @@ _fx_c.html("""<script>
 
     // ── 3D TILT + SPOTLIGHT on KPI cards ─────────────────────────────
     function addTiltCards() {
+        // Subtle lift + spotlight only — no 3D rotation
         const cards = doc.querySelectorAll('.kpi-card');
         cards.forEach(card => {
             if (card.dataset.tiltDone) return;
             card.dataset.tiltDone = '1';
 
-            // Add spotlight div
             const spot = doc.createElement('div');
             spot.className = 'spotlight';
             card.appendChild(spot);
 
             card.addEventListener('mousemove', e => {
                 const rect = card.getBoundingClientRect();
-                const cx = rect.width / 2, cy = rect.height / 2;
-                const x = e.clientX - rect.left - cx;
-                const y = e.clientY - rect.top  - cy;
-                const rotX = (-y / cy) * 12;
-                const rotY = ( x / cx) * 12;
-                card.style.transform = `perspective(600px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale(1.03)`;
-                card.style.boxShadow = `0 20px 60px rgba(0,0,0,0.5), ${-rotY}px ${-rotX}px 30px rgba(33,150,220,0.2)`;
                 spot.style.left = (e.clientX - rect.left) + 'px';
                 spot.style.top  = (e.clientY - rect.top)  + 'px';
             });
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-4px) scale(1.015)';
+                card.style.boxShadow = '0 16px 40px rgba(0,0,0,0.45), 0 0 24px rgba(33,150,220,0.2)';
+                card.style.transition = 'transform 0.2s ease, box-shadow 0.2s ease';
+            });
             card.addEventListener('mouseleave', () => {
-                card.style.transform = 'perspective(600px) rotateX(0deg) rotateY(0deg) scale(1)';
+                card.style.transform = 'translateY(0) scale(1)';
                 card.style.boxShadow = '';
             });
         });
@@ -337,25 +341,38 @@ _fx_c.html("""<script>
 
     // ── REVEAL ON SCROLL ──────────────────────────────────────────────
     function addRevealOnScroll() {
+        // Wider target list — catches charts, tables, cards, metric blocks
         const targets = doc.querySelectorAll(
-            '.kpi-card, .insight-card, .ds-banner, [data-testid="stPlotlyChart"], [data-testid="stDataFrame"]'
+            '.kpi-card, .insight-card, .ds-banner, ' +
+            '[data-testid="stPlotlyChart"], [data-testid="stDataFrame"], ' +
+            '[data-testid="stMetric"], [data-testid="stMarkdown"] .header-wrap, ' +
+            '[data-testid="stVerticalBlock"] > div > div > div > div'
         );
         targets.forEach(el => {
             if (el.dataset.revealDone) return;
+            // Skip tiny or already-visible elements
+            const rect = el.getBoundingClientRect();
+            if (rect.height < 40) return;
             el.dataset.revealDone = '1';
             el.classList.add('shalina-reveal');
         });
 
-        const observer = new IntersectionObserver(entries => {
-            entries.forEach(e => {
-                if (e.isIntersecting) {
-                    setTimeout(() => e.target.classList.add('visible'), 60);
-                    observer.unobserve(e.target);
-                }
-            });
-        }, { threshold: 0.1 });
+        if (!window._shalinaRevealObserver) {
+            window._shalinaRevealObserver = new IntersectionObserver(entries => {
+                entries.forEach((e, i) => {
+                    if (e.isIntersecting) {
+                        // Stagger each element by 80ms based on its position
+                        const delay = Math.min(i * 80, 400);
+                        setTimeout(() => e.target.classList.add('visible'), delay);
+                        window._shalinaRevealObserver.unobserve(e.target);
+                    }
+                });
+            }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+        }
 
-        doc.querySelectorAll('.shalina-reveal').forEach(el => observer.observe(el));
+        doc.querySelectorAll('.shalina-reveal:not(.visible)').forEach(el => {
+            window._shalinaRevealObserver.observe(el);
+        });
     }
 
     // ── MOUSE POSITION REACTIVE GRADIENT ─────────────────────────────
@@ -383,6 +400,8 @@ _fx_c.html("""<script>
 
     // ── MAGNETIC BUTTONS ──────────────────────────────────────────────
     function addMagneticButtons() {
+        // Only style the top navbar buttons (country switcher + nav row)
+        // No magnetic movement — just glow on hover via CSS
         const btns = doc.querySelectorAll('[data-testid="stHorizontalBlock"] button');
         btns.forEach(btn => {
             if (btn.dataset.magnetDone) return;
@@ -394,15 +413,14 @@ _fx_c.html("""<script>
             btn.style.fontWeight = '600';
             btn.style.fontSize = '14px';
             btn.style.width = '100%';
-
-            btn.addEventListener('mousemove', e => {
-                const rect = btn.getBoundingClientRect();
-                const x = e.clientX - rect.left - rect.width  / 2;
-                const y = e.clientY - rect.top  - rect.height / 2;
-                btn.style.transform = `translate(${x * 0.25}px, ${y * 0.25}px) scale(1.04)`;
+            btn.style.transition = 'box-shadow 0.2s ease, border-color 0.2s ease';
+            btn.addEventListener('mouseenter', () => {
+                btn.style.borderColor = 'rgba(110,198,245,0.8)';
+                btn.style.boxShadow = '0 0 20px rgba(33,150,220,0.5), inset 0 0 16px rgba(33,150,220,0.15)';
             });
             btn.addEventListener('mouseleave', () => {
-                btn.style.transform = 'translate(0,0) scale(1)';
+                btn.style.borderColor = 'rgba(33,150,196,0.25)';
+                btn.style.boxShadow = '';
             });
         });
     }
