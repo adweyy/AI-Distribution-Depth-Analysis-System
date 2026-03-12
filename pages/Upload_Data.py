@@ -2,9 +2,13 @@ import streamlit as st
 import streamlit.components.v1 as components
 import pandas as pd
 import numpy as np
-import os
+import os, sys
+
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from effects import inject_effects
 
 st.set_page_config(layout="wide", page_title="Upload Data | Shalina")
+inject_effects()
 
 # ── SIDEBAR ──────────────────────────────────────────────────
 with st.sidebar:
