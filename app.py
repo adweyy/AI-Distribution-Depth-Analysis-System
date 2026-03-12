@@ -37,7 +37,7 @@ st.markdown("""
 .stApp {
     font-family: 'Inter', sans-serif;
     color: #E2E8F0;
-    background: #080d1a;
+    background: #0d1526;
     min-height: 100vh;
     position: relative;
 }
@@ -45,9 +45,9 @@ st.markdown("""
     content: '';
     position: fixed; inset: 0;
     background:
-        radial-gradient(ellipse 80% 50% at 10% 0%,  rgba(15,80,180,0.20) 0%, transparent 60%),
-        radial-gradient(ellipse 50% 40% at 90% 10%,  rgba(90,20,180,0.15) 0%, transparent 55%),
-        radial-gradient(ellipse 60% 60% at 50% 100%, rgba(10,50,140,0.18) 0%, transparent 60%);
+        radial-gradient(ellipse 80% 50% at 10% 0%,  rgba(20,100,220,0.22) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 40% at 90% 10%,  rgba(100,30,200,0.18) 0%, transparent 55%),
+        radial-gradient(ellipse 60% 60% at 50% 100%, rgba(15,60,160,0.20) 0%, transparent 60%);
     pointer-events: none; z-index: 0;
 }
 .main .block-container {
@@ -316,24 +316,30 @@ def get_stats(df):
 # ── MISSION CONTROL TOP BAR ──────────────────────────────────
 sync_color = "#22C55E" if data_status in ("live","hybrid") else "#F59E0B"
 sync_label = "DATA SYNC: STABLE" if data_status in ("live","hybrid") else "DATA SYNC: CSV"
-st.markdown(f"""
-<div class="mc-topbar">
-    <div class="mc-title-wrap">
-        <div class="mc-eyebrow">Shalina Healthcare &nbsp;·&nbsp; Distribution Intelligence Platform</div>
-        <div class="mc-title">AI Distribution <span>Depth</span> Analysis System</div>
-    </div>
-    <div class="mc-status-group">
-        <div class="mc-status-pill">
-            <div class="mc-status-dot"></div>
-            SYS: ONLINE
+
+logo_col, title_col = st.columns([1, 11])
+with logo_col:
+    if os.path.exists("shalina_healthcare_logo.png"):
+        st.image("shalina_healthcare_logo.png", width=90)
+with title_col:
+    st.markdown(f"""
+    <div class="mc-topbar">
+        <div class="mc-title-wrap">
+            <div class="mc-eyebrow">Shalina Healthcare &nbsp;·&nbsp; Distribution Intelligence Platform</div>
+            <div class="mc-title">AI Distribution <span>Depth</span> Analysis System</div>
         </div>
-        <div class="mc-status-pill">
-            <div class="mc-status-dot {'amber' if data_status == 'csv' else ''}"></div>
-            {sync_label}
+        <div class="mc-status-group">
+            <div class="mc-status-pill">
+                <div class="mc-status-dot"></div>
+                SYS: ONLINE
+            </div>
+            <div class="mc-status-pill">
+                <div class="mc-status-dot {'amber' if data_status == 'csv' else ''}"></div>
+                {sync_label}
+            </div>
         </div>
     </div>
-</div>
-""", unsafe_allow_html=True)
+    """, unsafe_allow_html=True)
 
 # ── DATA SOURCE BANNER ────────────────────────────────────────
 is_live   = data_status == "live"
