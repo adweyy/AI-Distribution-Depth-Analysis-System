@@ -18,15 +18,19 @@ load_dotenv(_env_path)
 
 def _get_secret(key):
     """Read from Streamlit secrets (cloud) or .env (local)."""
-    # Try Streamlit secrets first
+    val = None
     try:
         import streamlit as st
         if hasattr(st, 'secrets') and key in st.secrets:
-            return st.secrets[key]
+            val = st.secrets[key]
     except Exception:
         pass
-    # Fall back to environment variable
-    return os.getenv(key)
+    if not val:
+        val = os.getenv(key)
+    # Strip any hidden whitespace/quotes that may sneak in
+    if val:
+        val = str(val).strip().strip('"').strip("'").strip()
+    return val or None
 
 
 def _get_access_token():
@@ -50,15 +54,15 @@ def _get_access_token():
 
 
 def _run_dax(token, dax_query):
-    workspace = _get_secret("FABRIC_WORKSPACE_ID")
-    dataset   = _get_secret("FABRIC_DATASET_ID")
+    workspace = _get_secret("FABRIC_WORKSPACE_ID") or "ccf72308-6884-43ee-a116-3d86fbe1553f"
+    dataset   = _get_secret("FABRIC_DATASET_ID")   or "4aea9823-3813-4fc8-a146-a7c5f986bf0a"
     url = f"https://api.powerbi.com/v1.0/myorg/groups/{workspace}/datasets/{dataset}/executeQueries"
     r = requests.post(url,
         headers={"Authorization": f"Bearer {token}", "Content-Type": "application/json"},
         json={"queries": [{"query": dax_query}], "serializerSettings": {"includeNulls": True}},
         timeout=60)
     if r.status_code != 200:
-        raise Exception(f"DAX failed {r.status_code}: {r.text[:200]}")
+        raise Exception(f"DAX failed {r.status_code} WS={workspace} DS={dataset}: {r.text[:150]}")
     rows = r.json()["results"][0]["tables"][0].get("rows", [])
     return pd.DataFrame(rows)
 
