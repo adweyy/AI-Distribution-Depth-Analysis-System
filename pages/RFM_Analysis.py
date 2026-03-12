@@ -4,6 +4,15 @@ import numpy as np
 import plotly.express as px
 import os, sys
 
+# Ensure root project directory is on path so fabric_connector can be found
+# Works both locally (pages/ subfolder) and on Streamlit Cloud
+_here = os.path.dirname(os.path.abspath(__file__))          # .../pages/
+_root = os.path.dirname(_here)                               # .../project root/
+if _root not in sys.path:
+    sys.path.insert(0, _root)
+if _here not in sys.path:
+    sys.path.insert(0, _here)
+
 st.set_page_config(layout="wide", page_title="RFM Analysis | Shalina", initial_sidebar_state="expanded")
 
 # ── SIDEBAR ───────────────────────────────────────────────────
@@ -75,7 +84,6 @@ div[data-testid="stHorizontalBlock"] div[data-testid="column"] .stButton > butto
 """, unsafe_allow_html=True)
 
 # ── LOAD DATA ─────────────────────────────────────────────────
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from fabric_connector import load_data as _load_data, load_rfm_data as _load_rfm
 
 df_all, _, _ = _load_data()
