@@ -16,8 +16,8 @@ with st.sidebar:
         </div>
     </div>
     """, unsafe_allow_html=True)
-    st.page_link("app.py",                  label="🏠  Dashboard")
-    st.page_link("pages/ROI_Calculator.py", label="📊  ROI Calculator")
+    st.page_link("app.py",                   label="🏠  Dashboard")
+    st.page_link("pages/RFM_Analysis.py",   label="📊  RFM Analysis")
     st.page_link("pages/Upload_Data.py",    label="☁️  Upload Data")
     st.markdown("""<div style="margin-top:16px;padding:0 8px;">
         <div style="height:1px;background:linear-gradient(90deg,transparent,rgba(33,150,196,0.35),transparent);"></div>
