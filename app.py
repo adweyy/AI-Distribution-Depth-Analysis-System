@@ -322,7 +322,10 @@ sync_label = "DATA SYNC: STABLE" if data_status in ("live","hybrid") else "DATA 
 logo_col, title_col = st.columns([1, 11])
 with logo_col:
     if os.path.exists("shalina_healthcare_logo.png"):
-        st.image("shalina_healthcare_logo.png", width=90)
+        import base64
+        with open("shalina_healthcare_logo.png","rb") as _f:
+            _logo_b64 = base64.b64encode(_f.read()).decode()
+        st.markdown(f'<img src="data:image/png;base64,{_logo_b64}" style="width:90px;margin-top:8px;" />', unsafe_allow_html=True)
 with title_col:
     st.markdown(f"""
     <div class="mc-topbar">

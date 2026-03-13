@@ -721,8 +721,12 @@ if df_all is None:
 # ── HEADER ────────────────────────────────────────────────────
 col1, col2 = st.columns([1, 9])
 with col1:
-    if os.path.exists(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "shalina_healthcare_logo.png")):
-        st.image(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "shalina_healthcare_logo.png"), width=110)
+    _logo_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "shalina_healthcare_logo.png")
+    if os.path.exists(_logo_path):
+        import base64
+        with open(_logo_path,"rb") as _f:
+            _logo_b64 = base64.b64encode(_f.read()).decode()
+        st.markdown(f'<img src="data:image/png;base64,{_logo_b64}" style="width:90px;margin-top:8px;" />', unsafe_allow_html=True)
 with col2:
     st.markdown("""
     <div class="header-wrap">
