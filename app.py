@@ -269,6 +269,8 @@ div[data-testid="stHorizontalBlock"] div[data-testid="column"] .stButton > butto
 [role="option"]:hover { background:rgba(59,130,246,0.15) !important; }
 
 /* ── TABLE / DATAFRAME ── */
+[data-testid="stImageContainer"] button,
+[data-testid="StyledFullScreenButton"] { display: none !important; }
 [data-testid="stDataFrame"] { border-radius:10px !important; border:1px solid rgba(255,255,255,0.07) !important; }
 .stDownloadButton > button { background:rgba(59,130,246,0.15) !important; color:#93C5FD !important; border:1px solid rgba(59,130,246,0.3) !important; border-radius:8px !important; font-weight:600 !important; }
 .stDownloadButton > button:hover { background:rgba(59,130,246,0.25) !important; }
