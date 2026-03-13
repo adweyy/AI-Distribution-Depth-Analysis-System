@@ -96,10 +96,9 @@ _fx_c.html("""<script>
             /* ── ELASTIC BUTTON ── */
 
             /* ── GLASSMORPHISM PANELS ── */
-            .header-wrap, .ds-banner, .insight-card, .navbar-wrap {
+            .ds-banner, .insight-card {
                 backdrop-filter: blur(24px) saturate(1.4) !important;
                 -webkit-backdrop-filter: blur(24px) saturate(1.4) !important;
-                border: 1px solid rgba(255,255,255,0.10) !important;
             }
 
             /* ── ANIMATED GRADIENT BORDER on hover ── */
