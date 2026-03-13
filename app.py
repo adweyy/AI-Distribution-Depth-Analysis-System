@@ -15,14 +15,14 @@ with st.sidebar:
         </div>
     </div>
     """, unsafe_allow_html=True)
-    st.page_link("app.py",                       label="🏠  Dashboard")
-    st.page_link("pages/RFM_Analysis.py",        label="📊  RFM Analysis")
-    st.page_link("pages/Upload_Data.py",         label="☁️  Upload Data")
+    st.page_link("app.py",                       label="Dashboard")
+    st.page_link("pages/RFM_Analysis.py",        label="RFM Analysis")
+    st.page_link("pages/Upload_Data.py",         label="Upload Data")
     st.markdown("""<div style="margin-top:16px;padding:0 8px;">
         <div style="height:1px;background:linear-gradient(90deg,transparent,rgba(33,150,196,0.35),transparent);"></div>
     </div>""", unsafe_allow_html=True)
     st.markdown("<div style='margin-top:16px;padding:0 8px;font-family:Poppins,sans-serif;font-size:10px;font-weight:700;color:rgba(100,180,220,0.7);text-transform:uppercase;letter-spacing:2px;'>Data</div>", unsafe_allow_html=True)
-    if st.button("🔄  Refresh Data", use_container_width=True, key="refresh_data"):
+    if st.button("Refresh Data", use_container_width=True, key="refresh_data"):
         st.cache_data.clear()
         st.rerun()
     import streamlit.components.v1 as _sc
@@ -33,7 +33,7 @@ st.markdown("""
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap');
 * { box-sizing: border-box; }
 
-/* ── DEEP SPACE BACKGROUND ── */
+/*  DEEP SPACE BACKGROUND  */
 .stApp {
     font-family: 'Inter', sans-serif;
     color: #E2E8F0;
@@ -56,7 +56,7 @@ st.markdown("""
     max-width: 1500px; position: relative; z-index: 1;
 }
 
-/* ── SIDEBAR ── */
+/*  SIDEBAR  */
 section[data-testid="stSidebar"] {
     background: rgba(8,13,26,0.95) !important;
     border-right: 1px solid rgba(255,255,255,0.06) !important;
@@ -67,7 +67,7 @@ section[data-testid="stSidebar"] a:hover { color: #fff !important; background: r
 [data-testid="stSidebarNav"],[data-testid="stSidebarNavItems"],section[data-testid="stSidebar"] nav { display:none !important; }
 [data-testid="stToolbar"],[data-testid="stDecoration"],header[data-testid="stHeader"],#MainMenu,footer { display:none !important; }
 
-/* ── MISSION CONTROL TOP BAR ── */
+/*  MISSION CONTROL TOP BAR  */
 .mc-topbar {
     display: flex;
     align-items: center;
@@ -106,7 +106,7 @@ section[data-testid="stSidebar"] a:hover { color: #fff !important; background: r
     0%,100% { opacity:1; } 50% { opacity:0.4; }
 }
 
-/* ── FILTER BAR ── */
+/*  FILTER BAR  */
 .filter-bar {
     display: flex; align-items: center; gap: 12px;
     background: rgba(255,255,255,0.025);
@@ -115,14 +115,14 @@ section[data-testid="stSidebar"] a:hover { color: #fff !important; background: r
     margin-bottom: 14px;
 }
 
-/* ── NAV TABS ── */
+/*  NAV TABS  */
 .nav-tab-bar {
     display: flex; gap: 2px;
     border-bottom: 1px solid rgba(255,255,255,0.06);
     margin-bottom: 20px;
 }
 
-/* ── KPI CARDS — MISSION CONTROL STYLE ── */
+/*  KPI CARDS — MISSION CONTROL STYLE  */
 .kpi-row { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:20px; }
 .kpi-card {
     border-radius: 12px; padding: 20px 20px 16px 20px;
@@ -192,7 +192,7 @@ section[data-testid="stSidebar"] a:hover { color: #fff !important; background: r
 }
 .kpi-delta { font-size: 11px; color: #475569; margin-top: 6px; }
 
-/* ── SECTION TITLE — BORDERLESS ── */
+/*  SECTION TITLE — BORDERLESS  */
 .section-title {
     font-size: 11px; font-weight: 700; letter-spacing: 2px;
     text-transform: uppercase; color: #475569;
@@ -204,7 +204,7 @@ section[data-testid="stSidebar"] a:hover { color: #fff !important; background: r
     background: linear-gradient(90deg, rgba(255,255,255,0.08), transparent);
 }
 
-/* ── INSIGHT CARDS ── */
+/*  INSIGHT CARDS  */
 .insight-card {
     background: rgba(255,255,255,0.025);
     border-radius: 12px; padding: 16px 20px;
@@ -219,14 +219,14 @@ section[data-testid="stSidebar"] a:hover { color: #fff !important; background: r
 .insight-title { font-size: 14px; font-weight: 700; color: #F1F5F9; margin-bottom: 4px; }
 .insight-detail { font-size: 12px; color: #64748B; line-height: 1.6; }
 
-/* ── BADGES ── */
+/*  BADGES  */
 .badge { display:inline-block; padding:3px 10px; border-radius:20px; font-size:10px; font-weight:700; margin-bottom:8px; letter-spacing:0.5px; }
 .badge-dead  { background:rgba(239,68,68,0.12);  color:#FCA5A5; border:1px solid rgba(239,68,68,0.3); }
 .badge-under { background:rgba(249,115,22,0.12); color:#FDBA74; border:1px solid rgba(249,115,22,0.3); }
 .badge-low   { background:rgba(59,130,246,0.12); color:#93C5FD; border:1px solid rgba(59,130,246,0.3); }
 .badge-high  { background:rgba(139,92,246,0.12); color:#C4B5FD; border:1px solid rgba(139,92,246,0.3); }
 
-/* ── DATA SOURCE BANNER ── */
+/*  DATA SOURCE BANNER  */
 .ds-banner {
     background: rgba(255,255,255,0.025);
     border: 1px solid rgba(255,255,255,0.07);
@@ -244,7 +244,7 @@ section[data-testid="stSidebar"] a:hover { color: #fff !important; background: r
 .ds-legend-item { display:flex; align-items:center; gap:5px; font-size:9px; color:#475569; font-weight:600; text-transform:uppercase; letter-spacing:1px; }
 .ds-legend-dot { width:6px; height:6px; border-radius:50%; flex-shrink:0; }
 
-/* ── COUNTRY BUTTON ── */
+/*  COUNTRY BUTTON  */
 div[data-testid="stHorizontalBlock"] div[data-testid="column"] .stButton > button {
     background: rgba(255,255,255,0.04) !important;
     color: #94A3B8 !important;
@@ -260,7 +260,7 @@ div[data-testid="stHorizontalBlock"] div[data-testid="column"] .stButton > butto
     color: #E2E8F0 !important;
 }
 
-/* ── SELECTS ── */
+/*  SELECTS  */
 .stSelectbox label { color:#475569 !important; font-size:10px !important; font-weight:700 !important; text-transform:uppercase; letter-spacing:1px; }
 [data-baseweb="select"] > div { background:rgba(255,255,255,0.04) !important; border:1px solid rgba(255,255,255,0.08) !important; border-radius:8px !important; color:#E2E8F0 !important; }
 [data-baseweb="select"] svg { fill:#475569 !important; }
@@ -268,14 +268,14 @@ div[data-testid="stHorizontalBlock"] div[data-testid="column"] .stButton > butto
 [role="option"] { background:#0f172a !important; color:#E2E8F0 !important; }
 [role="option"]:hover { background:rgba(59,130,246,0.15) !important; }
 
-/* ── TABLE / DATAFRAME ── */
+/*  TABLE / DATAFRAME  */
 [data-testid="stImageContainer"] button,
 [data-testid="StyledFullScreenButton"] { display: none !important; }
 [data-testid="stDataFrame"] { border-radius:10px !important; border:1px solid rgba(255,255,255,0.07) !important; }
 .stDownloadButton > button { background:rgba(59,130,246,0.15) !important; color:#93C5FD !important; border:1px solid rgba(59,130,246,0.3) !important; border-radius:8px !important; font-weight:600 !important; }
 .stDownloadButton > button:hover { background:rgba(59,130,246,0.25) !important; }
 
-/* ── SPOTLIGHT ── */
+/*  SPOTLIGHT  */
 .kpi-card .spotlight {
     position:absolute; width:250px; height:250px;
     background:radial-gradient(circle,rgba(255,255,255,0.08) 0%,transparent 70%);
@@ -285,7 +285,7 @@ div[data-testid="stHorizontalBlock"] div[data-testid="column"] .stButton > butto
 }
 .kpi-card:hover .spotlight { opacity:1; }
 
-/* ── REVEAL ── */
+/*  REVEAL  */
 .shalina-reveal { opacity:0; transform:translateY(40px) scale(0.98); transition:opacity 0.7s cubic-bezier(.16,1,.3,1), transform 0.7s cubic-bezier(.16,1,.3,1); will-change:opacity,transform; }
 .shalina-reveal.visible { opacity:1; transform:translateY(0) scale(1); }
 .shalina-reveal:nth-child(2) { transition-delay:0.08s; }
@@ -294,7 +294,7 @@ div[data-testid="stHorizontalBlock"] div[data-testid="column"] .stButton > butto
 </style>
 """, unsafe_allow_html=True)
 
-# ── LOAD DATA ──────────────────────────────────────────────────
+#  LOAD DATA 
 import sys, os as _os
 sys.path.insert(0, _os.path.dirname(__file__))
 from fabric_connector import load_data as _load_data
@@ -304,7 +304,7 @@ df_all, data_source, data_status = _load_data()
 if df_all is None:
     st.markdown('''<div style="background:rgba(200,50,50,0.2);border:1px solid rgba(255,80,80,0.4);
     border-radius:12px;padding:16px 20px;color:#FFAAAA;font-weight:600;font-size:13px;">
-    🔴 No data available. Please add shalina_combined_data.csv to the project folder or configure Fabric credentials in .env
+     No data available. Please add shalina_combined_data.csv to the project folder or configure Fabric credentials in .env
     </div>''', unsafe_allow_html=True)
     st.stop()
 
@@ -315,7 +315,7 @@ def get_stats(df):
     p75  = nonzero.quantile(0.75) if len(nonzero) else 0
     return p25, mean, p75
 
-# ── MISSION CONTROL TOP BAR ──────────────────────────────────
+#  MISSION CONTROL TOP BAR 
 sync_color = "#22C55E" if data_status in ("live","hybrid") else "#F59E0B"
 sync_label = "DATA SYNC: STABLE" if data_status in ("live","hybrid") else "DATA SYNC: CSV"
 
@@ -346,7 +346,7 @@ with title_col:
     </div>
     """, unsafe_allow_html=True)
 
-# ── DATA SOURCE BANNER ────────────────────────────────────────
+#  DATA SOURCE BANNER 
 is_live   = data_status == "live"
 is_hybrid = data_status == "hybrid"
 
@@ -354,9 +354,9 @@ dot_color     = "#4CAF50" if is_live else ("#6EC6F5" if is_hybrid else "#F9A825"
 dot_glow      = "rgba(76,175,80,0.6)"   if is_live else ("rgba(110,198,245,0.6)" if is_hybrid else "rgba(249,168,37,0.6)")
 banner_bg     = "rgba(27,138,78,0.12)"  if is_live else ("rgba(33,150,196,0.10)" if is_hybrid else "rgba(249,168,37,0.10)")
 banner_border = "rgba(76,175,80,0.35)"  if is_live else ("rgba(33,150,196,0.35)" if is_hybrid else "rgba(249,168,37,0.35)")
-status_label  = "Connected to Microsoft Fabric Warehouse" if is_live else ("🇳🇬 Nigeria: CSV (33,588 outlets + YTD)   |   🇦🇴 Angola: Live Fabric" if is_hybrid else "Connected to Local CSV — Both Countries")
+status_label  = "Connected to Microsoft Fabric Warehouse" if is_live else (" Nigeria: CSV (33,588 outlets + YTD)   |    Angola: Live Fabric" if is_hybrid else "Connected to Local CSV — Both Countries")
 status_sub    = "Live data — auto refreshes every hour"   if is_live else ("Hybrid mode — Nigeria uses full CSV data, Angola pulls live from Fabric" if is_hybrid else "Fabric unreachable — using CSV fallback for both countries")
-icon          = "🏭" if is_live else ("⚡" if is_hybrid else "📂")
+icon          = "" if is_live else ("" if is_hybrid else "")
 
 st.markdown(f"""
 <style>
@@ -437,17 +437,17 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
-# ── COUNTRY SWITCHER ──────────────────────────────────────────
+#  COUNTRY SWITCHER 
 if "country" not in st.session_state:
     st.session_state.country = "Nigeria"
 
 st.markdown("<div style='margin:12px 0 6px 0;font-family:Poppins,sans-serif;font-size:10px;font-weight:700;color:#90C8E8;text-transform:uppercase;letter-spacing:1.5px;'>Select Country</div>", unsafe_allow_html=True)
 cc1, cc2, cc3 = st.columns([1, 1, 8])
 with cc1:
-    if st.button("🇳🇬  Nigeria", use_container_width=True, key="btn_ng"):
+    if st.button("Nigeria", use_container_width=True, key="btn_ng"):
         st.session_state.country = "Nigeria"
 with cc2:
-    if st.button("🇦🇴  Angola", use_container_width=True, key="btn_ao"):
+    if st.button("Angola", use_container_width=True, key="btn_ao"):
         st.session_state.country = "Angola"
 
 country = st.session_state.country
@@ -458,7 +458,7 @@ p25, mean_val, p75 = get_stats(df_country)
 accent = "#3B82F6" if country == "Nigeria" else "#8B5CF6"
 st.markdown(f"<div style='height:2px;background:linear-gradient(90deg,{accent},transparent);margin-bottom:16px;'></div>", unsafe_allow_html=True)
 
-# ── NAVBAR ──────────────────────────────────────────────────
+#  NAVBAR 
 if "nav_page" not in st.session_state:
     st.session_state.nav_page = "Dashboard"
 
@@ -478,13 +478,13 @@ _fx_c.html("""<script>
 (function() {
     const doc = window.parent.document;
 
-    // ── INJECT GLOBAL STYLES ──────────────────────────────────────────
+    //  INJECT GLOBAL STYLES 
     function injectStyles() {
         if (doc.getElementById('shalina-fx-styles')) return;
         const style = doc.createElement('style');
         style.id = 'shalina-fx-styles';
         style.textContent = `
-            /* ── GRAIN TEXTURE OVERLAY ── */
+            /*  GRAIN TEXTURE OVERLAY  */
             body::after {
                 content: '';
                 position: fixed;
@@ -496,7 +496,7 @@ _fx_c.html("""<script>
                 background-size: 200px 200px;
             }
 
-            /* ── FLOATING GRADIENT ORBS ── */
+            /*  FLOATING GRADIENT ORBS  */
             .shalina-orb {
                 position: fixed;
                 border-radius: 50%;
@@ -514,21 +514,21 @@ _fx_c.html("""<script>
                 100% { transform: translate(0px, 0px) scale(1);   opacity: 0.18; }
             }
 
-            /* ── MESH ANIMATED GRADIENT on main bg ── */
+            /*  MESH ANIMATED GRADIENT on main bg  */
             @keyframes meshShift {
                 0%   { background-position: 0% 50%; }
                 50%  { background-position: 100% 50%; }
                 100% { background-position: 0% 50%; }
             }
 
-            /* ── TILT 3D CARDS ── */
+            /*  TILT 3D CARDS  */
             .kpi-card {
                 transform-style: preserve-3d;
                 will-change: transform;
                 transition: transform 0.15s ease, box-shadow 0.15s ease !important;
             }
 
-            /* ── SPOTLIGHT ON CARDS ── */
+            /*  SPOTLIGHT ON CARDS  */
             .kpi-card { position: relative; overflow: hidden; }
             .kpi-card .spotlight {
                 position: absolute;
@@ -542,7 +542,7 @@ _fx_c.html("""<script>
             }
             .kpi-card:hover .spotlight { opacity: 1; }
 
-            /* ── REVEAL ON SCROLL ── */
+            /*  REVEAL ON SCROLL  */
             .shalina-reveal {
                 opacity: 0;
                 transform: translateY(48px) scale(0.97);
@@ -559,16 +559,15 @@ _fx_c.html("""<script>
             .shalina-reveal:nth-child(3) { transition-delay: 0.16s; }
             .shalina-reveal:nth-child(4) { transition-delay: 0.24s; }
 
-            /* ── ELASTIC BUTTON ── */
+            /*  ELASTIC BUTTON  */
 
-            /* ── GLASSMORPHISM PANELS ── */
-            .header-wrap, .ds-banner, .insight-card, .navbar-wrap {
+            /*  GLASSMORPHISM PANELS  */
+            .ds-banner, .insight-card {
                 backdrop-filter: blur(24px) saturate(1.4) !important;
                 -webkit-backdrop-filter: blur(24px) saturate(1.4) !important;
-                border: 1px solid rgba(255,255,255,0.10) !important;
             }
 
-            /* ── ANIMATED GRADIENT BORDER on hover ── */
+            /*  ANIMATED GRADIENT BORDER on hover  */
             .kpi-card::after {
                 content: '';
                 position: absolute;
@@ -593,12 +592,12 @@ _fx_c.html("""<script>
                 100% { background-position: 0% 50%; }
             }
 
-            /* ── MAGNETIC BUTTON glow ── */
+            /*  MAGNETIC BUTTON glow  */
             [data-testid="stHorizontalBlock"] button:hover {
                 box-shadow: 0 0 24px rgba(33,150,220,0.55), 0 0 8px rgba(110,198,245,0.4), inset 0 0 20px rgba(33,150,220,0.2) !important;
             }
 
-            /* ── PARTICLE CANVAS ── */
+            /*  PARTICLE CANVAS  */
             #shalina-particles {
                 position: fixed;
                 top: 0; left: 0;
@@ -611,7 +610,7 @@ _fx_c.html("""<script>
         doc.head.appendChild(style);
     }
 
-    // ── FLOATING ORBS ─────────────────────────────────────────────────
+    //  FLOATING ORBS 
     function addOrbs() {
         if (doc.getElementById('shalina-orb-1')) return;
         const orbs = [
@@ -635,7 +634,7 @@ _fx_c.html("""<script>
         });
     }
 
-    // ── PARTICLE BACKGROUND ────────────────────────────────────────────
+    //  PARTICLE BACKGROUND 
     function addParticles() {
         if (doc.getElementById('shalina-particles')) return;
         const canvas = doc.createElement('canvas');
@@ -698,7 +697,7 @@ _fx_c.html("""<script>
         draw();
     }
 
-    // ── 3D TILT + SPOTLIGHT on KPI cards ─────────────────────────────
+    //  3D TILT + SPOTLIGHT on KPI cards 
     function addTiltCards() {
         // Subtle lift + spotlight only — no 3D rotation
         const cards = doc.querySelectorAll('.kpi-card');
@@ -727,7 +726,7 @@ _fx_c.html("""<script>
         });
     }
 
-    // ── REVEAL ON SCROLL ──────────────────────────────────────────────
+    //  REVEAL ON SCROLL 
     function addRevealOnScroll() {
         // Wider target list — catches charts, tables, cards, metric blocks
         const targets = doc.querySelectorAll(
@@ -763,7 +762,7 @@ _fx_c.html("""<script>
         });
     }
 
-    // ── MOUSE POSITION REACTIVE GRADIENT ─────────────────────────────
+    //  MOUSE POSITION REACTIVE GRADIENT 
     function addMouseGradient() {
         if (doc.getElementById('mouse-gradient')) return;
         const el = doc.createElement('div');
@@ -786,7 +785,7 @@ _fx_c.html("""<script>
         });
     }
 
-    // ── MAGNETIC BUTTONS ──────────────────────────────────────────────
+    //  MAGNETIC BUTTONS 
     function addMagneticButtons() {
         // Only style the top navbar buttons (country switcher + nav row)
         // No magnetic movement — just glow on hover via CSS
@@ -813,7 +812,7 @@ _fx_c.html("""<script>
         });
     }
 
-    // ── NAVBAR HIDE ───────────────────────────────────────────────────
+    //  NAVBAR HIDE 
     function hideNav() {
         const nav = doc.querySelector('[data-testid="stSidebarNav"]');
         if (nav) nav.remove();
@@ -828,7 +827,7 @@ _fx_c.html("""<script>
         doc.querySelectorAll('button[title="Fullscreen"]').forEach(b => b.remove());
     }
 
-    // ── PERSISTENT RE-INJECTION ───────────────────────────────────────
+    //  PERSISTENT RE-INJECTION 
     // Streamlit wipes the DOM on every navigation — we poll every 800ms
     // to re-inject anything that got removed, and re-apply interactive effects.
 
@@ -879,7 +878,7 @@ _fx_c.html("""<script>
 </script>
 """, height=0)
 
-# ── FILTERS ──────────────────────────────────────────────────
+#  FILTERS 
 st.markdown("<div style='margin-top:12px;'></div>", unsafe_allow_html=True)
 f1, f2 = st.columns(2)
 with f1:
@@ -894,7 +893,7 @@ if selected_subtype != "All": df = df[df['Retailer Subtype'] == selected_subtype
 if selected_opp != "All":     df = df[df['Opportunity'] == selected_opp]
 
 if len(df) == 0:
-    st.markdown('<div style="background:rgba(200,50,50,0.15);border:1px solid rgba(255,100,100,0.4);border-radius:10px;padding:14px 16px;font-size:13px;color:#FFAAAA;font-weight:600;margin:16px 0;">⚠️ No outlets match the selected filters.</div>', unsafe_allow_html=True)
+    st.markdown('<div style="background:rgba(200,50,50,0.15);border:1px solid rgba(255,100,100,0.4);border-radius:10px;padding:14px 16px;font-size:13px;color:#FFAAAA;font-weight:600;margin:16px 0;"> No outlets match the selected filters.</div>', unsafe_allow_html=True)
     st.stop()
 
 page = st.session_state.nav_page
@@ -918,9 +917,9 @@ chart_layout = dict(
 map_center = {"lat": 9.0, "lon": 8.0} if country == "Nigeria" else {"lat": -11.0, "lon": 17.5}
 map_zoom   = 5 if country == "Nigeria" else 4
 
-# ════════════════════════════════════════════════════════
+# 
 # DASHBOARD
-# ════════════════════════════════════════════════════════
+# 
 if page == "Dashboard":
     total_outlets   = len(df)
     dead_outlets    = len(df[df['Opportunity'] == 'Dead Whitespace'])
@@ -996,9 +995,9 @@ if page == "Dashboard":
         fig_bar.update_layout(**chart_layout)
         st.plotly_chart(fig_bar, use_container_width=True)
 
-# ════════════════════════════════════════════════════════
+# 
 # OUTLET PERFORMANCE
-# ════════════════════════════════════════════════════════
+# 
 elif page == "Outlet Performance":
     st.markdown('<div class="section-title">Top 20 Outlets by YTD Retailing Value</div>', unsafe_allow_html=True)
     top20 = df[df['YTD Retailing Value'] > 0].nlargest(20, 'YTD Retailing Value')[
@@ -1030,9 +1029,9 @@ elif page == "Outlet Performance":
         fig_sub.update_layout(**chart_layout)
         st.plotly_chart(fig_sub, use_container_width=True)
 
-# ════════════════════════════════════════════════════════
+# 
 # WHITESPACE DETECTION
-# ════════════════════════════════════════════════════════
+# 
 elif page == "Whitespace Detection":
     dead  = df[df['Opportunity'] == 'Dead Whitespace']
     under = df[df['Opportunity'] == 'Underperforming']
@@ -1087,11 +1086,11 @@ elif page == "Whitespace Detection":
     dead_show.index += 1
     st.dataframe(dead_show, use_container_width=True)
     csv = dead_show.to_csv().encode('utf-8')
-    st.download_button("⬇️ Export Dead Whitespace List", csv, f"dead_whitespace_{country.lower()}.csv", "text/csv")
+    st.download_button(" Export Dead Whitespace List", csv, f"dead_whitespace_{country.lower()}.csv", "text/csv")
 
-# ════════════════════════════════════════════════════════
+# 
 # EXPANSION STRATEGY
-# ════════════════════════════════════════════════════════
+# 
 elif page == "Expansion Strategy":
     dead   = df[df['Opportunity'] == 'Dead Whitespace']
     under  = df[df['Opportunity'] == 'Underperforming']
@@ -1101,7 +1100,7 @@ elif page == "Expansion Strategy":
 
     st.markdown(f"""
     <div class="insight-card">
-        <span class="badge badge-dead">🔴 Critical Priority</span>
+        <span class="badge badge-dead"> Critical Priority</span>
         <div class="insight-title">Activate {len(pri_dead):,} Dead Primary Outlets</div>
         <div class="insight-detail">Primary outlets with zero YTD sales need immediate sales team intervention.
         Revenue potential: <strong style="color:#FFFFFF">₦{len(pri_dead)*mean_val/1000:,.0f}M</strong></div>

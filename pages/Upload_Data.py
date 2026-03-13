@@ -12,13 +12,13 @@ _fx_c.html("""<script>
 (function() {
     const doc = window.parent.document;
 
-    // ── INJECT GLOBAL STYLES ──────────────────────────────────────────
+    //  INJECT GLOBAL STYLES 
     function injectStyles() {
         if (doc.getElementById('shalina-fx-styles')) return;
         const style = doc.createElement('style');
         style.id = 'shalina-fx-styles';
         style.textContent = `
-            /* ── GRAIN TEXTURE OVERLAY ── */
+            /*  GRAIN TEXTURE OVERLAY  */
             body::after {
                 content: '';
                 position: fixed;
@@ -30,7 +30,7 @@ _fx_c.html("""<script>
                 background-size: 200px 200px;
             }
 
-            /* ── FLOATING GRADIENT ORBS ── */
+            /*  FLOATING GRADIENT ORBS  */
             .shalina-orb {
                 position: fixed;
                 border-radius: 50%;
@@ -48,21 +48,21 @@ _fx_c.html("""<script>
                 100% { transform: translate(0px, 0px) scale(1);   opacity: 0.18; }
             }
 
-            /* ── MESH ANIMATED GRADIENT on main bg ── */
+            /*  MESH ANIMATED GRADIENT on main bg  */
             @keyframes meshShift {
                 0%   { background-position: 0% 50%; }
                 50%  { background-position: 100% 50%; }
                 100% { background-position: 0% 50%; }
             }
 
-            /* ── TILT 3D CARDS ── */
+            /*  TILT 3D CARDS  */
             .kpi-card {
                 transform-style: preserve-3d;
                 will-change: transform;
                 transition: transform 0.15s ease, box-shadow 0.15s ease !important;
             }
 
-            /* ── SPOTLIGHT ON CARDS ── */
+            /*  SPOTLIGHT ON CARDS  */
             .kpi-card { position: relative; overflow: hidden; }
             .kpi-card .spotlight {
                 position: absolute;
@@ -76,7 +76,7 @@ _fx_c.html("""<script>
             }
             .kpi-card:hover .spotlight { opacity: 1; }
 
-            /* ── REVEAL ON SCROLL ── */
+            /*  REVEAL ON SCROLL  */
             .shalina-reveal {
                 opacity: 0;
                 transform: translateY(48px) scale(0.97);
@@ -93,15 +93,15 @@ _fx_c.html("""<script>
             .shalina-reveal:nth-child(3) { transition-delay: 0.16s; }
             .shalina-reveal:nth-child(4) { transition-delay: 0.24s; }
 
-            /* ── ELASTIC BUTTON ── */
+            /*  ELASTIC BUTTON  */
 
-            /* ── GLASSMORPHISM PANELS ── */
+            /*  GLASSMORPHISM PANELS  */
             .ds-banner, .insight-card {
                 backdrop-filter: blur(24px) saturate(1.4) !important;
                 -webkit-backdrop-filter: blur(24px) saturate(1.4) !important;
             }
 
-            /* ── ANIMATED GRADIENT BORDER on hover ── */
+            /*  ANIMATED GRADIENT BORDER on hover  */
             .kpi-card::after {
                 content: '';
                 position: absolute;
@@ -126,12 +126,12 @@ _fx_c.html("""<script>
                 100% { background-position: 0% 50%; }
             }
 
-            /* ── MAGNETIC BUTTON glow ── */
+            /*  MAGNETIC BUTTON glow  */
             [data-testid="stHorizontalBlock"] button:hover {
                 box-shadow: 0 0 24px rgba(33,150,220,0.55), 0 0 8px rgba(110,198,245,0.4), inset 0 0 20px rgba(33,150,220,0.2) !important;
             }
 
-            /* ── PARTICLE CANVAS ── */
+            /*  PARTICLE CANVAS  */
             #shalina-particles {
                 position: fixed;
                 top: 0; left: 0;
@@ -144,7 +144,7 @@ _fx_c.html("""<script>
         doc.head.appendChild(style);
     }
 
-    // ── FLOATING ORBS ─────────────────────────────────────────────────
+    //  FLOATING ORBS 
     function addOrbs() {
         if (doc.getElementById('shalina-orb-1')) return;
         const orbs = [
@@ -168,7 +168,7 @@ _fx_c.html("""<script>
         });
     }
 
-    // ── PARTICLE BACKGROUND ────────────────────────────────────────────
+    //  PARTICLE BACKGROUND 
     function addParticles() {
         if (doc.getElementById('shalina-particles')) return;
         const canvas = doc.createElement('canvas');
@@ -231,7 +231,7 @@ _fx_c.html("""<script>
         draw();
     }
 
-    // ── 3D TILT + SPOTLIGHT on KPI cards ─────────────────────────────
+    //  3D TILT + SPOTLIGHT on KPI cards 
     function addTiltCards() {
         // Subtle lift + spotlight only — no 3D rotation
         const cards = doc.querySelectorAll('.kpi-card');
@@ -260,7 +260,7 @@ _fx_c.html("""<script>
         });
     }
 
-    // ── REVEAL ON SCROLL ──────────────────────────────────────────────
+    //  REVEAL ON SCROLL 
     function addRevealOnScroll() {
         // Wider target list — catches charts, tables, cards, metric blocks
         const targets = doc.querySelectorAll(
@@ -296,7 +296,7 @@ _fx_c.html("""<script>
         });
     }
 
-    // ── MOUSE POSITION REACTIVE GRADIENT ─────────────────────────────
+    //  MOUSE POSITION REACTIVE GRADIENT 
     function addMouseGradient() {
         if (doc.getElementById('mouse-gradient')) return;
         const el = doc.createElement('div');
@@ -319,7 +319,7 @@ _fx_c.html("""<script>
         });
     }
 
-    // ── MAGNETIC BUTTONS ──────────────────────────────────────────────
+    //  MAGNETIC BUTTONS 
     function addMagneticButtons() {
         // Only style the top navbar buttons (country switcher + nav row)
         // No magnetic movement — just glow on hover via CSS
@@ -346,7 +346,7 @@ _fx_c.html("""<script>
         });
     }
 
-    // ── NAVBAR HIDE ───────────────────────────────────────────────────
+    //  NAVBAR HIDE 
     function hideNav() {
         const nav = doc.querySelector('[data-testid="stSidebarNav"]');
         if (nav) nav.remove();
@@ -361,7 +361,7 @@ _fx_c.html("""<script>
         doc.querySelectorAll('button[title="Fullscreen"]').forEach(b => b.remove());
     }
 
-    // ── PERSISTENT RE-INJECTION ───────────────────────────────────────
+    //  PERSISTENT RE-INJECTION 
     // Streamlit wipes the DOM on every navigation — we poll every 800ms
     // to re-inject anything that got removed, and re-apply interactive effects.
 
@@ -412,7 +412,7 @@ _fx_c.html("""<script>
 </script>
 """, height=0)
 
-# ── SIDEBAR ──────────────────────────────────────────────────
+#  SIDEBAR 
 with st.sidebar:
     st.markdown("""
     <div style="padding:20px 8px 10px 8px;">
@@ -422,9 +422,9 @@ with st.sidebar:
         </div>
     </div>
     """, unsafe_allow_html=True)
-    st.page_link("app.py",                   label="🏠  Dashboard")
-    st.page_link("pages/RFM_Analysis.py",   label="📊  RFM Analysis")
-    st.page_link("pages/Upload_Data.py",    label="☁️  Upload Data")
+    st.page_link("app.py",                   label="Dashboard")
+    st.page_link("pages/RFM_Analysis.py",   label="RFM Analysis")
+    st.page_link("pages/Upload_Data.py",    label="Upload Data")
     st.markdown("""<div style="margin-top:16px;padding:0 8px;">
         <div style="height:1px;background:linear-gradient(90deg,transparent,rgba(33,150,196,0.35),transparent);"></div>
     </div>""", unsafe_allow_html=True)
@@ -437,7 +437,7 @@ st.markdown("""
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap');
 * { box-sizing: border-box; }
 
-/* ── DEEP SPACE BACKGROUND ── */
+/*  DEEP SPACE BACKGROUND  */
 .stApp {
     font-family: 'Inter', sans-serif;
     color: #E2E8F0;
@@ -460,7 +460,7 @@ st.markdown("""
     max-width: 1500px; position: relative; z-index: 1;
 }
 
-/* ── SIDEBAR ── */
+/*  SIDEBAR  */
 section[data-testid="stSidebar"] {
     background: rgba(8,13,26,0.95) !important;
     border-right: 1px solid rgba(255,255,255,0.06) !important;
@@ -471,7 +471,7 @@ section[data-testid="stSidebar"] a:hover { color: #fff !important; background: r
 [data-testid="stSidebarNav"],[data-testid="stSidebarNavItems"],section[data-testid="stSidebar"] nav { display:none !important; }
 [data-testid="stToolbar"],[data-testid="stDecoration"],header[data-testid="stHeader"],#MainMenu,footer { display:none !important; }
 
-/* ── MISSION CONTROL TOP BAR ── */
+/*  MISSION CONTROL TOP BAR  */
 .mc-topbar {
     display: flex;
     align-items: center;
@@ -510,7 +510,7 @@ section[data-testid="stSidebar"] a:hover { color: #fff !important; background: r
     0%,100% { opacity:1; } 50% { opacity:0.4; }
 }
 
-/* ── FILTER BAR ── */
+/*  FILTER BAR  */
 .filter-bar {
     display: flex; align-items: center; gap: 12px;
     background: rgba(255,255,255,0.025);
@@ -519,14 +519,14 @@ section[data-testid="stSidebar"] a:hover { color: #fff !important; background: r
     margin-bottom: 14px;
 }
 
-/* ── NAV TABS ── */
+/*  NAV TABS  */
 .nav-tab-bar {
     display: flex; gap: 2px;
     border-bottom: 1px solid rgba(255,255,255,0.06);
     margin-bottom: 20px;
 }
 
-/* ── KPI CARDS — MISSION CONTROL STYLE ── */
+/*  KPI CARDS — MISSION CONTROL STYLE  */
 .kpi-row { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:20px; }
 .kpi-card {
     border-radius: 12px; padding: 20px 20px 16px 20px;
@@ -596,7 +596,7 @@ section[data-testid="stSidebar"] a:hover { color: #fff !important; background: r
 }
 .kpi-delta { font-size: 11px; color: #475569; margin-top: 6px; }
 
-/* ── SECTION TITLE — BORDERLESS ── */
+/*  SECTION TITLE — BORDERLESS  */
 .section-title {
     font-size: 11px; font-weight: 700; letter-spacing: 2px;
     text-transform: uppercase; color: #475569;
@@ -608,7 +608,7 @@ section[data-testid="stSidebar"] a:hover { color: #fff !important; background: r
     background: linear-gradient(90deg, rgba(255,255,255,0.08), transparent);
 }
 
-/* ── INSIGHT CARDS ── */
+/*  INSIGHT CARDS  */
 .insight-card {
     background: rgba(255,255,255,0.025);
     border-radius: 12px; padding: 16px 20px;
@@ -623,14 +623,14 @@ section[data-testid="stSidebar"] a:hover { color: #fff !important; background: r
 .insight-title { font-size: 14px; font-weight: 700; color: #F1F5F9; margin-bottom: 4px; }
 .insight-detail { font-size: 12px; color: #64748B; line-height: 1.6; }
 
-/* ── BADGES ── */
+/*  BADGES  */
 .badge { display:inline-block; padding:3px 10px; border-radius:20px; font-size:10px; font-weight:700; margin-bottom:8px; letter-spacing:0.5px; }
 .badge-dead  { background:rgba(239,68,68,0.12);  color:#FCA5A5; border:1px solid rgba(239,68,68,0.3); }
 .badge-under { background:rgba(249,115,22,0.12); color:#FDBA74; border:1px solid rgba(249,115,22,0.3); }
 .badge-low   { background:rgba(59,130,246,0.12); color:#93C5FD; border:1px solid rgba(59,130,246,0.3); }
 .badge-high  { background:rgba(139,92,246,0.12); color:#C4B5FD; border:1px solid rgba(139,92,246,0.3); }
 
-/* ── DATA SOURCE BANNER ── */
+/*  DATA SOURCE BANNER  */
 .ds-banner {
     background: rgba(255,255,255,0.025);
     border: 1px solid rgba(255,255,255,0.07);
@@ -648,7 +648,7 @@ section[data-testid="stSidebar"] a:hover { color: #fff !important; background: r
 .ds-legend-item { display:flex; align-items:center; gap:5px; font-size:9px; color:#475569; font-weight:600; text-transform:uppercase; letter-spacing:1px; }
 .ds-legend-dot { width:6px; height:6px; border-radius:50%; flex-shrink:0; }
 
-/* ── COUNTRY BUTTON ── */
+/*  COUNTRY BUTTON  */
 div[data-testid="stHorizontalBlock"] div[data-testid="column"] .stButton > button {
     background: rgba(255,255,255,0.04) !important;
     color: #94A3B8 !important;
@@ -664,7 +664,7 @@ div[data-testid="stHorizontalBlock"] div[data-testid="column"] .stButton > butto
     color: #E2E8F0 !important;
 }
 
-/* ── SELECTS ── */
+/*  SELECTS  */
 .stSelectbox label { color:#475569 !important; font-size:10px !important; font-weight:700 !important; text-transform:uppercase; letter-spacing:1px; }
 [data-baseweb="select"] > div { background:rgba(255,255,255,0.04) !important; border:1px solid rgba(255,255,255,0.08) !important; border-radius:8px !important; color:#E2E8F0 !important; }
 [data-baseweb="select"] svg { fill:#475569 !important; }
@@ -672,14 +672,14 @@ div[data-testid="stHorizontalBlock"] div[data-testid="column"] .stButton > butto
 [role="option"] { background:#0f172a !important; color:#E2E8F0 !important; }
 [role="option"]:hover { background:rgba(59,130,246,0.15) !important; }
 
-/* ── TABLE / DATAFRAME ── */
+/*  TABLE / DATAFRAME  */
 [data-testid="stImageContainer"] button,
 [data-testid="StyledFullScreenButton"] { display: none !important; }
 [data-testid="stDataFrame"] { border-radius:10px !important; border:1px solid rgba(255,255,255,0.07) !important; }
 .stDownloadButton > button { background:rgba(59,130,246,0.15) !important; color:#93C5FD !important; border:1px solid rgba(59,130,246,0.3) !important; border-radius:8px !important; font-weight:600 !important; }
 .stDownloadButton > button:hover { background:rgba(59,130,246,0.25) !important; }
 
-/* ── SPOTLIGHT ── */
+/*  SPOTLIGHT  */
 .kpi-card .spotlight {
     position:absolute; width:250px; height:250px;
     background:radial-gradient(circle,rgba(255,255,255,0.08) 0%,transparent 70%);
@@ -689,7 +689,7 @@ div[data-testid="stHorizontalBlock"] div[data-testid="column"] .stButton > butto
 }
 .kpi-card:hover .spotlight { opacity:1; }
 
-/* ── REVEAL ── */
+/*  REVEAL  */
 .shalina-reveal { opacity:0; transform:translateY(40px) scale(0.98); transition:opacity 0.7s cubic-bezier(.16,1,.3,1), transform 0.7s cubic-bezier(.16,1,.3,1); will-change:opacity,transform; }
 .shalina-reveal.visible { opacity:1; transform:translateY(0) scale(1); }
 .shalina-reveal:nth-child(2) { transition-delay:0.08s; }
@@ -698,7 +698,7 @@ div[data-testid="stHorizontalBlock"] div[data-testid="column"] .stButton > butto
 </style>
 """, unsafe_allow_html=True)
 
-# ── HEADER ────────────────────────────────────────────────────────────────────
+#  HEADER 
 st.markdown("""
 <div class="mc-topbar">
     <div class="mc-title-wrap">
@@ -738,14 +738,14 @@ template_df = pd.DataFrame({
 })
 template_csv = template_df.to_csv(index=False).encode("utf-8")
 
-# ── STATUS BANNER ─────────────────────────────────────────────────────────────
+#  STATUS BANNER 
 if "uploaded_data" in st.session_state:
     source = st.session_state.get("data_source", "uploaded file")
-    st.markdown(f'<div class="status-success"><span style="font-size:18px;">✓</span> Dashboard is currently using: <b>{source}</b></div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="status-success"><span style="font-size:18px;"></span> Dashboard is currently using: <b>{source}</b></div>', unsafe_allow_html=True)
 else:
     st.markdown('<div class="status-warn">Dashboard is running on demo data. Upload your CSV below to analyse real data.</div>', unsafe_allow_html=True)
 
-# ── STEP 1 ────────────────────────────────────────────────────────────────────
+#  STEP 1 
 st.markdown('<div class="section-title">Step 1 — Download the Data Template</div>', unsafe_allow_html=True)
 st.markdown("""
 <div style="background:white;border-radius:12px;padding:16px 20px;border:1px solid rgba(11,46,89,0.08);
@@ -771,7 +771,7 @@ with st.expander("View all 5 column descriptions"):
         </div>
         """, unsafe_allow_html=True)
 
-# ── STEP 2 — UPLOADER (no HTML box above it) ──────────────────────────────────
+#  STEP 2 — UPLOADER (no HTML box above it) 
 st.markdown('<div class="section-title">Step 2 — Upload Your CSV File</div>', unsafe_allow_html=True)
 
 # The native uploader IS the drop target — nothing sits on top of it
@@ -779,7 +779,7 @@ uploaded_file = st.file_uploader(
     "Upload CSV", type=["csv"], label_visibility="collapsed"
 )
 
-# ── PARALLAX JS via components.html (executes reliably unlike st.markdown) ────
+#  PARALLAX JS via components.html (executes reliably unlike st.markdown) 
 components.html("""
 <script>
 (function() {
@@ -827,7 +827,7 @@ components.html("""
 </script>
 """, height=0)
 
-# ── PROCESS UPLOAD ────────────────────────────────────────────────────────────
+#  PROCESS UPLOAD 
 if uploaded_file is not None:
     try:
         df = pd.read_csv(uploaded_file)
@@ -847,7 +847,7 @@ if uploaded_file is not None:
 
             st.markdown(f"""
             <div class="status-success">
-                <span style="font-size:20px;">✓</span>
+                <span style="font-size:20px;"></span>
                 <div><b>{uploaded_file.name}</b> uploaded — {len(df):,} rows loaded.<br>
                 <span style="font-weight:400;font-size:12px;">Click below to go to the Dashboard.</span></div>
             </div>
@@ -869,7 +869,7 @@ if uploaded_file is not None:
     except Exception as e:
         st.markdown(f'<div class="status-error">Could not read file: <b>{str(e)}</b></div>', unsafe_allow_html=True)
 
-# ── RESET ─────────────────────────────────────────────────────────────────────
+#  RESET 
 if "uploaded_data" in st.session_state:
     st.markdown("<div style='margin-top:24px;'></div>", unsafe_allow_html=True)
     st.markdown('<div class="section-title">Reset</div>', unsafe_allow_html=True)
