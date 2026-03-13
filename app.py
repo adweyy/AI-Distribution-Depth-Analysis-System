@@ -816,6 +816,15 @@ _fx_c.html("""<script>
         if (nav) nav.remove();
     }
 
+    function hideImageButtons() {
+        // Remove the fullscreen expand button that appears on images
+        doc.querySelectorAll('[data-testid="StyledFullScreenButton"]').forEach(b => b.remove());
+        doc.querySelectorAll('[data-testid="stImageContainer"] button').forEach(b => b.remove());
+        // Also catch by class pattern
+        doc.querySelectorAll('button[title="View fullscreen"]').forEach(b => b.remove());
+        doc.querySelectorAll('button[title="Fullscreen"]').forEach(b => b.remove());
+    }
+
     // ── PERSISTENT RE-INJECTION ───────────────────────────────────────
     // Streamlit wipes the DOM on every navigation — we poll every 800ms
     // to re-inject anything that got removed, and re-apply interactive effects.
@@ -829,6 +838,7 @@ _fx_c.html("""<script>
         try { addTiltCards(); }    catch(e) {}
         try { addRevealOnScroll(); } catch(e) {}
         try { hideNav(); }         catch(e) {}
+        try { hideImageButtons(); } catch(e) {}
     }
 
     function lightRefresh() {
@@ -838,6 +848,7 @@ _fx_c.html("""<script>
         try { addTiltCards(); }       catch(e) {}
         try { addRevealOnScroll(); }  catch(e) {}
         try { hideNav(); }            catch(e) {}
+        try { hideImageButtons(); }   catch(e) {}
 
         // If canvas got removed (Streamlit full re-render), rebuild it
         if (!doc.getElementById('shalina-particles')) {
