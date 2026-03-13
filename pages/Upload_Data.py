@@ -513,7 +513,7 @@ section[data-testid="stSidebar"] a:hover { color: #fff !important; background: r
 /*  FILTER BAR  */
 .filter-bar {
     display: flex; align-items: center; gap: 12px;
-    background: rgba(255,255,255,0.025);
+    background: transparent;
     border: 1px solid rgba(255,255,255,0.06);
     border-radius: 10px; padding: 10px 16px;
     margin-bottom: 14px;
