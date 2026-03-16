@@ -196,40 +196,66 @@ def load_data():
         csv_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "shalina_combined_data.csv")
         csv_exists = os.path.exists(csv_path)
 
-        # Always load Nigeria from CSV
-        if not csv_exists:
-            return None, "🔴  No data — shalina_combined_data.csv not found", "error"
-
-        ng = _load_nigeria_from_csv(csv_path)
-
-        # Try Angola from Fabric live
-        ao = None
-        angola_status = "csv"
+        # Try to get Fabric token once for both countries
+        token = None
         try:
             tid = _get_secret("FABRIC_TENANT_ID")
             cid = _get_secret("FABRIC_CLIENT_ID")
             sec = _get_secret("FABRIC_CLIENT_SECRET")
             if all([tid, cid, sec]):
                 token = _get_access_token()
+        except Exception:
+            token = None
+
+        # Try Nigeria from Fabric live
+        ng = None
+        nigeria_status = "csv"
+        if token:
+            try:
+                ng = _fetch_nigeria_live(token)
+                nigeria_status = "live"
+            except Exception:
+                ng = None
+
+        # Fall back to Nigeria from CSV
+        if ng is None:
+            if not csv_exists:
+                return None, "No data — shalina_combined_data.csv not found", "error"
+            ng = _load_nigeria_from_csv(csv_path)
+            nigeria_status = "csv"
+
+        # Try Angola from Fabric live
+        ao = None
+        angola_status = "csv"
+        if token:
+            try:
                 ao = _fetch_angola_live(token)
                 angola_status = "live"
-        except Exception:
-            ao = None
+            except Exception:
+                ao = None
 
         # Fall back to Angola from CSV
         if ao is None:
-            ao = _load_angola_from_csv(csv_path)
+            if csv_exists:
+                ao = _load_angola_from_csv(csv_path)
+            else:
+                ao = ng.iloc[0:0].copy()
             angola_status = "csv"
 
         df = pd.concat([ng, ao], ignore_index=True)
         df = _clean(df)
         df = _classify(df)
 
-        if angola_status == "live":
-            label  = "🟢  Nigeria: CSV (33,588 outlets + YTD)  |  Angola: Live Fabric"
+        if nigeria_status == "live" and angola_status == "live":
+            label  = "Connected to Microsoft Fabric Warehouse"
+            status = "live"
+        elif nigeria_status == "live" or angola_status == "live":
+            live_c = "Nigeria" if nigeria_status == "live" else "Angola"
+            csv_c  = "Angola"  if nigeria_status == "live" else "Nigeria"
+            label  = f"{live_c}: Live Fabric  |  {csv_c}: CSV fallback"
             status = "hybrid"
         else:
-            label  = "🟡  Nigeria + Angola: CSV (Fabric unreachable)"
+            label  = "Nigeria + Angola: CSV (Fabric unreachable)"
             status = "csv"
 
         return df, label, status
