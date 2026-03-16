@@ -1,13 +1,13 @@
 """
 Shalina Healthcare — Data Connector (Hybrid Mode)
 
-Nigeria  → always loaded from shalina_combined_data.csv
-           (CSV has 33,588 outlets with real YTD Retailing Values)
-Angola   → live from Microsoft Fabric (has YTD Sales Value column)
+Nigeria  → live from Microsoft Fabric (Final Nigeria table, YTD Retailing Value)
+           falls back to CSV if Fabric is unreachable
+Angola   → live from Microsoft Fabric (Angola - Chemist table, YTD Sales Value)
            falls back to CSV if Fabric is unreachable
 
-This ensures Nigeria RFM and whitespace analysis is always accurate,
-regardless of whether the app is running locally or on Streamlit Cloud.
+Both countries attempt live Fabric connection first.
+Status: 'live' = both live, 'hybrid' = one live, 'csv' = both CSV
 """
 
 import requests
@@ -98,7 +98,7 @@ def _fetch_angola_live(token):
         "Shop Name",           'Angola - Chemist'[Retailer/Chemist Name],
         "latitude",            'Angola - Chemist'[Lat],
         "longitude",           'Angola - Chemist'[Long],
-        "Retailer Subtype",    'Angola - Chemist'[Type new],
+        "Retailer Subtype",    'Angola - Chemist'[Type],
         "YTD Retailing Value", 'Angola - Chemist'[YTD Sales Value]
     )
     """
@@ -117,6 +117,29 @@ def _load_angola_from_csv(csv_path):
     ao = ao.dropna(subset=['latitude', 'longitude'])
     ao['country'] = 'Angola'
     return ao
+
+# ── NIGERIA — live from Fabric ─────────────────────────────────────────────────
+def _fetch_nigeria_live(token):
+    dax = """
+    EVALUATE
+    SELECTCOLUMNS(
+        FILTER('Final Nigeria',
+            'Final Nigeria'[latitude] <> BLANK() &&
+            'Final Nigeria'[longitude] <> BLANK()
+        ),
+        "Shop Name",           'Final Nigeria'[name],
+        "latitude",            'Final Nigeria'[latitude],
+        "longitude",           'Final Nigeria'[longitude],
+        "Retailer Subtype",    'Final Nigeria'[Retailer Subtype],
+        "YTD Retailing Value", 'Final Nigeria'[YTD Retailing Value]
+    )
+    """
+    df = _run_dax(token, dax)
+    df.columns = ['Shop Name', 'latitude', 'longitude', 'Retailer Subtype', 'YTD Retailing Value']
+    df['country'] = 'Nigeria'
+    return df
+
+
 
 
 # ── CLEAN & CLASSIFY ───────────────────────────────────────────────────────────
