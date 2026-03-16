@@ -1111,19 +1111,19 @@ elif page == "Expansion Strategy":
         Revenue potential: <strong style="color:#FFFFFF">₦{len(pri_dead)*mean_val/1000:,.0f}M</strong></div>
     </div>
     <div class="insight-card">
-        <span class="badge badge-under">🟠 High Priority</span>
+        <span class="badge badge-under"> High Priority</span>
         <div class="insight-title">Convert {len(sec_dead):,} Dead Secondary Outlets</div>
         <div class="insight-detail">Secondary outlets with zero sales — largest untapped pool.
         Revenue potential: <strong style="color:#FFFFFF">₦{len(sec_dead)*mean_val/1000:,.0f}M</strong></div>
     </div>
     <div class="insight-card">
-        <span class="badge badge-low">🟡 Medium Priority</span>
+        <span class="badge badge-low"> Medium Priority</span>
         <div class="insight-title">Scale Up {len(under):,} Underperforming Outlets</div>
         <div class="insight-detail">Outlets selling below ₦{p25:,.0f}K YTD. Incremental revenue potential:
         <strong style="color:#FFFFFF">₦{len(under)*(mean_val-p25)/1000:,.0f}M</strong></div>
     </div>
     <div class="insight-card">
-        <span class="badge badge-high">🟣 Growth</span>
+        <span class="badge badge-high"> Growth</span>
         <div class="insight-title">Replicate {len(active):,} High Performing Outlet Profiles</div>
         <div class="insight-detail">Analyse what active & high-performing outlets have in common and use that
         profile to identify new outlet locations with similar characteristics.</div>

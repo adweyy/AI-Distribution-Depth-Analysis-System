@@ -14,8 +14,16 @@ if _here not in sys.path:
     sys.path.insert(0, _here)
 
 st.set_page_config(layout="wide", page_title="RFM Analysis | Shalina", initial_sidebar_state="expanded")
+st.markdown("""
+<style>
+[data-testid="stSidebarNav"],
+[data-testid="stSidebarNavItems"],
+section[data-testid="stSidebar"] nav,
+ul[data-testid="stSidebarNavItems"] { display: none !important; visibility: hidden !important; }
+</style>
+""", unsafe_allow_html=True)
 
-# ── SIDEBAR ───────────────────────────────────────────────────
+#  SIDEBAR 
 with st.sidebar:
     st.markdown("""
     <div style="padding:20px 8px 10px 8px;">
@@ -25,25 +33,25 @@ with st.sidebar:
         </div>
     </div>
     """, unsafe_allow_html=True)
-    st.page_link("app.py",                       label="🏠  Dashboard")
-    st.page_link("pages/RFM_Analysis.py",        label="📊  RFM Analysis")
-    st.page_link("pages/Upload_Data.py",         label="☁️  Upload Data")
+    st.page_link("app.py",                       label="Dashboard")
+    st.page_link("pages/RFM_Analysis.py",        label="RFM Analysis")
+    st.page_link("pages/Upload_Data.py",         label="Upload Data")
     st.markdown("""<div style="margin-top:16px;padding:0 8px;">
         <div style="height:1px;background:linear-gradient(90deg,transparent,rgba(33,150,196,0.35),transparent);"></div>
     </div>""", unsafe_allow_html=True)
-    if st.button("🔄  Refresh Data", use_container_width=True, key="rfm_refresh"):
+    if st.button("Refresh Data", use_container_width=True, key="rfm_refresh"):
         st.cache_data.clear()
         st.rerun()
     import streamlit.components.v1 as _sc
     _sc.html("""<script>(function(){function r(){var n=window.parent.document.querySelector('[data-testid="stSidebarNav"]');if(n){n.remove();}else{setTimeout(r,200);}}r();setTimeout(r,800);setTimeout(r,2500);})();</script>""", height=0)
 
-# ── STYLES ────────────────────────────────────────────────────
+#  STYLES 
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap');
 * { box-sizing: border-box; }
 
-/* ── DEEP SPACE BACKGROUND ── */
+/*  DEEP SPACE BACKGROUND  */
 .stApp {
     font-family: 'Inter', sans-serif;
     color: #E2E8F0;
@@ -66,7 +74,7 @@ st.markdown("""
     max-width: 1500px; position: relative; z-index: 1;
 }
 
-/* ── SIDEBAR ── */
+/*  SIDEBAR  */
 section[data-testid="stSidebar"] {
     background: rgba(8,13,26,0.95) !important;
     border-right: 1px solid rgba(255,255,255,0.06) !important;
@@ -77,7 +85,7 @@ section[data-testid="stSidebar"] a:hover { color: #fff !important; background: r
 [data-testid="stSidebarNav"],[data-testid="stSidebarNavItems"],section[data-testid="stSidebar"] nav { display:none !important; }
 [data-testid="stToolbar"],[data-testid="stDecoration"],header[data-testid="stHeader"],#MainMenu,footer { display:none !important; }
 
-/* ── MISSION CONTROL TOP BAR ── */
+/*  MISSION CONTROL TOP BAR  */
 .mc-topbar {
     display: flex;
     align-items: center;
@@ -116,23 +124,23 @@ section[data-testid="stSidebar"] a:hover { color: #fff !important; background: r
     0%,100% { opacity:1; } 50% { opacity:0.4; }
 }
 
-/* ── FILTER BAR ── */
+/*  FILTER BAR  */
 .filter-bar {
     display: flex; align-items: center; gap: 12px;
-    background: rgba(255,255,255,0.025);
+    background: transparent;
     border: 1px solid rgba(255,255,255,0.06);
     border-radius: 10px; padding: 10px 16px;
     margin-bottom: 14px;
 }
 
-/* ── NAV TABS ── */
+/*  NAV TABS  */
 .nav-tab-bar {
     display: flex; gap: 2px;
     border-bottom: 1px solid rgba(255,255,255,0.06);
     margin-bottom: 20px;
 }
 
-/* ── KPI CARDS — MISSION CONTROL STYLE ── */
+/*  KPI CARDS — MISSION CONTROL STYLE  */
 .kpi-row { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:20px; }
 .kpi-card {
     border-radius: 12px; padding: 20px 20px 16px 20px;
@@ -202,7 +210,7 @@ section[data-testid="stSidebar"] a:hover { color: #fff !important; background: r
 }
 .kpi-delta { font-size: 11px; color: #475569; margin-top: 6px; }
 
-/* ── SECTION TITLE — BORDERLESS ── */
+/*  SECTION TITLE — BORDERLESS  */
 .section-title {
     font-size: 11px; font-weight: 700; letter-spacing: 2px;
     text-transform: uppercase; color: #475569;
@@ -214,7 +222,7 @@ section[data-testid="stSidebar"] a:hover { color: #fff !important; background: r
     background: linear-gradient(90deg, rgba(255,255,255,0.08), transparent);
 }
 
-/* ── INSIGHT CARDS ── */
+/*  INSIGHT CARDS  */
 .insight-card {
     background: rgba(255,255,255,0.025);
     border-radius: 12px; padding: 16px 20px;
@@ -229,14 +237,14 @@ section[data-testid="stSidebar"] a:hover { color: #fff !important; background: r
 .insight-title { font-size: 14px; font-weight: 700; color: #F1F5F9; margin-bottom: 4px; }
 .insight-detail { font-size: 12px; color: #64748B; line-height: 1.6; }
 
-/* ── BADGES ── */
+/*  BADGES  */
 .badge { display:inline-block; padding:3px 10px; border-radius:20px; font-size:10px; font-weight:700; margin-bottom:8px; letter-spacing:0.5px; }
 .badge-dead  { background:rgba(239,68,68,0.12);  color:#FCA5A5; border:1px solid rgba(239,68,68,0.3); }
 .badge-under { background:rgba(249,115,22,0.12); color:#FDBA74; border:1px solid rgba(249,115,22,0.3); }
 .badge-low   { background:rgba(59,130,246,0.12); color:#93C5FD; border:1px solid rgba(59,130,246,0.3); }
 .badge-high  { background:rgba(139,92,246,0.12); color:#C4B5FD; border:1px solid rgba(139,92,246,0.3); }
 
-/* ── DATA SOURCE BANNER ── */
+/*  DATA SOURCE BANNER  */
 .ds-banner {
     background: rgba(255,255,255,0.025);
     border: 1px solid rgba(255,255,255,0.07);
@@ -254,7 +262,7 @@ section[data-testid="stSidebar"] a:hover { color: #fff !important; background: r
 .ds-legend-item { display:flex; align-items:center; gap:5px; font-size:9px; color:#475569; font-weight:600; text-transform:uppercase; letter-spacing:1px; }
 .ds-legend-dot { width:6px; height:6px; border-radius:50%; flex-shrink:0; }
 
-/* ── COUNTRY BUTTON ── */
+/*  COUNTRY BUTTON  */
 div[data-testid="stHorizontalBlock"] div[data-testid="column"] .stButton > button {
     background: rgba(255,255,255,0.04) !important;
     color: #94A3B8 !important;
@@ -270,7 +278,7 @@ div[data-testid="stHorizontalBlock"] div[data-testid="column"] .stButton > butto
     color: #E2E8F0 !important;
 }
 
-/* ── SELECTS ── */
+/*  SELECTS  */
 .stSelectbox label { color:#475569 !important; font-size:10px !important; font-weight:700 !important; text-transform:uppercase; letter-spacing:1px; }
 [data-baseweb="select"] > div { background:rgba(255,255,255,0.04) !important; border:1px solid rgba(255,255,255,0.08) !important; border-radius:8px !important; color:#E2E8F0 !important; }
 [data-baseweb="select"] svg { fill:#475569 !important; }
@@ -278,14 +286,14 @@ div[data-testid="stHorizontalBlock"] div[data-testid="column"] .stButton > butto
 [role="option"] { background:#0f172a !important; color:#E2E8F0 !important; }
 [role="option"]:hover { background:rgba(59,130,246,0.15) !important; }
 
-/* ── TABLE / DATAFRAME ── */
+/*  TABLE / DATAFRAME  */
 [data-testid="stImageContainer"] button,
 [data-testid="StyledFullScreenButton"] { display: none !important; }
 [data-testid="stDataFrame"] { border-radius:10px !important; border:1px solid rgba(255,255,255,0.07) !important; }
 .stDownloadButton > button { background:rgba(59,130,246,0.15) !important; color:#93C5FD !important; border:1px solid rgba(59,130,246,0.3) !important; border-radius:8px !important; font-weight:600 !important; }
 .stDownloadButton > button:hover { background:rgba(59,130,246,0.25) !important; }
 
-/* ── SPOTLIGHT ── */
+/*  SPOTLIGHT  */
 .kpi-card .spotlight {
     position:absolute; width:250px; height:250px;
     background:radial-gradient(circle,rgba(255,255,255,0.08) 0%,transparent 70%);
@@ -295,7 +303,7 @@ div[data-testid="stHorizontalBlock"] div[data-testid="column"] .stButton > butto
 }
 .kpi-card:hover .spotlight { opacity:1; }
 
-/* ── REVEAL ── */
+/*  REVEAL  */
 .shalina-reveal { opacity:0; transform:translateY(40px) scale(0.98); transition:opacity 0.7s cubic-bezier(.16,1,.3,1), transform 0.7s cubic-bezier(.16,1,.3,1); will-change:opacity,transform; }
 .shalina-reveal.visible { opacity:1; transform:translateY(0) scale(1); }
 .shalina-reveal:nth-child(2) { transition-delay:0.08s; }
@@ -304,20 +312,20 @@ div[data-testid="stHorizontalBlock"] div[data-testid="column"] .stButton > butto
 </style>
 """, unsafe_allow_html=True)
 
-# ── LOAD DATA ─────────────────────────────────────────────────
+#  LOAD DATA 
 from fabric_connector import load_data as _load_data, load_rfm_data as _load_rfm
 import streamlit.components.v1 as _fx_c
 _fx_c.html("""<script>
 (function() {
     const doc = window.parent.document;
 
-    // ── INJECT GLOBAL STYLES ──────────────────────────────────────────
+    //  INJECT GLOBAL STYLES 
     function injectStyles() {
         if (doc.getElementById('shalina-fx-styles')) return;
         const style = doc.createElement('style');
         style.id = 'shalina-fx-styles';
         style.textContent = `
-            /* ── GRAIN TEXTURE OVERLAY ── */
+            /*  GRAIN TEXTURE OVERLAY  */
             body::after {
                 content: '';
                 position: fixed;
@@ -329,7 +337,7 @@ _fx_c.html("""<script>
                 background-size: 200px 200px;
             }
 
-            /* ── FLOATING GRADIENT ORBS ── */
+            /*  FLOATING GRADIENT ORBS  */
             .shalina-orb {
                 position: fixed;
                 border-radius: 50%;
@@ -347,21 +355,21 @@ _fx_c.html("""<script>
                 100% { transform: translate(0px, 0px) scale(1);   opacity: 0.18; }
             }
 
-            /* ── MESH ANIMATED GRADIENT on main bg ── */
+            /*  MESH ANIMATED GRADIENT on main bg  */
             @keyframes meshShift {
                 0%   { background-position: 0% 50%; }
                 50%  { background-position: 100% 50%; }
                 100% { background-position: 0% 50%; }
             }
 
-            /* ── TILT 3D CARDS ── */
+            /*  TILT 3D CARDS  */
             .kpi-card {
                 transform-style: preserve-3d;
                 will-change: transform;
                 transition: transform 0.15s ease, box-shadow 0.15s ease !important;
             }
 
-            /* ── SPOTLIGHT ON CARDS ── */
+            /*  SPOTLIGHT ON CARDS  */
             .kpi-card { position: relative; overflow: hidden; }
             .kpi-card .spotlight {
                 position: absolute;
@@ -375,7 +383,7 @@ _fx_c.html("""<script>
             }
             .kpi-card:hover .spotlight { opacity: 1; }
 
-            /* ── REVEAL ON SCROLL ── */
+            /*  REVEAL ON SCROLL  */
             .shalina-reveal {
                 opacity: 0;
                 transform: translateY(48px) scale(0.97);
@@ -392,16 +400,15 @@ _fx_c.html("""<script>
             .shalina-reveal:nth-child(3) { transition-delay: 0.16s; }
             .shalina-reveal:nth-child(4) { transition-delay: 0.24s; }
 
-            /* ── ELASTIC BUTTON ── */
+            /*  ELASTIC BUTTON  */
 
-            /* ── GLASSMORPHISM PANELS ── */
-            .header-wrap, .ds-banner, .insight-card, .navbar-wrap {
+            /*  GLASSMORPHISM PANELS  */
+            .ds-banner, .insight-card {
                 backdrop-filter: blur(24px) saturate(1.4) !important;
                 -webkit-backdrop-filter: blur(24px) saturate(1.4) !important;
-                border: 1px solid rgba(255,255,255,0.10) !important;
             }
 
-            /* ── ANIMATED GRADIENT BORDER on hover ── */
+            /*  ANIMATED GRADIENT BORDER on hover  */
             .kpi-card::after {
                 content: '';
                 position: absolute;
@@ -426,12 +433,12 @@ _fx_c.html("""<script>
                 100% { background-position: 0% 50%; }
             }
 
-            /* ── MAGNETIC BUTTON glow ── */
+            /*  MAGNETIC BUTTON glow  */
             [data-testid="stHorizontalBlock"] button:hover {
                 box-shadow: 0 0 24px rgba(33,150,220,0.55), 0 0 8px rgba(110,198,245,0.4), inset 0 0 20px rgba(33,150,220,0.2) !important;
             }
 
-            /* ── PARTICLE CANVAS ── */
+            /*  PARTICLE CANVAS  */
             #shalina-particles {
                 position: fixed;
                 top: 0; left: 0;
@@ -444,7 +451,7 @@ _fx_c.html("""<script>
         doc.head.appendChild(style);
     }
 
-    // ── FLOATING ORBS ─────────────────────────────────────────────────
+    //  FLOATING ORBS 
     function addOrbs() {
         if (doc.getElementById('shalina-orb-1')) return;
         const orbs = [
@@ -468,7 +475,7 @@ _fx_c.html("""<script>
         });
     }
 
-    // ── PARTICLE BACKGROUND ────────────────────────────────────────────
+    //  PARTICLE BACKGROUND 
     function addParticles() {
         if (doc.getElementById('shalina-particles')) return;
         const canvas = doc.createElement('canvas');
@@ -531,7 +538,7 @@ _fx_c.html("""<script>
         draw();
     }
 
-    // ── 3D TILT + SPOTLIGHT on KPI cards ─────────────────────────────
+    //  3D TILT + SPOTLIGHT on KPI cards 
     function addTiltCards() {
         // Subtle lift + spotlight only — no 3D rotation
         const cards = doc.querySelectorAll('.kpi-card');
@@ -560,7 +567,7 @@ _fx_c.html("""<script>
         });
     }
 
-    // ── REVEAL ON SCROLL ──────────────────────────────────────────────
+    //  REVEAL ON SCROLL 
     function addRevealOnScroll() {
         // Wider target list — catches charts, tables, cards, metric blocks
         const targets = doc.querySelectorAll(
@@ -596,7 +603,7 @@ _fx_c.html("""<script>
         });
     }
 
-    // ── MOUSE POSITION REACTIVE GRADIENT ─────────────────────────────
+    //  MOUSE POSITION REACTIVE GRADIENT 
     function addMouseGradient() {
         if (doc.getElementById('mouse-gradient')) return;
         const el = doc.createElement('div');
@@ -619,7 +626,7 @@ _fx_c.html("""<script>
         });
     }
 
-    // ── MAGNETIC BUTTONS ──────────────────────────────────────────────
+    //  MAGNETIC BUTTONS 
     function addMagneticButtons() {
         // Only style the top navbar buttons (country switcher + nav row)
         // No magnetic movement — just glow on hover via CSS
@@ -646,7 +653,7 @@ _fx_c.html("""<script>
         });
     }
 
-    // ── NAVBAR HIDE ───────────────────────────────────────────────────
+    //  NAVBAR HIDE 
     function hideNav() {
         const nav = doc.querySelector('[data-testid="stSidebarNav"]');
         if (nav) nav.remove();
@@ -661,7 +668,7 @@ _fx_c.html("""<script>
         doc.querySelectorAll('button[title="Fullscreen"]').forEach(b => b.remove());
     }
 
-    // ── PERSISTENT RE-INJECTION ───────────────────────────────────────
+    //  PERSISTENT RE-INJECTION 
     // Streamlit wipes the DOM on every navigation — we poll every 800ms
     // to re-inject anything that got removed, and re-apply interactive effects.
 
@@ -718,35 +725,42 @@ if df_all is None:
     st.error("No data available. Please check Fabric connection or add shalina_combined_data.csv.")
     st.stop()
 
-# ── HEADER ────────────────────────────────────────────────────
-col1, col2 = st.columns([1, 9])
-with col1:
-    _logo_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "shalina_healthcare_logo.png")
-    if os.path.exists(_logo_path):
-        import base64
-        with open(_logo_path,"rb") as _f:
-            _logo_b64 = base64.b64encode(_f.read()).decode()
-        st.markdown(f'<img src="data:image/png;base64,{_logo_b64}" style="width:90px;margin-top:8px;" />', unsafe_allow_html=True)
-with col2:
-    st.markdown("""
-    <div class="header-wrap">
-        <div style="font-family:'DM Sans',sans-serif;font-size:11px;font-weight:600;color:#90C8E8;letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;">Shalina Healthcare</div>
-        <div style="font-family:'Poppins',sans-serif;font-size:32px;font-weight:700;color:#FFFFFF;letter-spacing:-0.5px;line-height:1.1;">RFM Analysis</div>
-        <div style="font-family:'DM Sans',sans-serif;font-size:13px;color:#7AACCC;margin-top:4px;">Outlet segmentation by Recency · Frequency · Monetary value</div>
-    </div>
-    """, unsafe_allow_html=True)
+#  HEADER 
+_logo_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "shalina_healthcare_logo.png")
+_logo_tag = ""
+if os.path.exists(_logo_path):
+    import base64
+    with open(_logo_path,"rb") as _f:
+        _logo_b64 = base64.b64encode(_f.read()).decode()
+    _logo_tag = f'<img src="data:image/png;base64,{_logo_b64}" style="width:70px;margin-right:16px;flex-shrink:0;" />'
 
-# ── COUNTRY SWITCHER ──────────────────────────────────────────
+st.markdown(f"""
+<div class="mc-topbar" style="display:flex;align-items:center;">
+    {_logo_tag}
+    <div class="mc-title-wrap" style="flex:1;">
+        <div class="mc-eyebrow">Shalina Healthcare &nbsp;·&nbsp; Distribution Intelligence Platform</div>
+        <div class="mc-title">RFM <span>Analysis</span></div>
+    </div>
+    <div class="mc-status-group">
+        <div class="mc-status-pill">
+            <div class="mc-status-dot"></div>
+            SYS: ONLINE
+        </div>
+    </div>
+</div>
+""", unsafe_allow_html=True)
+
+#  COUNTRY SWITCHER 
 if "rfm_country" not in st.session_state:
     st.session_state.rfm_country = "Nigeria"
 
 st.markdown("<div style='margin:12px 0 6px 0;font-family:Poppins,sans-serif;font-size:10px;font-weight:700;color:#90C8E8;text-transform:uppercase;letter-spacing:1.5px;'>Select Country</div>", unsafe_allow_html=True)
 cc1, cc2, cc3 = st.columns([1, 1, 8])
 with cc1:
-    if st.button("🇳🇬  Nigeria", use_container_width=True, key="rfm_ng"):
+    if st.button("Nigeria", use_container_width=True, key="rfm_ng"):
         st.session_state.rfm_country = "Nigeria"
 with cc2:
-    if st.button("🇦🇴  Angola", use_container_width=True, key="rfm_ao"):
+    if st.button("Angola", use_container_width=True, key="rfm_ao"):
         st.session_state.rfm_country = "Angola"
 
 country = st.session_state.rfm_country
@@ -764,7 +778,7 @@ chart_layout = dict(
     legend=dict(font=dict(color="#FFFFFF"), bgcolor="rgba(10,30,60,0.7)")
 )
 
-# ── TRY REAL SFA TRANSACTION DATA ────────────────────────────
+#  TRY REAL SFA TRANSACTION DATA 
 sfa_df, sfa_status = _load_rfm(country)
 using_real_rfm = sfa_df is not None and len(sfa_df) > 0
 
@@ -820,7 +834,7 @@ if using_real_rfm:
     rfm['M'] = rfm['total_spend'].apply(m_score_real)
     rfm['M_raw'] = rfm['total_spend']
 
-    rfm_mode_label = "🟢  Real RFM — SFA Transaction Data (Recency · Frequency · Monetary)"
+    rfm_mode_label = "  Real RFM — SFA Transaction Data (Recency · Frequency · Monetary)"
     rfm_mode_color = "#4CAF50"
     rfm_mode_sub   = (f"Based on {len(sfa_df):,} outlet transaction records · "
                       f"R = days since last order · F = order count · M = total spend")
@@ -855,12 +869,12 @@ else:
     rfm['R'] = rfm['M_raw'].apply(r_score)
     rfm['F'] = rfm.apply(f_score, axis=1)
 
-    rfm_mode_label = "🟡  Proxy RFM — YTD Sales Value (SFA data not yet available)"
+    rfm_mode_label = "  Proxy RFM — YTD Sales Value (SFA data not yet available)"
     rfm_mode_color = "#F9A825"
     rfm_mode_sub   = ("R & M derived from YTD Retailing Value · F estimated from outlet type · "
                       "Activate real RFM: grant admin consent in Azure AD for Shalina-Whitespace-App")
 
-# ── MODE BANNER ───────────────────────────────────────────────
+#  MODE BANNER 
 st.markdown(f"""
 <div style="background:rgba(10,30,60,0.7);border:1px solid {rfm_mode_color};border-radius:14px;
 padding:16px 22px;margin-bottom:20px;backdrop-filter:blur(10px);">
@@ -876,7 +890,7 @@ padding:16px 22px;margin-bottom:20px;backdrop-filter:blur(10px);">
 </div>
 """, unsafe_allow_html=True)
 
-# ── SEGMENTATION ──────────────────────────────────────────────
+#  SEGMENTATION 
 rfm['RFM_Score'] = rfm['R'] + rfm['F'] + rfm['M']
 
 def rfm_segment(row):
@@ -917,7 +931,7 @@ seg_actions = {
 
 seg_counts = rfm['Segment'].value_counts()
 
-# ── KPI ROW ───────────────────────────────────────────────────
+#  KPI ROW 
 champs = seg_counts.get('Champions', 0)
 loyal  = seg_counts.get('Loyal Customers', 0)
 at_risk= seg_counts.get('At Risk', 0)
@@ -948,7 +962,7 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
-# ── CHARTS ────────────────────────────────────────────────────
+#  CHARTS 
 c1, c2 = st.columns([3, 2])
 with c1:
     st.markdown('<div class="section-title">Segment Distribution</div>', unsafe_allow_html=True)
@@ -971,7 +985,7 @@ with c2:
     fig_avg.update_xaxes(tickangle=45)
     st.plotly_chart(fig_avg, use_container_width=True)
 
-# ── RFM SCATTER ───────────────────────────────────────────────
+#  RFM SCATTER 
 st.markdown('<div class="section-title">RFM Score Map — Recency vs Monetary</div>', unsafe_allow_html=True)
 jitter_df = rfm.copy()
 jitter_df['R_j'] = jitter_df['R'] + np.random.uniform(-0.3, 0.3, len(jitter_df))
@@ -998,7 +1012,7 @@ fig_scatter.update_layout(
 )
 st.plotly_chart(fig_scatter, use_container_width=True)
 
-# ── ACTION PLAYBOOK ───────────────────────────────────────────
+#  ACTION PLAYBOOK 
 st.markdown('<div class="section-title">Segment Action Playbook</div>', unsafe_allow_html=True)
 action_cols = st.columns(2)
 for i, (seg, action) in enumerate(seg_actions.items()):
@@ -1015,7 +1029,7 @@ for i, (seg, action) in enumerate(seg_actions.items()):
         </div>
         """, unsafe_allow_html=True)
 
-# ── OUTLET TABLE ──────────────────────────────────────────────
+#  OUTLET TABLE 
 st.markdown('<div class="section-title">Full Outlet RFM Table</div>', unsafe_allow_html=True)
 seg_filter = st.selectbox("Filter by Segment", ["All"] + sorted(rfm['Segment'].unique().tolist()), key="rfm_seg_filter")
 rfm_show = rfm if seg_filter == "All" else rfm[rfm['Segment'] == seg_filter]
@@ -1038,5 +1052,5 @@ rfm_table.index += 1
 st.dataframe(rfm_table, use_container_width=True)
 
 csv_rfm = rfm_table.to_csv().encode('utf-8')
-st.download_button("⬇️ Export RFM Scores", csv_rfm,
+st.download_button(" Export RFM Scores", csv_rfm,
                    f"rfm_analysis_{country.lower()}.csv", "text/csv", key="rfm_export")
