@@ -780,7 +780,7 @@ _fx_c.html("""<script>
             pointerEvents: 'none',
             zIndex: '1',
             transform: 'translate(-50%,-50%)',
-            transition: 'left 0.4s ease, top 0.4s ease',
+            transition: 'none',
             left: '50%', top: '50%',
         });
         doc.body.appendChild(el);
@@ -962,10 +962,13 @@ if page == "Dashboard":
     """, unsafe_allow_html=True)
 
     st.markdown('<div class="section-title">Geographic Outlet Distribution</div>', unsafe_allow_html=True)
-    map_df = df.sample(min(5000, len(df)), random_state=42) if len(df) > 5000 else df
+    map_df = (df.sample(min(5000, len(df)), random_state=42) if len(df) > 5000 else df).copy()
+    map_df['_size'] = map_df['YTD Retailing Value'].clip(lower=0).fillna(0)
+    if map_df['_size'].sum() == 0:
+        map_df['_size'] = 1
     fig_map = px.scatter_mapbox(map_df, lat="latitude", lon="longitude",
         color="Opportunity", color_discrete_map=color_map,
-        size="YTD Retailing Value" if map_df["YTD Retailing Value"].sum() > 0 else None,
+        size="_size",
         size_max=14, zoom=map_zoom, height=520,
         hover_name="Shop Name",
         hover_data={"YTD Retailing Value":":,.1f","Retailer Subtype":True,"latitude":False,"longitude":False},
@@ -1038,8 +1041,9 @@ elif page == "Outlet Performance":
 # WHITESPACE DETECTION
 # 
 elif page == "Whitespace Detection":
-    dead  = df[df['Opportunity'] == 'Dead Whitespace']
-    under = df[df['Opportunity'] == 'Underperforming']
+    # Always compute whitespace from the full country dataset (ignore tier filter)
+    dead  = df_country[df_country['Opportunity'] == 'Dead Whitespace']
+    under = df_country[df_country['Opportunity'] == 'Underperforming']
     total_ws = len(dead) + len(under)
     revenue_potential = total_ws * mean_val
 
@@ -1061,7 +1065,7 @@ elif page == "Whitespace Detection":
             <div class="kpi-accent-line" style="background:linear-gradient(90deg,#3B82F6,#60A5FA);"></div>
             <div class="kpi-label">Total Whitespace</div>
             <div class="kpi-value">{total_ws:,}</div>
-            <div class="kpi-delta">{round(total_ws/len(df)*100,1)}% of filtered outlets</div>
+            <div class="kpi-delta">{round(total_ws/max(len(df),1)*100,1)}% of selected outlets</div>
         </div>
         <div class="kpi-card mc-green">
             <div class="kpi-accent-line" style="background:linear-gradient(90deg,#22C55E,#4ADE80);"></div>
@@ -1073,7 +1077,7 @@ elif page == "Whitespace Detection":
     """, unsafe_allow_html=True)
 
     st.markdown('<div class="section-title">Whitespace Outlets Map</div>', unsafe_allow_html=True)
-    ws_df = df[df['Opportunity'].isin(['Dead Whitespace','Underperforming'])]
+    ws_df = df_country[df_country['Opportunity'].isin(['Dead Whitespace','Underperforming'])]
     map_ws = ws_df.sample(min(4000,len(ws_df)), random_state=42) if len(ws_df) > 4000 else ws_df
     fig_ws = px.scatter_mapbox(map_ws, lat="latitude", lon="longitude",
         color="Opportunity", color_discrete_map=color_map,
@@ -1097,9 +1101,9 @@ elif page == "Whitespace Detection":
 # EXPANSION STRATEGY
 # 
 elif page == "Expansion Strategy":
-    dead   = df[df['Opportunity'] == 'Dead Whitespace']
-    under  = df[df['Opportunity'] == 'Underperforming']
-    active = df[df['Opportunity'].isin(['Active','High Performer'])]
+    dead   = df_country[df_country['Opportunity'] == 'Dead Whitespace']
+    under  = df_country[df_country['Opportunity'] == 'Underperforming']
+    active = df_country[df_country['Opportunity'].isin(['Active','High Performer'])]
     pri_dead = dead[dead['Retailer Subtype'].str.contains('Primary', case=False, na=False)]
     sec_dead = dead[~dead['Retailer Subtype'].str.contains('Primary', case=False, na=False)]
 

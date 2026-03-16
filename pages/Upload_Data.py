@@ -317,7 +317,7 @@ _fx_c.html("""<script>
             pointerEvents: 'none',
             zIndex: '1',
             transform: 'translate(-50%,-50%)',
-            transition: 'left 0.4s ease, top 0.4s ease',
+            transition: 'none',
             left: '50%', top: '50%',
         });
         doc.body.appendChild(el);
