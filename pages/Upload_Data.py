@@ -7,6 +7,14 @@ import os, sys
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 st.set_page_config(layout="wide", page_title="Upload Data | Shalina")
+st.markdown("""
+<style>
+[data-testid="stSidebarNav"],
+[data-testid="stSidebarNavItems"],
+section[data-testid="stSidebar"] nav,
+ul[data-testid="stSidebarNavItems"] { display: none !important; visibility: hidden !important; }
+</style>
+""", unsafe_allow_html=True)
 import streamlit.components.v1 as _fx_c
 _fx_c.html("""<script>
 (function() {
