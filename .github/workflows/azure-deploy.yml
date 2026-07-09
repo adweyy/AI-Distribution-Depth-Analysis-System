@@ -1,0 +1,100 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# Shalina Healthcare — CI/CD Pipeline
+# Builds Docker image → pushes to Azure Container Registry → deploys to
+# Azure App Service (Web App for Containers)
+#
+# SETUP (one-time, done by IT):
+#   1. Create an Azure Container Registry (ACR) — e.g. "shalinaacr"
+#   2. Create an Azure App Service (Linux, Docker container)
+#   3. Add these secrets to GitHub → Settings → Secrets → Actions:
+#        AZURE_CREDENTIALS         — output of: az ad sp create-for-rbac --sdk-auth
+#        REGISTRY_LOGIN_SERVER     — e.g. shalinaacr.azurecr.io
+#        REGISTRY_USERNAME         — ACR username (from ACR → Access Keys)
+#        REGISTRY_PASSWORD         — ACR password
+#        AZURE_WEBAPP_NAME         — your App Service name
+#        FABRIC_TENANT_ID          — copy from .env
+#        FABRIC_CLIENT_ID          — copy from .env
+#        FABRIC_CLIENT_SECRET      — copy from .env
+#        FABRIC_SQL_ENDPOINT       — copy from .env
+#        FABRIC_SQL_DATABASE       — copy from .env
+#        FABRIC_WORKSPACE_ID       — copy from .env
+#        FABRIC_DATASET_ID         — copy from .env
+#        FABRIC_USERNAME           — copy from .env
+#        FABRIC_PASSWORD           — copy from .env
+# ─────────────────────────────────────────────────────────────────────────────
+
+name: Build and Deploy to Azure
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:   # allow manual trigger from GitHub UI
+
+env:
+  IMAGE_NAME: shalina-whitespace
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout code
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Log in to Azure
+      - name: Log in to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      # 3. Log in to Azure Container Registry
+      - name: Log in to ACR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ secrets.REGISTRY_LOGIN_SERVER }}
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+
+      # 4. Build and push Docker image
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ secrets.REGISTRY_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:latest
+            ${{ secrets.REGISTRY_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+          cache-from: type=registry,ref=${{ secrets.REGISTRY_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:latest
+          cache-to: type=inline
+
+      # 5. Deploy to Azure App Service
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: ${{ secrets.AZURE_WEBAPP_NAME }}
+          images: ${{ secrets.REGISTRY_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+
+      # 6. Push Fabric secrets into App Service Application Settings
+      #    (so .env is NOT needed on the server — secrets come from Azure)
+      - name: Configure App Service environment variables
+        uses: azure/appservice-settings@v1
+        with:
+          app-name: ${{ secrets.AZURE_WEBAPP_NAME }}
+          app-settings-json: |
+            [
+              {"name": "FABRIC_TENANT_ID",     "value": "${{ secrets.FABRIC_TENANT_ID }}",     "slotSetting": false},
+              {"name": "FABRIC_CLIENT_ID",     "value": "${{ secrets.FABRIC_CLIENT_ID }}",     "slotSetting": false},
+              {"name": "FABRIC_CLIENT_SECRET", "value": "${{ secrets.FABRIC_CLIENT_SECRET }}", "slotSetting": false},
+              {"name": "FABRIC_SQL_ENDPOINT",  "value": "${{ secrets.FABRIC_SQL_ENDPOINT }}",  "slotSetting": false},
+              {"name": "FABRIC_SQL_DATABASE",  "value": "${{ secrets.FABRIC_SQL_DATABASE }}",  "slotSetting": false},
+              {"name": "FABRIC_WORKSPACE_ID",  "value": "${{ secrets.FABRIC_WORKSPACE_ID }}",  "slotSetting": false},
+              {"name": "FABRIC_DATASET_ID",    "value": "${{ secrets.FABRIC_DATASET_ID }}",    "slotSetting": false},
+              {"name": "FABRIC_USERNAME",      "value": "${{ secrets.FABRIC_USERNAME }}",      "slotSetting": false},
+              {"name": "FABRIC_PASSWORD",      "value": "${{ secrets.FABRIC_PASSWORD }}",      "slotSetting": false}
+            ]
+
+      - name: Deployment complete
+        run: |
+          echo "✅ Deployed ${{ env.IMAGE_NAME }}:${{ github.sha }}"
+          echo "🌐 App URL: https://${{ secrets.AZURE_WEBAPP_NAME }}.azurewebsites.net"

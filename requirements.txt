@@ -5,3 +5,8 @@ plotly
 requests
 python-dotenv
 openpyxl
+pyodbc
+xgboost
+shap
+scikit-learn
+scipy

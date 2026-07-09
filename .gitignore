@@ -1,6 +1,34 @@
+# Secrets — never commit these
 .env
+*.pem
+*.key
+
+# Data files
 shalina_real_data.csv
+
+# Python
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+.Python
+.venv/
+venv/
+*.egg-info/
+
+# Test scripts
 test_fabric.py
-test_tables.py"shalina_healthcare_logo.jfif" 
+test_tables.py
+test_angola.py
+test_sfa.py
+check.py
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+*.swp
+
+# Docker build cache
+.dockerignore
+

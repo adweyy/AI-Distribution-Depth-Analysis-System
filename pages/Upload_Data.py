@@ -431,7 +431,9 @@ with st.sidebar:
     </div>
     """, unsafe_allow_html=True)
     st.page_link("app.py",                   label="Dashboard")
+    st.page_link("pages/Command_Center.py",  label="Command Center")
     st.page_link("pages/RFM_Analysis.py",   label="RFM Analysis")
+    st.page_link("pages/Churn_Prediction.py", label="Churn Prediction")
     st.page_link("pages/Upload_Data.py",    label="Upload Data")
     st.markdown("""<div style="margin-top:16px;padding:0 8px;">
         <div style="height:1px;background:linear-gradient(90deg,transparent,rgba(33,150,196,0.35),transparent);"></div>
@@ -475,9 +477,49 @@ section[data-testid="stSidebar"] {
 }
 section[data-testid="stSidebar"] * { color: #94A3B8 !important; font-family: 'Inter', sans-serif !important; }
 section[data-testid="stSidebar"] a:hover { color: #fff !important; background: rgba(255,255,255,0.06) !important; border-radius: 8px !important; }
-[data-testid="collapsedControl"],[data-testid="stSidebarCollapseButton"],button[kind="header"],
 [data-testid="stSidebarNav"],[data-testid="stSidebarNavItems"],section[data-testid="stSidebar"] nav { display:none !important; }
-[data-testid="stToolbar"],[data-testid="stDecoration"],header[data-testid="stHeader"],#MainMenu,footer { display:none !important; }
+[data-testid="stDecoration"],#MainMenu,footer { display:none !important; }
+[data-testid="stToolbar"] { display:flex !important; background:transparent !important; }
+header[data-testid="stHeader"] { background:transparent !important; }
+[data-testid="collapsedControl"],[data-testid="stSidebarCollapseButton"],button[kind="header"] {
+    display:flex !important;
+    visibility:visible !important;
+    opacity:1 !important;
+    z-index:999999 !important;
+}
+[data-testid="stSidebarCollapseButton"] *,
+[data-testid="collapsedControl"] *,
+[data-testid="stExpandSidebarButton"] * { font-size:0 !important; }
+[data-testid="stSidebarCollapseButton"]::before {
+    content:"‹";
+    color:#94A3B8;
+    font-size:26px;
+    line-height:1;
+}
+[data-testid="collapsedControl"]::before,
+[data-testid="stExpandSidebarButton"]::before {
+    content:"›";
+    color:#94A3B8;
+    font-size:26px;
+    line-height:1;
+}
+[data-testid="stExpandSidebarButton"] {
+    display:flex !important;
+    visibility:visible !important;
+    opacity:1 !important;
+    position:fixed !important;
+    top:16px !important;
+    left:16px !important;
+    width:34px !important;
+    height:34px !important;
+    min-width:34px !important;
+    z-index:999999 !important;
+    align-items:center !important;
+    justify-content:center !important;
+    background:rgba(8,13,26,0.82) !important;
+    border:1px solid rgba(255,255,255,0.12) !important;
+    border-radius:8px !important;
+}
 
 /*  MISSION CONTROL TOP BAR  */
 .mc-topbar {

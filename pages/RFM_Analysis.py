@@ -34,7 +34,9 @@ with st.sidebar:
     </div>
     """, unsafe_allow_html=True)
     st.page_link("app.py",                       label="Dashboard")
+    st.page_link("pages/Command_Center.py",      label="Command Center")
     st.page_link("pages/RFM_Analysis.py",        label="RFM Analysis")
+    st.page_link("pages/Churn_Prediction.py",    label="Churn Prediction")
     st.page_link("pages/Upload_Data.py",         label="Upload Data")
     st.markdown("""<div style="margin-top:16px;padding:0 8px;">
         <div style="height:1px;background:linear-gradient(90deg,transparent,rgba(33,150,196,0.35),transparent);"></div>
@@ -81,9 +83,49 @@ section[data-testid="stSidebar"] {
 }
 section[data-testid="stSidebar"] * { color: #94A3B8 !important; font-family: 'Inter', sans-serif !important; }
 section[data-testid="stSidebar"] a:hover { color: #fff !important; background: rgba(255,255,255,0.06) !important; border-radius: 8px !important; }
-[data-testid="collapsedControl"],[data-testid="stSidebarCollapseButton"],button[kind="header"],
 [data-testid="stSidebarNav"],[data-testid="stSidebarNavItems"],section[data-testid="stSidebar"] nav { display:none !important; }
-[data-testid="stToolbar"],[data-testid="stDecoration"],header[data-testid="stHeader"],#MainMenu,footer { display:none !important; }
+[data-testid="stDecoration"],#MainMenu,footer { display:none !important; }
+[data-testid="stToolbar"] { display:flex !important; background:transparent !important; }
+header[data-testid="stHeader"] { background:transparent !important; }
+[data-testid="collapsedControl"],[data-testid="stSidebarCollapseButton"],button[kind="header"] {
+    display:flex !important;
+    visibility:visible !important;
+    opacity:1 !important;
+    z-index:999999 !important;
+}
+[data-testid="stSidebarCollapseButton"] *,
+[data-testid="collapsedControl"] *,
+[data-testid="stExpandSidebarButton"] * { font-size:0 !important; }
+[data-testid="stSidebarCollapseButton"]::before {
+    content:"‹";
+    color:#94A3B8;
+    font-size:26px;
+    line-height:1;
+}
+[data-testid="collapsedControl"]::before,
+[data-testid="stExpandSidebarButton"]::before {
+    content:"›";
+    color:#94A3B8;
+    font-size:26px;
+    line-height:1;
+}
+[data-testid="stExpandSidebarButton"] {
+    display:flex !important;
+    visibility:visible !important;
+    opacity:1 !important;
+    position:fixed !important;
+    top:16px !important;
+    left:16px !important;
+    width:34px !important;
+    height:34px !important;
+    min-width:34px !important;
+    z-index:999999 !important;
+    align-items:center !important;
+    justify-content:center !important;
+    background:rgba(8,13,26,0.82) !important;
+    border:1px solid rgba(255,255,255,0.12) !important;
+    border-radius:8px !important;
+}
 
 /*  MISSION CONTROL TOP BAR  */
 .mc-topbar {
@@ -985,50 +1027,6 @@ with c2:
     fig_avg.update_xaxes(tickangle=45)
     st.plotly_chart(fig_avg, use_container_width=True)
 
-#  RFM SCATTER 
-st.markdown('<div class="section-title">RFM Score Map — Recency vs Monetary</div>', unsafe_allow_html=True)
-jitter_df = rfm.copy()
-jitter_df['R_j'] = jitter_df['R'] + np.random.uniform(-0.3, 0.3, len(jitter_df))
-jitter_df['M_j'] = jitter_df['M'] + np.random.uniform(-0.3, 0.3, len(jitter_df))
-sample_rfm = jitter_df.sample(min(4000, len(jitter_df)), random_state=42)
-
-fig_scatter = px.scatter(
-    sample_rfm, x='R_j', y='M_j',
-    color='Segment', color_discrete_map=seg_colors,
-    hover_name='Shop Name',
-    hover_data={'R': True, 'F': True, 'M': True, 'RFM_Score': True, 'R_j': False, 'M_j': False},
-    labels={'R_j': 'Recency Score', 'M_j': 'Monetary Score'},
-)
-fig_scatter.update_traces(marker=dict(size=7, opacity=0.75, line=dict(width=0)))
-fig_scatter.update_layout(
-    paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(10,30,60,0.5)",
-    font=dict(color="#90C8E8", size=11), height=440,
-    margin=dict(l=0, r=0, t=20, b=0),
-    legend=dict(font=dict(color="#FFFFFF"), bgcolor="rgba(10,30,60,0.7)"),
-    xaxis=dict(title='Recency Score (1=inactive → 5=most recent)', tickvals=[1,2,3,4,5],
-               gridcolor='rgba(33,150,196,0.1)', linecolor='rgba(33,150,196,0.2)', color='#6AACE0'),
-    yaxis=dict(title='Monetary Score (1=zero → 5=top spender)', tickvals=[1,2,3,4,5],
-               gridcolor='rgba(33,150,196,0.1)', linecolor='rgba(33,150,196,0.2)', color='#6AACE0'),
-)
-st.plotly_chart(fig_scatter, use_container_width=True)
-
-#  ACTION PLAYBOOK 
-st.markdown('<div class="section-title">Segment Action Playbook</div>', unsafe_allow_html=True)
-action_cols = st.columns(2)
-for i, (seg, action) in enumerate(seg_actions.items()):
-    count = seg_counts.get(seg, 0)
-    color = seg_colors.get(seg, '#2196C4')
-    with action_cols[i % 2]:
-        st.markdown(f"""
-        <div class="insight-card" style="border-left:4px solid {color};margin-bottom:10px;">
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;">
-                <div class="insight-title" style="color:{color};">{seg}</div>
-                <div style="font-family:'Poppins',sans-serif;font-size:18px;font-weight:700;color:#FFFFFF;">{count:,}</div>
-            </div>
-            <div class="insight-detail">{action}</div>
-        </div>
-        """, unsafe_allow_html=True)
-
 #  OUTLET TABLE 
 st.markdown('<div class="section-title">Full Outlet RFM Table</div>', unsafe_allow_html=True)
 seg_filter = st.selectbox("Filter by Segment", ["All"] + sorted(rfm['Segment'].unique().tolist()), key="rfm_seg_filter")
@@ -1054,3 +1052,21 @@ st.dataframe(rfm_table, use_container_width=True)
 csv_rfm = rfm_table.to_csv().encode('utf-8')
 st.download_button(" Export RFM Scores", csv_rfm,
                    f"rfm_analysis_{country.lower()}.csv", "text/csv", key="rfm_export")
+
+#  ACTION PLAYBOOK 
+st.markdown('<div class="section-title">Segment Action Playbook</div>', unsafe_allow_html=True)
+action_cols = st.columns(2)
+for i, (seg, action) in enumerate(seg_actions.items()):
+    count = seg_counts.get(seg, 0)
+    color = seg_colors.get(seg, '#2196C4')
+    with action_cols[i % 2]:
+        st.markdown(f"""
+        <div class="insight-card" style="border-left:4px solid {color};margin-bottom:10px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;">
+                <div class="insight-title" style="color:{color};">{seg}</div>
+                <div style="font-family:'Poppins',sans-serif;font-size:18px;font-weight:700;color:#FFFFFF;">{count:,}</div>
+            </div>
+            <div class="insight-detail">{action}</div>
+        </div>
+        """, unsafe_allow_html=True)
+
