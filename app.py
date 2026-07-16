@@ -29,8 +29,9 @@ with st.sidebar:
     st.page_link("app.py",                    label="Dashboard")
     st.page_link("pages/Command_Center.py",   label="Command Center")
     st.page_link("pages/RFM_Analysis.py",     label="RFM Analysis")
-    st.page_link("pages/Churn_Prediction.py", label="Churn Prediction")
-    st.page_link("pages/Upload_Data.py",      label="Upload Data")
+    st.page_link("pages/Churn_Prediction.py",  label="Churn Prediction")
+    st.page_link("pages/Revenue_Forecast.py",  label="Revenue Forecast")
+    st.page_link("pages/Upload_Data.py",       label="Upload Data")
 
     st.markdown("""
     <div style="margin-top:16px;padding:0 8px;">
