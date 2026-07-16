@@ -130,16 +130,18 @@ def _fetch_nigeria_sql(conn):
     """Pull Nigeria outlet data via SQL."""
     query = """
         SELECT
-            [name]                AS [Shop Name],
+            [RetailerObj_name]    AS [Shop Name],
             [latitude],
             [longitude],
-            [Retailer Subtype],
-            [YTD Retailing Value]
-        FROM [dbo].[Final Nigeria]
+            [RetailerObj_subtype] AS [Retailer Subtype],
+            SUM([value])          AS [YTD Retailing Value]
+        FROM [dbo].[BR_Orders_RetailerObj]
         WHERE [latitude]  IS NOT NULL
           AND [longitude] IS NOT NULL
           AND [latitude]  <> 0
           AND [longitude] <> 0
+          AND YEAR([datetime]) = YEAR(GETDATE())
+        GROUP BY [RetailerObj_name], [latitude], [longitude], [RetailerObj_subtype]
     """
     df = pd.read_sql(query, conn)
     df["country"] = "Nigeria"
@@ -186,9 +188,9 @@ def _get_pbi_token():
     return r.json()["access_token"]
 
 
-def _run_dax(token, dax_query):
-    workspace = _get_secret("FABRIC_WORKSPACE_ID") or "ccf72308-6884-43ee-a116-3d86fbe1553f"
-    dataset   = _get_secret("FABRIC_DATASET_ID")   or "4aea9823-3813-4fc8-a146-a7c5f986bf0a"
+def _run_dax(token, dax_query, workspace=None, dataset=None):
+    workspace = workspace or _get_secret("FABRIC_WORKSPACE_ID") or "ccf72308-6884-43ee-a116-3d86fbe1553f"
+    dataset   = dataset   or _get_secret("FABRIC_DATASET_ID")   or "4aea9823-3813-4fc8-a146-a7c5f986bf0a"
     url = (f"https://api.powerbi.com/v1.0/myorg/groups/{workspace}"
            f"/datasets/{dataset}/executeQueries")
     r = requests.post(
@@ -204,21 +206,28 @@ def _run_dax(token, dax_query):
 
 
 def _fetch_nigeria_dax(token):
+    # Nigeria data lives in the SFA workspace / Nigeria Consumer Incentive Dashboard dataset
+    ng_workspace = _get_secret("FABRIC_NIGERIA_WORKSPACE_ID") or "35f4d96f-0abe-40e6-a15f-8e463fba977d"
+    ng_dataset   = _get_secret("FABRIC_NIGERIA_DATASET_ID")   or "2d57bd24-0235-40dd-9ba0-560f1f8da459"
     dax = """
     EVALUATE
-    SELECTCOLUMNS(
-        FILTER('Final Nigeria',
-            'Final Nigeria'[latitude]  <> BLANK() &&
-            'Final Nigeria'[longitude] <> BLANK()
+    CALCULATETABLE(
+        ADDCOLUMNS(
+            SUMMARIZE(
+                BR_Orders_RetailerObj,
+                BR_Orders_RetailerObj[RetailerObj_name],
+                BR_Orders_RetailerObj[latitude],
+                BR_Orders_RetailerObj[longitude],
+                BR_Orders_RetailerObj[RetailerObj_subtype]
+            ),
+            "YTD Retailing Value", CALCULATE(SUM(BR_Orders_RetailerObj[value]))
         ),
-        "Shop Name",           'Final Nigeria'[name],
-        "latitude",            'Final Nigeria'[latitude],
-        "longitude",           'Final Nigeria'[longitude],
-        "Retailer Subtype",    'Final Nigeria'[Retailer Subtype],
-        "YTD Retailing Value", 'Final Nigeria'[YTD Retailing Value]
+        NOT ISBLANK(BR_Orders_RetailerObj[latitude]),
+        NOT ISBLANK(BR_Orders_RetailerObj[longitude]),
+        YEAR(BR_Orders_RetailerObj[datetime]) = YEAR(TODAY())
     )
     """
-    df = _run_dax(token, dax)
+    df = _run_dax(token, dax, workspace=ng_workspace, dataset=ng_dataset)
     df.columns = ["Shop Name", "latitude", "longitude", "Retailer Subtype", "YTD Retailing Value"]
     df["country"] = "Nigeria"
     return df
