@@ -371,13 +371,15 @@ def load_data():
                     try:
                         ng = _fetch_nigeria_dax(pbi_token)
                         ng_method = "dax"
-                    except Exception:
+                    except Exception as _ng_err:
+                        print(f"[FABRIC] Nigeria DAX error: {_ng_err}")
                         ng = None
                 if ao is None:
                     try:
                         ao = _fetch_angola_dax(pbi_token)
                         ao_method = "dax"
-                    except Exception:
+                    except Exception as _ao_err:
+                        print(f"[FABRIC] Angola DAX error: {_ao_err}")
                         ao = None
 
         # ── CSV fallback for anything still missing ───────────────────────────
