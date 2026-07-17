@@ -373,11 +373,18 @@ def load_data():
 
         # ── Try Power BI / DAX for any country that SQL missed ────────────────
         if ng is None or ao is None:
+            # Try user-credentials token first (bypasses RLS on Final Nigeria).
+            # Fall back to service-principal token if user creds aren't set.
             pbi_token = None
             try:
-                pbi_token = _get_pbi_token()
-            except Exception:
-                pass
+                pbi_token = _get_user_token()
+                print("[FABRIC] Using user token for UAT DAX queries")
+            except Exception as _user_tok_err:
+                print(f"[FABRIC] User token failed ({_user_tok_err}), trying SP token")
+                try:
+                    pbi_token = _get_pbi_token()
+                except Exception:
+                    pass
 
             if pbi_token:
                 if ng is None:
