@@ -203,41 +203,54 @@ def _run_dax(token, dax_query, workspace=None, dataset=None):
     return pd.DataFrame(rows)
 
 
+
+# UAT workspace/dataset — both Angola-Chemist and Final Nigeria live here.
+# These IDs are hardcoded so that wrong values in Streamlit secrets can't
+# accidentally point these fetches at the SFA workspace or any other dataset.
+_UAT_WORKSPACE = "ccf72308-6884-43ee-a116-3d86fbe1553f"
+_UAT_DATASET   = "4aea9823-3813-4fc8-a146-a7c5f986bf0a"
+
+
 def _fetch_nigeria_dax(token):
-    # Final Nigeria table is in the same UAT dataset as Angola
+    """Pull Nigeria outlet data via Power BI DAX (UAT dataset)."""
     dax = """
-    EVALUATE
-    SELECTCOLUMNS(
-        FILTER('Final Nigeria',
-            'Final Nigeria'[latitude]  <> BLANK() &&
-            'Final Nigeria'[longitude] <> BLANK()
-        ),
-        "Shop Name",           'Final Nigeria'[name],
-        "latitude",            'Final Nigeria'[latitude],
-        "longitude",           'Final Nigeria'[longitude],
-        "Retailer Subtype",    'Final Nigeria'[Retailer Subtype],
-        "YTD Retailing Value", 'Final Nigeria'[YTD Retailing Value]
-    )
-    """
-    df = _run_dax(token, dax)
+EVALUATE
+SELECTCOLUMNS(
+    FILTER('Final Nigeria',
+        'Final Nigeria'[latitude]  <> BLANK() &&
+        'Final Nigeria'[longitude] <> BLANK()
+    ),
+    "Shop Name",           'Final Nigeria'[name],
+    "latitude",            'Final Nigeria'[latitude],
+    "longitude",           'Final Nigeria'[longitude],
+    "Retailer Subtype",    'Final Nigeria'[Retailer Subtype],
+    "YTD Retailing Value", 'Final Nigeria'[YTD Retailing Value]
+)
+"""
+    df = _run_dax(token, dax, workspace=_UAT_WORKSPACE, dataset=_UAT_DATASET)
+    if df.empty:
+        raise Exception("Nigeria DAX returned 0 rows")
     df.columns = ["Shop Name", "latitude", "longitude", "Retailer Subtype", "YTD Retailing Value"]
     df["country"] = "Nigeria"
     return df
 
 
 def _fetch_angola_dax(token):
+    """Pull Angola outlet data via Power BI DAX (UAT dataset)."""
     dax = """
-    EVALUATE
-    SELECTCOLUMNS(
-        FILTER('Angola - Chemist', 'Angola - Chemist'[Lat] <> BLANK()),
-        "Shop Name",           'Angola - Chemist'[Retailer/Chemist Name],
-        "latitude",            'Angola - Chemist'[Lat],
-        "longitude",           'Angola - Chemist'[Long],
-        "Retailer Subtype",    'Angola - Chemist'[Type],
-        "YTD Retailing Value", 'Angola - Chemist'[YTD Sales Value]
-    )
-    """
-    df = _run_dax(token, dax)
+EVALUATE
+SELECTCOLUMNS(
+    FILTER('Angola - Chemist', 'Angola - Chemist'[Lat] <> BLANK()),
+    "Shop Name",           'Angola - Chemist'[Retailer/Chemist Name],
+    "latitude",            'Angola - Chemist'[Lat],
+    "longitude",           'Angola - Chemist'[Long],
+    "Retailer Subtype",    'Angola - Chemist'[Type],
+    "YTD Retailing Value", 'Angola - Chemist'[YTD Sales Value]
+)
+"""
+    df = _run_dax(token, dax, workspace=_UAT_WORKSPACE, dataset=_UAT_DATASET)
+    if df.empty:
+        raise Exception("Angola DAX returned 0 rows")
     df.columns = ["Shop Name", "latitude", "longitude", "Retailer Subtype", "YTD Retailing Value"]
     df["country"] = "Angola"
     return df
@@ -650,7 +663,7 @@ def load_rfm_data(country="Nigeria"):
                 SUMMARIZECOLUMNS(
                     'SFA Orders Angola'[Outlet Name],
                     "Last Order Date", MAX('SFA Orders Angola'[Order Date]),
-                    "Order Count",     COUNTROWS('SFA Orders Angola'),
+                        "Order Count",     COUNTROWS('SFA Orders Angola'),
                     "Total Spend",     SUM('SFA Orders Angola'[Order Value])
                 )
                 """
