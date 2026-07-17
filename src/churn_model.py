@@ -340,7 +340,9 @@ def train(df):
     if SHAP_AVAILABLE:
         try:
             explainer   = shap.TreeExplainer(clf)
-            shap_values = explainer.shap_values(X_te)
+            # Cap at 500 rows — SHAP is O(n) and too slow on large datasets
+            X_shap      = X_te.iloc[:500] if len(X_te) > 500 else X_te
+            shap_values = explainer.shap_values(X_shap)
 
             # Binary classifiers may return a list [neg_class, pos_class]
             # We always want positive-class (churn) SHAP values
@@ -349,7 +351,7 @@ def train(df):
             else:
                 sv = shap_values
 
-            shap_values_out = sv   # shape: (n_test_samples, n_features)
+            shap_values_out = sv   # shape: (min(500, n_test), n_features)
 
             # Rank features by mean |SHAP| — more interpretable than gain
             mean_abs_shap   = np.abs(sv).mean(axis=0)
