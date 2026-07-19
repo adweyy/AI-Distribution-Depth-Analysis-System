@@ -19,15 +19,6 @@ st.set_page_config(
 
 
 sidebar_nav(refresh_key="cc_refresh")
-
-import streamlit.components.v1 as _sc
-
-    _sc.html(
-        """<script>(function(){function r(){var n=window.parent.document.querySelector('[data-testid="stSidebarNav"]');if(n){n.remove();}else{setTimeout(r,200);}}r();setTimeout(r,800);setTimeout(r,2500);})();</script>""",
-        height=0,
-    )
-
-
 apply_styles()
 
 
