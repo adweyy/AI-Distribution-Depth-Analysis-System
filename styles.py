@@ -323,7 +323,7 @@ p, .stMarkdown p { font-size: 14px !important; color: #64748b !important; line-h
     background: #ffffff;
     border: 1px solid #e2e8f0;
     border-radius: 12px;
-    padding: 26px 22px 20px 22px;
+    padding: 22px 18px 18px 18px;
     position: relative; overflow: hidden;
     transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
     box-shadow: 0 1px 3px rgba(0,0,0,0.05);
@@ -335,12 +335,14 @@ p, .stMarkdown p { font-size: 14px !important; color: #64748b !important; line-h
 }
 .sh-kpi-accent { position: absolute; top: 0; left: 0; right: 0; height: 3px; }
 .sh-kpi-label {
-    font-size: 10px; font-weight: 700; letter-spacing: 0.11em;
-    text-transform: uppercase; color: #64748b; margin-bottom: 12px; line-height: 1.4;
+    font-size: 10px; font-weight: 700; letter-spacing: 0.08em;
+    text-transform: uppercase; color: #64748b; margin-bottom: 12px; line-height: 1.5;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .sh-kpi-value {
-    font-size: 44px; font-weight: 800; color: #0b1936;
-    line-height: 1; letter-spacing: -2px; margin-bottom: 10px;
+    font-size: clamp(24px, 2.6vw, 40px); font-weight: 800; color: #0b1936;
+    line-height: 1.05; letter-spacing: -1.5px; margin-bottom: 10px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .sh-kpi-delta { font-size: 12px; color: #94a3b8; font-weight: 500; line-height: 1.5; }
 
