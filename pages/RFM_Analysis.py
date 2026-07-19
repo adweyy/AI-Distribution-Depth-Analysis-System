@@ -62,13 +62,13 @@ accent = "#4CAF50" if country == "Nigeria" else "#CE93D8"
 st.markdown(f"<div style='height:3px;background:linear-gradient(90deg,{accent},transparent);border-radius:2px;margin-bottom:16px;'></div>", unsafe_allow_html=True)
 
 chart_layout = dict(
-    paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
-    font=dict(color="#94a3b8", size=12), height=380,
-    xaxis=dict(gridcolor="rgba(99,91,255,0.08)", linecolor="rgba(99,91,255,0.10)", color="#94a3b8"),
-    yaxis=dict(gridcolor="rgba(99,91,255,0.08)", linecolor="rgba(99,91,255,0.10)", color="#94a3b8"),
+    paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(255,255,255,0.02)",
+    font=dict(color="#8b949e", size=12), height=380,
+    xaxis=dict(gridcolor="rgba(99,91,255,0.08)", linecolor="rgba(99,91,255,0.10)", color="#8b949e"),
+    yaxis=dict(gridcolor="rgba(99,91,255,0.08)", linecolor="rgba(99,91,255,0.10)", color="#8b949e"),
     margin=dict(l=0, r=0, t=20, b=0),
-    legend=dict(font=dict(color="#e2e8f0"), bgcolor="rgba(22,27,39,0.95)",
-                bordercolor="rgba(99,91,255,0.15)", borderwidth=1)
+    legend=dict(font=dict(color="#c9d1d9"), bgcolor="rgba(15,22,41,0.88)",
+                bordercolor="rgba(99,91,255,0.18)", borderwidth=1)
 )
 
 #  TRY REAL SFA TRANSACTION DATA 

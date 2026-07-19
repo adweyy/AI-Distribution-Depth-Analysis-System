@@ -92,8 +92,8 @@ color_map = {
     'High Performer':  '#A855F7'
 }
 chart_layout = dict(
-    paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(255,255,255,0.015)",
-    font=dict(color="#4a4a6a", size=11), height=380,
+    paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(255,255,255,0.02)",
+    font=dict(color="#8b949e", size=11), height=380,
     xaxis=dict(gridcolor="rgba(99,91,255,0.05)", linecolor="rgba(99,91,255,0.08)", color="#4a4a6a"),
     yaxis=dict(gridcolor="rgba(99,91,255,0.05)", linecolor="rgba(99,91,255,0.08)", color="#4a4a6a"),
     margin=dict(l=0, r=0, t=20, b=0),
@@ -109,7 +109,7 @@ with st.sidebar:
     </div>""", unsafe_allow_html=True)
     st.markdown("""
     <div style='margin-top:20px;padding:0 8px;font-family:Inter,sans-serif;font-size:9px;
-         font-weight:700;color:#3a3a52;text-transform:uppercase;
+         font-weight:700;color:#3d4a5c;text-transform:uppercase;
          letter-spacing:3px;margin-bottom:8px;'>Outlet Search</div>
     """, unsafe_allow_html=True)
 
@@ -170,7 +170,7 @@ _dot_cls2 = "sh-dot-amber" if data_status == "csv" else ""
 logo_col, title_col = st.columns([1, 11])
 with logo_col:
     st.markdown(
-        f'<img src="data:{_logo_mime};base64,{_logo_b64}" style="height:40px;width:auto;margin-top:12px;opacity:0.9;" />',
+        f'<img src="data:{_logo_mime};base64,{_logo_b64}" style="height:64px;width:auto;margin-top:6px;opacity:1;border-radius:8px;" />',
         unsafe_allow_html=True
     )
 with title_col:
@@ -194,16 +194,16 @@ st.markdown(f"""
          animation:sh-pulse 2.2s ease-in-out infinite;"></div>
     <div style="flex:1;">
         <div style="font-size:13px;font-weight:700;color:#fff;">{status_label}</div>
-        <div style="font-size:11px;color:#4a4a6a;margin-top:2px;">{status_sub}</div>
+        <div style="font-size:11px;color:#6b7280;margin-top:2px;">{status_sub}</div>
     </div>
     <div style="display:flex;gap:16px;align-items:center;">
-        <div style="display:flex;align-items:center;gap:6px;font-size:9px;color:#4a4a6a;font-weight:700;text-transform:uppercase;letter-spacing:2px;">
+        <div style="display:flex;align-items:center;gap:6px;font-size:9px;color:#6b7280;font-weight:700;text-transform:uppercase;letter-spacing:2px;">
             <div style="width:5px;height:5px;border-radius:50%;background:#22C55E;"></div>Live Fabric
         </div>
-        <div style="display:flex;align-items:center;gap:6px;font-size:9px;color:#4a4a6a;font-weight:700;text-transform:uppercase;letter-spacing:2px;">
+        <div style="display:flex;align-items:center;gap:6px;font-size:9px;color:#6b7280;font-weight:700;text-transform:uppercase;letter-spacing:2px;">
             <div style="width:5px;height:5px;border-radius:50%;background:#6EC6F5;"></div>Hybrid
         </div>
-        <div style="display:flex;align-items:center;gap:6px;font-size:9px;color:#4a4a6a;font-weight:700;text-transform:uppercase;letter-spacing:2px;">
+        <div style="display:flex;align-items:center;gap:6px;font-size:9px;color:#6b7280;font-weight:700;text-transform:uppercase;letter-spacing:2px;">
             <div style="width:5px;height:5px;border-radius:50%;background:#F59E0B;"></div>CSV
         </div>
     </div>
@@ -238,8 +238,8 @@ st.markdown(
 
 # ── NAVBAR ────────────────────────────────────────────────────────
 st.markdown("""
-<div style="background:#0f0f1c;border:1px solid rgba(99,91,255,0.12);
-     border-radius:100px;padding:5px;display:flex;gap:4px;margin-bottom:4px;">
+<div style="background:#1c2333;border:1px solid rgba(99,91,255,0.18);
+     border-radius:12px;padding:5px;display:flex;gap:4px;margin-bottom:4px;">
 </div>""", unsafe_allow_html=True)
 n1, n2, n3, n4 = st.columns(4)
 with n1:
@@ -704,30 +704,30 @@ elif page == "Whitespace Detection":
                               label_lo="low", label_mid="moderate", label_hi="high")
 
     st.markdown(f"""
-    <div class="kpi-row">
-        <div class="kpi-card mc-red">
-            <div class="kpi-accent-line" style="background:linear-gradient(90deg,#EF4444,#F87171);"></div>
-            <div class="kpi-label">Dead Whitespace Outlets</div>
-            <div class="kpi-value">{len(dead):,}</div>
-            <div class="kpi-delta">{_dead_delta} of network</div>
+    <div class="sh-kpi-row">
+        <div class="sh-kpi">
+            <div class="sh-kpi-accent" style="background:linear-gradient(90deg,#ef4444,transparent);"></div>
+            <div class="sh-kpi-label">Dead Whitespace Outlets</div>
+            <div class="sh-kpi-value">{len(dead):,}</div>
+            <div class="sh-kpi-delta">{_dead_delta} of network</div>
         </div>
-        <div class="kpi-card mc-orange">
-            <div class="kpi-accent-line" style="background:linear-gradient(90deg,#F97316,#FB923C);"></div>
-            <div class="kpi-label">Underperforming Outlets</div>
-            <div class="kpi-value">{len(under):,}</div>
-            <div class="kpi-delta">{_under_delta} of network</div>
+        <div class="sh-kpi">
+            <div class="sh-kpi-accent" style="background:linear-gradient(90deg,#f97316,transparent);"></div>
+            <div class="sh-kpi-label">Underperforming Outlets</div>
+            <div class="sh-kpi-value">{len(under):,}</div>
+            <div class="sh-kpi-delta">{_under_delta} of network</div>
         </div>
-        <div class="kpi-card mc-blue">
-            <div class="kpi-accent-line" style="background:linear-gradient(90deg,#3B82F6,#60A5FA);"></div>
-            <div class="kpi-label">Total Whitespace</div>
-            <div class="kpi-value">{total_ws:,}</div>
-            <div class="kpi-delta" style="color:#64748B;">{ws_network_pct}% of all {country} outlets</div>
+        <div class="sh-kpi">
+            <div class="sh-kpi-accent" style="background:linear-gradient(90deg,#3b82f6,transparent);"></div>
+            <div class="sh-kpi-label">Total Whitespace</div>
+            <div class="sh-kpi-value">{total_ws:,}</div>
+            <div class="sh-kpi-delta">{ws_network_pct}% of all {country} outlets</div>
         </div>
-        <div class="kpi-card mc-green">
-            <div class="kpi-accent-line" style="background:linear-gradient(90deg,#22C55E,#4ADE80);"></div>
-            <div class="kpi-label">Revenue Potential</div>
-            <div class="kpi-value">&#8358;{revenue_potential/1000:,.0f}M</div>
-            <div class="kpi-delta" style="color:#64748B;">If activated to avg performance</div>
+        <div class="sh-kpi">
+            <div class="sh-kpi-accent" style="background:linear-gradient(90deg,#22c55e,transparent);"></div>
+            <div class="sh-kpi-label">Revenue Potential</div>
+            <div class="sh-kpi-value" style="font-size:40px;">&#8358;{revenue_potential/1000:,.0f}M</div>
+            <div class="sh-kpi-delta">If activated to avg performance</div>
         </div>
     </div>""", unsafe_allow_html=True)
 
@@ -746,8 +746,8 @@ elif page == "Whitespace Detection":
         hover_data={"YTD Retailing Value":":,.1f","Retailer Subtype":True,"latitude":False,"longitude":False},
         center=map_center)
     fig_ws.update_layout(mapbox_style="carto-darkmatter", paper_bgcolor="rgba(0,0,0,0)",
-        legend=dict(font=dict(color="#94A3B8",size=11), bgcolor="rgba(8,13,26,0.85)",
-                    bordercolor="rgba(255,255,255,0.08)", borderwidth=1),
+        legend=dict(font=dict(color="#b0bac9",size=11), bgcolor="rgba(15,22,41,0.88)",
+                    bordercolor="rgba(99,91,255,0.20)", borderwidth=1),
         margin=dict(l=0,r=0,t=0,b=0))
     st.plotly_chart(fig_ws, use_container_width=True)
 
