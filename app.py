@@ -383,8 +383,7 @@ dot_glow  = ("rgba(76,175,80,0.6)"    if is_live  else
              ("rgba(110,198,245,0.6)" if is_hybrid else "rgba(249,168,37,0.6)"))
 status_label = (
     "Connected to Microsoft Fabric Warehouse" if is_live else
-    ("Nigeria: CSV (33,588 outlets)  |  Angola: Live Fabric" if is_hybrid else
-     "Connected to Local CSV — Both Countries")
+    data_source   # use actual label from fabric_connector (includes diagnostic info)
 )
 status_sub = (
     "Live data — auto-refreshes every hour" if is_live else
