@@ -26,7 +26,10 @@ with st.sidebar:
     pass  # sidebar_nav() above already handles nav
 
 # ── STYLES ───────────────────────────────────────────────────────
-apply_styles(active_page=st.session_state.get("nav_page","Dashboard"))
+apply_styles(
+    active_page=st.session_state.get("nav_page","Dashboard"),
+    active_country=st.session_state.get("country","Nigeria")
+)
 
 # ── LOAD DATA ─────────────────────────────────────────────────────
 import sys, os as _os
@@ -199,7 +202,7 @@ st.markdown(f"""
          box-shadow:0 0 8px {dot_color};flex-shrink:0;
          animation:sh-pulse 2.2s ease-in-out infinite;"></div>
     <div style="flex:1;">
-        <div style="font-size:13px;font-weight:700;color:#0f172a;">{status_label}</div>
+        <div style="font-size:13px;font-weight:700;color:#0b1936;">{status_label}</div>
         <div style="font-size:11px;color:#6b7280;margin-top:2px;">{status_sub}</div>
     </div>
     <div style="display:flex;gap:16px;align-items:center;">
@@ -219,7 +222,7 @@ st.markdown(f"""
 # ── COUNTRY SWITCHER ──────────────────────────────────────────────
 st.markdown(
     "<div style='margin:14px 0 8px 0;font-family:Inter,sans-serif;font-size:9px;font-weight:700;"
-    "color:#635bff;text-transform:uppercase;letter-spacing:3px;'>Select Country</div>",
+    "color:#64748b;text-transform:uppercase;letter-spacing:3px;'>Select Country</div>",
     unsafe_allow_html=True
 )
 cc1, cc2, cc3 = st.columns([1, 1, 8])
@@ -242,11 +245,7 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# ── NAVBAR ────────────────────────────────────────────────────────
-st.markdown("""
-<div style="background:#f1f5f9;border:1px solid #e2e8f0;
-     border-radius:12px;padding:5px;display:flex;gap:4px;margin-bottom:4px;">
-</div>""", unsafe_allow_html=True)
+# ── NAVBAR — borderless tab strip (styled via JS in styles.py) ──
 n1, n2, n3, n4 = st.columns(4)
 with n1:
     if st.button("Dashboard",            use_container_width=True, key="nav_dash"):

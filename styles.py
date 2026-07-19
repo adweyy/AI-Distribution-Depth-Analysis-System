@@ -321,12 +321,12 @@ p, .stMarkdown p { font-size: 14px !important; color: #64748b !important; line-h
 
 .sh-kpi {
     background: #ffffff;
-    border: 1px solid #e8ecf7;
+    border: 1px solid #e2e8f0;
     border-radius: 12px;
     padding: 26px 22px 20px 22px;
     position: relative; overflow: hidden;
     transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.05), 0 0 0 0 rgba(99,91,255,0);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
 .sh-kpi:hover {
     transform: translateY(-3px);
@@ -335,11 +335,11 @@ p, .stMarkdown p { font-size: 14px !important; color: #64748b !important; line-h
 }
 .sh-kpi-accent { position: absolute; top: 0; left: 0; right: 0; height: 3px; }
 .sh-kpi-label {
-    font-size: 11px; font-weight: 700; letter-spacing: 0.09em;
-    text-transform: uppercase; color: #635bff; margin-bottom: 14px; line-height: 1.4;
+    font-size: 10px; font-weight: 700; letter-spacing: 0.11em;
+    text-transform: uppercase; color: #64748b; margin-bottom: 12px; line-height: 1.4;
 }
 .sh-kpi-value {
-    font-size: 44px; font-weight: 800; color: #0f172a;
+    font-size: 44px; font-weight: 800; color: #0b1936;
     line-height: 1; letter-spacing: -2px; margin-bottom: 10px;
 }
 .sh-kpi-delta { font-size: 12px; color: #94a3b8; font-weight: 500; line-height: 1.5; }
@@ -394,10 +394,11 @@ p, .stMarkdown p { font-size: 14px !important; color: #64748b !important; line-h
 
 /* ─ Banner ─ */
 .sh-banner {
-    background: rgba(99,91,255,0.04);
-    border: 1px solid rgba(99,91,255,0.14);
+    background: #ffffff;
+    border: none;
     border-radius: 12px; padding: 14px 20px; margin-bottom: 20px;
     display: flex; align-items: center; gap: 14px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
 
 /* ─ Badges ─ */
@@ -447,42 +448,64 @@ _JS = """<script>
         });
     }
 
-    /* Nav active highlight */
+    /* ── Nav tab strip — borderless underline style ── */
     const NAV_LABELS = ['Dashboard','Outlet Performance','Whitespace Detection','Expansion Strategy'];
-    function highlightActiveNav(){
+    function styleNavTabs(){
         const marker = doc.getElementById('sh-active-page');
-        if(!marker) return;
-        const active = marker.getAttribute('data-page');
+        const active = marker ? marker.getAttribute('data-page') : 'Dashboard';
+        const found = [];
+
         doc.querySelectorAll('button').forEach(btn=>{
             const txt = btn.textContent.trim();
             if(!NAV_LABELS.includes(txt)) return;
-            if(btn.dataset.navStyled) return;
-            btn.dataset.navStyled = '1';
-            if(txt===active){
-                btn.style.setProperty('background','rgba(99,91,255,0.10)','important');
-                btn.style.setProperty('color','#635bff','important');
-                btn.style.setProperty('border-color','rgba(99,91,255,0.35)','important');
-                btn.style.setProperty('font-weight','700','important');
-            } else {
-                btn.style.setProperty('background','#ffffff','important');
-                btn.style.setProperty('color','#6b7280','important');
-                btn.style.setProperty('border-color','#e2e8f0','important');
-                btn.style.setProperty('font-weight','500','important');
-            }
+            found.push(btn);
+            const isActive = txt === active;
+
+            /* Make button look like a bare tab */
+            btn.style.setProperty('background','transparent','important');
+            btn.style.setProperty('border','none','important');
+            btn.style.setProperty('border-radius','0','important');
+            btn.style.setProperty('box-shadow','none','important');
+            btn.style.setProperty('transform','none','important');
+            btn.style.setProperty('padding','10px 18px','important');
+            btn.style.setProperty('font-size','14px','important');
+            btn.style.setProperty('font-weight', isActive ? '700' : '500','important');
+            btn.style.setProperty('color', isActive ? '#0b1936' : '#64748b','important');
+            btn.style.setProperty('border-bottom', isActive ? '2px solid #0b1936' : '2px solid transparent','important');
+            btn.style.setProperty('transition','color 0.15s, border-color 0.15s','important');
         });
+
+        /* Add bottom border to the tab row container */
+        if(found.length > 0){
+            let row = found[0].closest('[data-testid="stHorizontalBlock"]');
+            if(!row) row = found[0].parentElement?.parentElement?.parentElement?.parentElement;
+            if(row && !row.dataset.tabRowDone){
+                row.dataset.tabRowDone = '1';
+                row.style.setProperty('border-bottom','1px solid #e2e8f0','important');
+                row.style.setProperty('margin-bottom','20px','important');
+                row.style.setProperty('padding-bottom','0','important');
+            }
+        }
     }
 
-    /* Country button styling */
+    /* ── Country pill buttons — navy selected / white unselected ── */
     function styleCountryBtns(){
+        const cm = doc.getElementById('sh-active-country');
+        const activeCountry = cm ? cm.getAttribute('data-country') : 'Nigeria';
+
         doc.querySelectorAll('button').forEach(btn=>{
             const txt = btn.textContent.trim();
             if(txt !== 'Nigeria' && txt !== 'Angola') return;
-            if(btn.dataset.cbDone) return;
-            btn.dataset.cbDone = '1';
-            btn.style.setProperty('color','#635bff','important');
-            btn.style.setProperty('background','rgba(99,91,255,0.06)','important');
-            btn.style.setProperty('border-color','rgba(99,91,255,0.28)','important');
-            btn.style.setProperty('font-weight','700','important');
+            const sel = txt === activeCountry;
+            btn.style.setProperty('border-radius','20px','important');
+            btn.style.setProperty('padding','8px 22px','important');
+            btn.style.setProperty('font-weight','600','important');
+            btn.style.setProperty('font-size','13.5px','important');
+            btn.style.setProperty('box-shadow','none','important');
+            btn.style.setProperty('transform','none','important');
+            btn.style.setProperty('background', sel ? '#0b1936' : '#ffffff','important');
+            btn.style.setProperty('color',       sel ? '#ffffff' : '#374151','important');
+            btn.style.setProperty('border',      sel ? 'none'   : '1px solid #e2e8f0','important');
         });
     }
 
@@ -507,8 +530,9 @@ _JS = """<script>
     }
 
     function run(){
-        killHeaderJunk(); addSidebarIcons(); styleCountryBtns();
-        highlightActiveNav(); initReveal(); hideNav();
+        killHeaderJunk(); addSidebarIcons();
+        styleNavTabs(); styleCountryBtns();
+        initReveal(); hideNav();
     }
 
     setTimeout(run,150); setTimeout(run,600); setTimeout(run,1400);
@@ -517,10 +541,15 @@ _JS = """<script>
 </script>"""
 
 
-def apply_styles(active_page: str = ""):
+def apply_styles(active_page: str = "", active_country: str = ""):
     st.markdown(_CSS, unsafe_allow_html=True)
+    markers = ""
     if active_page:
-        st.markdown(f'<div id="sh-active-page" data-page="{active_page}" style="display:none;"></div>', unsafe_allow_html=True)
+        markers += f'<div id="sh-active-page" data-page="{active_page}" style="display:none;"></div>'
+    if active_country:
+        markers += f'<div id="sh-active-country" data-country="{active_country}" style="display:none;"></div>'
+    if markers:
+        st.markdown(markers, unsafe_allow_html=True)
     _stc.html(_JS, height=0)
 
 
