@@ -554,9 +554,10 @@ def apply_styles(active_page: str = "", active_country: str = ""):
 
 
 def _nav_item(href: str, label: str, icon_svg: str, icon_bg: str) -> str:
-    """Render one nav link as raw HTML (rendered directly in Streamlit DOM via st.markdown)."""
+    """Render one nav link — onclick prevents Streamlit's default _blank behaviour."""
     return f"""
-<a href="{href}" class="sh-nav-link" data-label="{label}">
+<a href="{href}" target="_self" class="sh-nav-link" data-label="{label}"
+   onclick="event.preventDefault();event.stopPropagation();window.location.href='{href}';return false;">
   <span class="sh-nav-icon" style="background:{icon_bg};">{icon_svg}</span>
   <span class="sh-nav-label">{label}</span>
 </a>"""
