@@ -486,71 +486,7 @@ _JS = """<script>
         });
     }
 
-    /* ── Sidebar icons — coloured circular badges ── */
-    const NAV_CONFIG = {
-        'Dashboard':        { grad:'linear-gradient(135deg,#f97316,#fb923c)', svg:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>' },
-        'Command Center':   { grad:'linear-gradient(135deg,#635bff,#818cf8)', svg:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>' },
-        'RFM Analysis':     { grad:'linear-gradient(135deg,#ec4899,#f472b6)', svg:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>' },
-        'Churn Prediction': { grad:'linear-gradient(135deg,#f59e0b,#fbbf24)', svg:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>' },
-        'Revenue Forecast': { grad:'linear-gradient(135deg,#10b981,#34d399)', svg:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>' },
-        'Upload Data':      { grad:'linear-gradient(135deg,#06b6d4,#38bdf8)', svg:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>' },
-    };
-
-    function addSidebarIcons(){
-        const sb = doc.querySelector('[data-testid="stSidebar"]');
-        if(!sb) return;
-
-        /* Style the sidebar brand area at top */
-        if(!sb.dataset.brandDone){
-            sb.dataset.brandDone='1';
-            const brand = doc.createElement('div');
-            brand.style.cssText='padding:12px 20px 20px 20px;border-bottom:1px solid rgba(255,255,255,0.06);margin-bottom:8px;';
-            brand.innerHTML='<div style="font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.25);">Shalina Healthcare</div>'
-                           +'<div style="font-size:13px;font-weight:700;color:rgba(255,255,255,0.80);margin-top:3px;letter-spacing:-0.3px;">Distribution Intelligence</div>';
-            const inner = sb.querySelector(':scope > div > div');
-            if(inner && inner.firstChild) inner.insertBefore(brand, inner.firstChild);
-        }
-
-        sb.querySelectorAll('a[data-testid="stPageLink"]').forEach(link=>{
-            if(link.dataset.icondone) return;
-            const spans = link.querySelectorAll('span');
-            let ts = null;
-            for(const sp of spans){
-                const t = sp.textContent.trim();
-                if(NAV_CONFIG[t]){ ts = sp; break; }
-            }
-            if(!ts) return;
-            const label = ts.textContent.trim();
-            const cfg   = NAV_CONFIG[label];
-            link.dataset.icondone = '1';
-
-            /* Check if this is the active page */
-            const isActive = link.getAttribute('aria-current') === 'page'
-                          || link.classList.contains('active')
-                          || link.href?.endsWith(window.parent.location.pathname);
-
-            ts.innerHTML =
-                '<span style="display:inline-flex;align-items:center;gap:13px;width:100%;padding:1px 0;">'
-                /* Coloured circular icon */
-                +'<span style="display:flex;align-items:center;justify-content:center;'
-                +'width:34px;height:34px;border-radius:50%;flex-shrink:0;'
-                +'background:'+ cfg.grad +';'
-                +'box-shadow:0 3px 10px rgba(0,0,0,0.30);">'
-                + cfg.svg +'</span>'
-                /* Label */
-                +'<span style="font-size:14px;font-weight:'+(isActive?'700':'500')+';'
-                +'color:'+(isActive?'#ffffff':'rgba(255,255,255,0.62)')+';'
-                +'letter-spacing:-0.1px;">'
-                + label +'</span></span>';
-
-            /* Highlight active row */
-            if(isActive){
-                link.style.setProperty('background','rgba(255,255,255,0.08)','important');
-                link.style.setProperty('border-left','3px solid #635bff','important');
-                link.style.setProperty('padding-left','11px','important');
-            }
-        });
-    }
+    function addSidebarIcons(){ /* nav now rendered via st.markdown — no JS injection needed */ }
 
     /* Scroll reveal */
     function initReveal(){
@@ -588,99 +524,100 @@ def apply_styles(active_page: str = ""):
     _stc.html(_JS, height=0)
 
 
-def sidebar_nav(refresh_key: str = "refresh_data"):
-    _NAV_HTML = """
+def _nav_item(href: str, label: str, icon_svg: str, icon_bg: str) -> str:
+    """Render one nav link as raw HTML (rendered directly in Streamlit DOM via st.markdown)."""
+    return f"""
+<a href="{href}" class="sh-nav-link" data-label="{label}">
+  <span class="sh-nav-icon" style="background:{icon_bg};">{icon_svg}</span>
+  <span class="sh-nav-label">{label}</span>
+</a>"""
+
+_ICON = {
+    'dashboard': '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>',
+    'command':   '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>',
+    'rfm':       '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>',
+    'churn':     '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>',
+    'revenue':   '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>',
+    'upload':    '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>',
+}
+
+_NAV_CSS = """
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-*{box-sizing:border-box;margin:0;padding:0;}
-body{background:transparent;font-family:'Inter',sans-serif;}
-
-.brand{padding:18px 16px 14px;border-bottom:1px solid rgba(255,255,255,0.06);margin-bottom:6px;}
-.brand-sub{font-size:9.5px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.25);}
-.brand-title{font-size:13px;font-weight:700;color:rgba(255,255,255,0.82);margin-top:3px;letter-spacing:-0.2px;}
-
-.nav{padding:4px 8px;}
-.nav-item{display:flex;align-items:center;gap:12px;padding:9px 10px;border-radius:10px;cursor:pointer;margin-bottom:1px;border:none;background:transparent;width:100%;text-align:left;transition:background 0.14s;}
-.nav-item:hover{background:rgba(255,255,255,0.07);}
-.nav-item.active{background:rgba(255,255,255,0.09);border-left:3px solid #635bff;padding-left:7px;}
-
-.icon{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.label{font-size:13.5px;font-weight:500;color:rgba(255,255,255,0.58);white-space:nowrap;}
-.nav-item.active .label{color:#fff;font-weight:700;}
-.nav-item:hover .label{color:rgba(255,255,255,0.85);}
-
-.divider{height:1px;background:rgba(255,255,255,0.06);margin:10px 8px;}
-.section-label{font-size:9.5px;font-weight:700;letter-spacing:0.10em;text-transform:uppercase;color:rgba(255,255,255,0.22);padding:0 10px;margin:10px 0 6px;}
+/* ── Custom sidebar nav ── */
+.sh-nav-brand {
+    padding: 18px 14px 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    margin-bottom: 6px;
+}
+.sh-nav-brand-sub {
+    font-size: 9.5px; font-weight: 700; letter-spacing: 0.12em;
+    text-transform: uppercase; color: rgba(255,255,255,0.28);
+}
+.sh-nav-brand-title {
+    font-size: 13.5px; font-weight: 700;
+    color: rgba(255,255,255,0.85); margin-top: 3px; letter-spacing: -0.2px;
+}
+.sh-nav-links { padding: 4px 8px; }
+.sh-nav-link {
+    display: flex !important; align-items: center !important; gap: 12px !important;
+    padding: 9px 10px !important; border-radius: 10px !important;
+    margin-bottom: 2px !important; text-decoration: none !important;
+    transition: background 0.14s !important; cursor: pointer !important;
+    border-left: 3px solid transparent !important;
+}
+.sh-nav-link:hover { background: rgba(255,255,255,0.07) !important; }
+.sh-nav-link:hover .sh-nav-label { color: #ffffff !important; }
+.sh-nav-icon {
+    width: 34px !important; height: 34px !important; border-radius: 50% !important;
+    display: flex !important; align-items: center !important; justify-content: center !important;
+    flex-shrink: 0 !important;
+}
+.sh-nav-label {
+    font-size: 13.5px !important; font-weight: 500 !important;
+    color: rgba(255,255,255,0.60) !important; white-space: nowrap !important;
+    font-family: 'Inter', sans-serif !important;
+}
+/* Active state injected by JS below */
+.sh-nav-link.sh-active {
+    background: rgba(255,255,255,0.09) !important;
+    border-left: 3px solid #635bff !important;
+    padding-left: 7px !important;
+}
+.sh-nav-link.sh-active .sh-nav-label {
+    color: #ffffff !important; font-weight: 700 !important;
+}
 </style>
+"""
 
-<div class="brand">
-  <div class="brand-sub">Shalina Healthcare</div>
-  <div class="brand-title">Distribution Intelligence</div>
-</div>
-
-<div class="nav">
-  <button class="nav-item" data-path="/" onclick="nav(this)">
-    <span class="icon" style="background:linear-gradient(135deg,#f97316,#fb923c);box-shadow:0 3px 10px rgba(249,115,22,0.35);">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
-    </span>
-    <span class="label">Dashboard</span>
-  </button>
-
-  <button class="nav-item" data-path="/Command_Center" onclick="nav(this)">
-    <span class="icon" style="background:linear-gradient(135deg,#635bff,#818cf8);box-shadow:0 3px 10px rgba(99,91,255,0.35);">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
-    </span>
-    <span class="label">Command Center</span>
-  </button>
-
-  <button class="nav-item" data-path="/RFM_Analysis" onclick="nav(this)">
-    <span class="icon" style="background:linear-gradient(135deg,#ec4899,#f472b6);box-shadow:0 3px 10px rgba(236,72,153,0.35);">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-    </span>
-    <span class="label">RFM Analysis</span>
-  </button>
-
-  <button class="nav-item" data-path="/Churn_Prediction" onclick="nav(this)">
-    <span class="icon" style="background:linear-gradient(135deg,#f59e0b,#fbbf24);box-shadow:0 3px 10px rgba(245,158,11,0.35);">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-    </span>
-    <span class="label">Churn Prediction</span>
-  </button>
-
-  <button class="nav-item" data-path="/Revenue_Forecast" onclick="nav(this)">
-    <span class="icon" style="background:linear-gradient(135deg,#10b981,#34d399);box-shadow:0 3px 10px rgba(16,185,129,0.35);">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
-    </span>
-    <span class="label">Revenue Forecast</span>
-  </button>
-
-  <button class="nav-item" data-path="/Upload_Data" onclick="nav(this)">
-    <span class="icon" style="background:linear-gradient(135deg,#06b6d4,#38bdf8);box-shadow:0 3px 10px rgba(6,182,212,0.35);">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>
-    </span>
-    <span class="label">Upload Data</span>
-  </button>
-</div>
-
+_NAV_ACTIVE_JS = """
 <script>
 (function(){
-  /* Mark active item based on current URL */
-  var path = window.parent.location.pathname.replace(/\/$/, '') || '/';
-  document.querySelectorAll('.nav-item').forEach(function(btn){
-    var dp = btn.dataset.path;
-    if(dp === path || (dp === '/' && (path === '' || path === '/')))
-      btn.classList.add('active');
-  });
+    var path = window.location.pathname.replace(/\\/+$/, '') || '/';
+    var links = document.querySelectorAll('.sh-nav-link');
+    links.forEach(function(a){
+        var lp = a.getAttribute('href').replace(/\\/+$/, '') || '/';
+        if(lp === path) a.classList.add('sh-active');
+    });
 })();
-
-function nav(btn){
-  window.parent.location.href = btn.dataset.path;
-}
 </script>
 """
 
+
+def sidebar_nav(refresh_key: str = "refresh_data"):
     with st.sidebar:
-        _stc.html(_NAV_HTML, height=380, scrolling=False)
+        st.markdown(_NAV_CSS + """
+<div class="sh-nav-brand">
+  <div class="sh-nav-brand-sub">Shalina Healthcare</div>
+  <div class="sh-nav-brand-title">Distribution Intelligence</div>
+</div>
+<div class="sh-nav-links">
+""" + _nav_item("/",                 "Dashboard",        _ICON['dashboard'], "#f97316")
+  + _nav_item("/Command_Center",     "Command Center",   _ICON['command'],   "#635bff")
+  + _nav_item("/RFM_Analysis",       "RFM Analysis",     _ICON['rfm'],       "#ec4899")
+  + _nav_item("/Churn_Prediction",   "Churn Prediction", _ICON['churn'],     "#f59e0b")
+  + _nav_item("/Revenue_Forecast",   "Revenue Forecast", _ICON['revenue'],   "#10b981")
+  + _nav_item("/Upload_Data",        "Upload Data",      _ICON['upload'],    "#06b6d4")
+  + "</div>" + _NAV_ACTIVE_JS, unsafe_allow_html=True)
 
         st.markdown('<div class="sh-sidebar-divider"></div>', unsafe_allow_html=True)
         st.markdown('<span class="sh-sidebar-label">Data</span>', unsafe_allow_html=True)
