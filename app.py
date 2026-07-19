@@ -93,12 +93,12 @@ color_map = {
 }
 chart_layout = dict(
     paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(255,255,255,0.015)",
-    font=dict(color="#333", size=11), height=380,
-    xaxis=dict(gridcolor="rgba(255,255,255,0.03)", linecolor="rgba(255,255,255,0.04)", color="#333"),
-    yaxis=dict(gridcolor="rgba(255,255,255,0.03)", linecolor="rgba(255,255,255,0.04)", color="#333"),
+    font=dict(color="#4a4a6a", size=11), height=380,
+    xaxis=dict(gridcolor="rgba(99,91,255,0.05)", linecolor="rgba(99,91,255,0.08)", color="#4a4a6a"),
+    yaxis=dict(gridcolor="rgba(99,91,255,0.05)", linecolor="rgba(99,91,255,0.08)", color="#4a4a6a"),
     margin=dict(l=0, r=0, t=20, b=0),
-    legend=dict(font=dict(color="#666"), bgcolor="rgba(5,5,5,0.9)",
-                bordercolor="rgba(255,255,255,0.06)", borderwidth=1)
+    legend=dict(font=dict(color="#8b8fa8"), bgcolor="rgba(15,15,28,0.95)",
+                bordercolor="rgba(99,91,255,0.14)", borderwidth=1)
 )
 
 # ── SIDEBAR PART 2 : Outlet Search ────────────────────────────────
@@ -109,7 +109,7 @@ with st.sidebar:
     </div>""", unsafe_allow_html=True)
     st.markdown("""
     <div style='margin-top:20px;padding:0 8px;font-family:Inter,sans-serif;font-size:9px;
-         font-weight:700;color:#2a2a2a;text-transform:uppercase;
+         font-weight:700;color:#3a3a52;text-transform:uppercase;
          letter-spacing:3px;margin-bottom:8px;'>Outlet Search</div>
     """, unsafe_allow_html=True)
 
@@ -194,16 +194,16 @@ st.markdown(f"""
          animation:sh-pulse 2.2s ease-in-out infinite;"></div>
     <div style="flex:1;">
         <div style="font-size:13px;font-weight:700;color:#fff;">{status_label}</div>
-        <div style="font-size:11px;color:#2a2a2a;margin-top:2px;">{status_sub}</div>
+        <div style="font-size:11px;color:#4a4a6a;margin-top:2px;">{status_sub}</div>
     </div>
     <div style="display:flex;gap:16px;align-items:center;">
-        <div style="display:flex;align-items:center;gap:6px;font-size:9px;color:#2a2a2a;font-weight:700;text-transform:uppercase;letter-spacing:2px;">
+        <div style="display:flex;align-items:center;gap:6px;font-size:9px;color:#4a4a6a;font-weight:700;text-transform:uppercase;letter-spacing:2px;">
             <div style="width:5px;height:5px;border-radius:50%;background:#22C55E;"></div>Live Fabric
         </div>
-        <div style="display:flex;align-items:center;gap:6px;font-size:9px;color:#2a2a2a;font-weight:700;text-transform:uppercase;letter-spacing:2px;">
+        <div style="display:flex;align-items:center;gap:6px;font-size:9px;color:#4a4a6a;font-weight:700;text-transform:uppercase;letter-spacing:2px;">
             <div style="width:5px;height:5px;border-radius:50%;background:#6EC6F5;"></div>Hybrid
         </div>
-        <div style="display:flex;align-items:center;gap:6px;font-size:9px;color:#2a2a2a;font-weight:700;text-transform:uppercase;letter-spacing:2px;">
+        <div style="display:flex;align-items:center;gap:6px;font-size:9px;color:#4a4a6a;font-weight:700;text-transform:uppercase;letter-spacing:2px;">
             <div style="width:5px;height:5px;border-radius:50%;background:#F59E0B;"></div>CSV
         </div>
     </div>
@@ -213,7 +213,7 @@ st.markdown(f"""
 # ── COUNTRY SWITCHER ──────────────────────────────────────────────
 st.markdown(
     "<div style='margin:14px 0 8px 0;font-family:Inter,sans-serif;font-size:9px;font-weight:700;"
-    "color:#2a2a2a;text-transform:uppercase;letter-spacing:3px;'>Select Country</div>",
+    "color:#635bff;text-transform:uppercase;letter-spacing:3px;'>Select Country</div>",
     unsafe_allow_html=True
 )
 cc1, cc2, cc3 = st.columns([1, 1, 8])
@@ -230,15 +230,15 @@ country    = st.session_state.country
 df_country = df_all[df_all['country'] == country].copy()
 p25, mean_val, p75 = get_stats(df_country)
 
-accent = "#3B82F6" if country == "Nigeria" else "#8B5CF6"
+accent = "#635bff"
 st.markdown(
-    f"<div style='height:1px;background:linear-gradient(90deg,{accent}55,transparent);margin-bottom:20px;'></div>",
+    f"<div style='height:1px;background:linear-gradient(90deg,{accent}88,transparent);margin-bottom:20px;'></div>",
     unsafe_allow_html=True
 )
 
 # ── NAVBAR ────────────────────────────────────────────────────────
 st.markdown("""
-<div style="background:#0a0a0a;border:1px solid rgba(255,255,255,0.06);
+<div style="background:#0f0f1c;border:1px solid rgba(99,91,255,0.12);
      border-radius:100px;padding:5px;display:flex;gap:4px;margin-bottom:4px;">
 </div>""", unsafe_allow_html=True)
 n1, n2, n3, n4 = st.columns(4)
@@ -578,7 +578,7 @@ if page == "Dashboard":
     st.markdown(f"""
     <div class="sh-kpi-row">
         <div class="sh-kpi">
-            <div class="sh-kpi-accent" style="background:linear-gradient(90deg,#2563eb,transparent);"></div>
+            <div class="sh-kpi-accent" style="background:linear-gradient(90deg,#635bff,transparent);"></div>
             <div class="sh-kpi-label">Total Outlets &mdash; {country}</div>
             <div class="sh-kpi-value">{total_outlets:,}</div>
             <div class="sh-kpi-delta">Distribution network</div>
@@ -590,7 +590,7 @@ if page == "Dashboard":
             <div class="sh-kpi-delta">{_ws_delta} of outlets</div>
         </div>
         <div class="sh-kpi">
-            <div class="sh-kpi-accent" style="background:linear-gradient(90deg,#7c3aed,transparent);"></div>
+            <div class="sh-kpi-accent" style="background:linear-gradient(90deg,#635bff,transparent);"></div>
             <div class="sh-kpi-label">High Performers</div>
             <div class="sh-kpi-value">{high_performers:,}</div>
             <div class="sh-kpi-delta">{_hp_delta} of network</div>
