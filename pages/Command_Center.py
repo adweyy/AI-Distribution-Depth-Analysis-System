@@ -238,17 +238,17 @@ st.markdown(
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
         <div class="sh-card">
             <div class="sh-eyebrow" style="margin-bottom:8px;">Where To Attack</div>
-            <div style="font-size:15px;font-weight:700;color:#e6edf3;margin-bottom:8px;">Highest-density opportunity zone</div>
+            <div style="font-size:15px;font-weight:700;color:#0f172a;margin-bottom:8px;">Highest-density opportunity zone</div>
             <div style="font-size:13px;color:#64748b;line-height:1.7;">{top_zone_text}</div>
         </div>
         <div class="sh-card">
             <div class="sh-eyebrow" style="margin-bottom:8px;">Who To Visit First</div>
-            <div style="font-size:15px;font-weight:700;color:#e6edf3;margin-bottom:8px;">Priority outlet recommendation</div>
+            <div style="font-size:15px;font-weight:700;color:#0f172a;margin-bottom:8px;">Priority outlet recommendation</div>
             <div style="font-size:13px;color:#64748b;line-height:1.7;">{top_outlet_text}</div>
         </div>
         <div class="sh-card">
             <div class="sh-eyebrow" style="margin-bottom:8px;">Data Confidence</div>
-            <div style="font-size:15px;font-weight:700;color:#e6edf3;margin-bottom:8px;">GPS reliability check</div>
+            <div style="font-size:15px;font-weight:700;color:#0f172a;margin-bottom:8px;">GPS reliability check</div>
             <div style="font-size:13px;color:#64748b;line-height:1.7;">{quality_text}</div>
         </div>
     </div>
@@ -289,7 +289,7 @@ with chart_left:
             margin=dict(l=0, r=0, t=0, b=0),
             paper_bgcolor="rgba(0,0,0,0)",
             plot_bgcolor="rgba(0,0,0,0)",
-            font=dict(color="#c9d1d9"),
+            font=dict(color="#374151"),
         )
         st.plotly_chart(fig_map, use_container_width=True)
     else:
@@ -322,7 +322,7 @@ with chart_right:
             margin=dict(l=0, r=0, t=0, b=0),
             paper_bgcolor="rgba(0,0,0,0)",
             plot_bgcolor="rgba(0,0,0,0)",
-            font=dict(color="#c9d1d9"),
+            font=dict(color="#374151"),
             xaxis=dict(gridcolor="rgba(255,255,255,0.08)"),
             yaxis=dict(gridcolor="rgba(255,255,255,0.0)"),
         )

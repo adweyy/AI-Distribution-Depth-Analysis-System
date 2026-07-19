@@ -92,13 +92,13 @@ color_map = {
     'High Performer':  '#A855F7'
 }
 chart_layout = dict(
-    paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(255,255,255,0.02)",
-    font=dict(color="#8b949e", size=11), height=380,
-    xaxis=dict(gridcolor="rgba(99,91,255,0.05)", linecolor="rgba(99,91,255,0.08)", color="#4a4a6a"),
-    yaxis=dict(gridcolor="rgba(99,91,255,0.05)", linecolor="rgba(99,91,255,0.08)", color="#4a4a6a"),
+    paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
+    font=dict(color="#64748b", size=11), height=380,
+    xaxis=dict(gridcolor="rgba(100,116,139,0.12)", linecolor="#e2e8f0", color="#64748b"),
+    yaxis=dict(gridcolor="rgba(100,116,139,0.12)", linecolor="#e2e8f0", color="#64748b"),
     margin=dict(l=0, r=0, t=20, b=0),
-    legend=dict(font=dict(color="#8b8fa8"), bgcolor="rgba(15,15,28,0.95)",
-                bordercolor="rgba(99,91,255,0.14)", borderwidth=1)
+    legend=dict(font=dict(color="#374151"), bgcolor="rgba(255,255,255,0.92)",
+                bordercolor="#e2e8f0", borderwidth=1)
 )
 
 # ── SIDEBAR PART 2 : Outlet Search ────────────────────────────────
@@ -193,7 +193,7 @@ st.markdown(f"""
          box-shadow:0 0 8px {dot_color};flex-shrink:0;
          animation:sh-pulse 2.2s ease-in-out infinite;"></div>
     <div style="flex:1;">
-        <div style="font-size:13px;font-weight:700;color:#fff;">{status_label}</div>
+        <div style="font-size:13px;font-weight:700;color:#0f172a;">{status_label}</div>
         <div style="font-size:11px;color:#6b7280;margin-top:2px;">{status_sub}</div>
     </div>
     <div style="display:flex;gap:16px;align-items:center;">
@@ -238,7 +238,7 @@ st.markdown(
 
 # ── NAVBAR ────────────────────────────────────────────────────────
 st.markdown("""
-<div style="background:#1c2333;border:1px solid rgba(99,91,255,0.18);
+<div style="background:#f1f5f9;border:1px solid #e2e8f0;
      border-radius:12px;padding:5px;display:flex;gap:4px;margin-bottom:4px;">
 </div>""", unsafe_allow_html=True)
 n1, n2, n3, n4 = st.columns(4)
@@ -468,7 +468,7 @@ if st.session_state.selected_outlet:
 
             _fig_loc.update_layout(
                 mapbox=dict(
-                    style='carto-darkmatter',
+                    style='carto-positron',
                     center=dict(lat=_lat, lon=_lon),
                     zoom=13,
                 ),
@@ -621,10 +621,10 @@ if page == "Dashboard":
         hover_data={"YTD Retailing Value":":,.1f","Retailer Subtype":True,"latitude":False,"longitude":False},
         center=map_center)
     fig_map.update_traces(marker=dict(opacity=0.85))
-    fig_map.update_layout(mapbox_style="carto-darkmatter", paper_bgcolor="rgba(0,0,0,0)",
+    fig_map.update_layout(mapbox_style="carto-positron", paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(0,0,0,0)",
-        legend=dict(font=dict(color="#888",size=11), bgcolor="rgba(5,5,5,0.92)",
-                    bordercolor="rgba(255,255,255,0.06)", borderwidth=1),
+        legend=dict(font=dict(color="#374151",size=11), bgcolor="rgba(255,255,255,0.92)",
+                    bordercolor="#e2e8f0", borderwidth=1),
         margin=dict(l=0,r=0,t=0,b=0))
     st.plotly_chart(fig_map, use_container_width=True)
 
@@ -636,8 +636,8 @@ if page == "Dashboard":
         fig_pie = px.pie(opp_counts, values='Count', names='Category',
                          color='Category', color_discrete_map=color_map, hole=0.5)
         fig_pie.update_layout(paper_bgcolor="rgba(0,0,0,0)",
-                               legend=dict(font=dict(color="#FFFFFF")),
-                               font=dict(color="#90C8E8"), margin=dict(l=0,r=0,t=20,b=0))
+                               legend=dict(font=dict(color="#374151")),
+                               font=dict(color="#64748b"), margin=dict(l=0,r=0,t=20,b=0))
         st.plotly_chart(fig_pie, use_container_width=True)
     with c2:
         st.markdown('<div class="sh-section">Retailer Subtype Split</div>', unsafe_allow_html=True)
@@ -745,9 +745,9 @@ elif page == "Whitespace Detection":
         zoom=map_zoom, height=480, hover_name="Shop Name",
         hover_data={"YTD Retailing Value":":,.1f","Retailer Subtype":True,"latitude":False,"longitude":False},
         center=map_center)
-    fig_ws.update_layout(mapbox_style="carto-darkmatter", paper_bgcolor="rgba(0,0,0,0)",
-        legend=dict(font=dict(color="#b0bac9",size=11), bgcolor="rgba(15,22,41,0.88)",
-                    bordercolor="rgba(99,91,255,0.20)", borderwidth=1),
+    fig_ws.update_layout(mapbox_style="carto-positron", paper_bgcolor="rgba(0,0,0,0)",
+        legend=dict(font=dict(color="#374151",size=11), bgcolor="rgba(255,255,255,0.92)",
+                    bordercolor="#e2e8f0", borderwidth=1),
         margin=dict(l=0,r=0,t=0,b=0))
     st.plotly_chart(fig_ws, use_container_width=True)
 

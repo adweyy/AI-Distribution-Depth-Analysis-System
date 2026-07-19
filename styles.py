@@ -1,18 +1,18 @@
 """
 Shalina Distribution Intelligence — Shared Design System
-VocalIQ-inspired: purple #635bff accent, Inter, clean professional dark.
-High-contrast dark navy — presentable, readable, company-grade.
+Light theme: #f4f7ff background, white cards, #635bff purple accent, Inter.
+Clean, professional, presentation-ready.
 """
 import streamlit as st
 import streamlit.components.v1 as _stc
 
 _CSS = """
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* ── Kill ALL Streamlit chrome including the "keyboard_double_arrow_right" toolbar ── */
+/* ── Kill Streamlit chrome & the "keyboard_double_arrow_right" junk ── */
 [data-testid="stDecoration"],
 [data-testid="stStatusWidget"],
 #MainMenu, footer,
@@ -22,18 +22,12 @@ _CSS = """
 [data-testid="stPageSwitcherButton"],
 [data-testid="stToolbarActionButton"],
 [data-testid="stToolbar"] [data-testid="baseButton-header"],
-[data-testid="collapsedControl"] + div,
 section[data-testid="stSidebar"] > div:first-child > div:first-child nav,
 [data-testid="stImageContainer"] button,
 [data-testid="StyledFullScreenButton"],
 button[title="View fullscreen"],
 button[title="Fullscreen"],
 .stAppToolbar { display: none !important; }
-
-/* Hide the floating icon/text that shows above sidebar ("keyboard_double_arrow_right") */
-[data-testid="stHeader"] > div:first-child,
-[data-testid="stHeader"] [data-testid="stToolbar"],
-[data-testid="stHeader"] ~ div > [data-testid="baseButton-header"] { display: none !important; }
 
 header[data-testid="stHeader"] {
     background: transparent !important;
@@ -44,20 +38,20 @@ header[data-testid="stHeader"] {
     overflow: hidden !important;
 }
 
-/* ── App background — professional dark navy ── */
+/* ── App — light whitish-grey ── */
 .stApp, body, html {
-    background: #0f1629 !important;
+    background: #f4f7ff !important;
     font-family: 'Inter', -apple-system, sans-serif !important;
     font-size: 14px !important;
-    color: #e6edf3 !important;
+    color: #0f172a !important;
 }
 
-/* Subtle top glow — purple, very soft */
+/* Very subtle purple tint at top */
 .stApp::before {
     content: '' !important;
     position: fixed !important;
-    top: 0; left: 0; right: 0; height: 280px !important;
-    background: radial-gradient(ellipse 100% 100% at 50% 0%, rgba(99,91,255,0.16) 0%, transparent 70%) !important;
+    top: 0; left: 0; right: 0; height: 320px !important;
+    background: radial-gradient(ellipse 120% 80% at 60% 0%, rgba(99,91,255,0.07) 0%, transparent 65%) !important;
     pointer-events: none !important;
     z-index: 0 !important;
 }
@@ -69,15 +63,16 @@ header[data-testid="stHeader"] {
     position: relative; z-index: 1;
 }
 
-/* ── Sidebar ── */
+/* ── Sidebar — white panel ── */
 section[data-testid="stSidebar"] {
-    background: #141d2b !important;
-    border-right: 1px solid rgba(99,91,255,0.14) !important;
+    background: #ffffff !important;
+    border-right: 1px solid #e8ecf7 !important;
     min-width: 230px !important;
+    box-shadow: 2px 0 12px rgba(99,91,255,0.04) !important;
 }
 section[data-testid="stSidebar"] > div:first-child { padding-top: 24px !important; }
 
-/* Nav links — CLEARLY VISIBLE */
+/* Nav links */
 section[data-testid="stSidebar"] a[data-testid="stPageLink"] {
     border-radius: 8px !important;
     padding: 9px 14px !important;
@@ -87,32 +82,35 @@ section[data-testid="stSidebar"] a[data-testid="stPageLink"] {
     text-decoration: none !important;
 }
 section[data-testid="stSidebar"] a[data-testid="stPageLink"] * {
-    color: #b0bac9 !important;
+    color: #64748b !important;
     font-family: 'Inter', sans-serif !important;
     font-size: 13.5px !important;
     font-weight: 500 !important;
 }
-section[data-testid="stSidebar"] a[data-testid="stPageLink"]:hover { background: rgba(99,91,255,0.10) !important; }
-section[data-testid="stSidebar"] a[data-testid="stPageLink"]:hover * { color: #c4b5fd !important; }
+section[data-testid="stSidebar"] a[data-testid="stPageLink"]:hover {
+    background: rgba(99,91,255,0.07) !important;
+}
+section[data-testid="stSidebar"] a[data-testid="stPageLink"]:hover * {
+    color: #635bff !important;
+}
 
-/* Sidebar text (labels, divider text) */
+/* Sidebar text */
 section[data-testid="stSidebar"] p,
 section[data-testid="stSidebar"] div,
-section[data-testid="stSidebar"] span { color: #b0bac9 !important; font-family: 'Inter',sans-serif !important; }
+section[data-testid="stSidebar"] span { color: #64748b !important; font-family: 'Inter',sans-serif !important; }
 
-/* Sidebar button (Refresh Data) */
+/* Sidebar button */
 section[data-testid="stSidebar"] .stButton > button {
-    color: #b0bac9 !important;
-    border: 1px solid rgba(99,91,255,0.25) !important;
-    background: rgba(99,91,255,0.06) !important;
+    color: #635bff !important;
+    border: 1.5px solid rgba(99,91,255,0.25) !important;
+    background: rgba(99,91,255,0.05) !important;
     font-size: 13px !important; font-weight: 600 !important;
     padding: 9px 16px !important;
     border-radius: 8px !important;
     width: 100% !important;
 }
 section[data-testid="stSidebar"] .stButton > button:hover {
-    background: rgba(99,91,255,0.14) !important;
-    color: #c4b5fd !important;
+    background: rgba(99,91,255,0.10) !important;
     border-color: rgba(99,91,255,0.45) !important;
 }
 
@@ -125,147 +123,149 @@ section[data-testid="stSidebar"] .stButton > button:hover {
 [data-testid="stExpandSidebarButton"] {
     position: fixed !important; top: 12px !important; left: 12px !important;
     width: 34px !important; height: 34px !important;
-    background: #1c2333 !important;
-    border: 1px solid rgba(99,91,255,0.22) !important;
+    background: #ffffff !important;
+    border: 1px solid #e8ecf7 !important;
     border-radius: 8px !important;
     align-items: center !important; justify-content: center !important;
+    box-shadow: 0 2px 8px rgba(99,91,255,0.08) !important;
 }
 
-/* ── Buttons (main content) ── */
+/* ── Main content buttons ── */
 .stButton > button {
-    background: transparent !important;
-    color: #b0bac9 !important;
-    border: 1.5px solid rgba(99,91,255,0.22) !important;
+    background: #ffffff !important;
+    color: #374151 !important;
+    border: 1.5px solid #e2e8f0 !important;
     border-radius: 8px !important;
     font-family: 'Inter', sans-serif !important;
     font-weight: 600 !important;
     font-size: 13.5px !important;
     padding: 9px 20px !important;
     transition: all 0.18s ease !important;
-    letter-spacing: 0.01em !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06) !important;
 }
 .stButton > button:hover {
-    background: rgba(99,91,255,0.12) !important;
-    color: #c4b5fd !important;
-    border-color: #635bff !important;
+    background: #f8f5ff !important;
+    color: #635bff !important;
+    border-color: rgba(99,91,255,0.40) !important;
     transform: translateY(-1px) !important;
-    box-shadow: 0 4px 16px rgba(99,91,255,0.18) !important;
+    box-shadow: 0 4px 14px rgba(99,91,255,0.14) !important;
 }
-.stButton > button:active { transform: translateY(0) !important; }
 
 .stDownloadButton > button {
-    color: #c4b5fd !important;
-    border: 1.5px solid rgba(99,91,255,0.32) !important;
-    background: rgba(99,91,255,0.08) !important;
+    color: #635bff !important;
+    border: 1.5px solid rgba(99,91,255,0.28) !important;
+    background: rgba(99,91,255,0.05) !important;
     border-radius: 8px !important;
     font-weight: 600 !important;
     font-size: 13.5px !important;
 }
 .stDownloadButton > button:hover {
-    background: rgba(99,91,255,0.16) !important;
+    background: rgba(99,91,255,0.10) !important;
     border-color: #635bff !important;
 }
 
 /* ── Inputs ── */
 input, .stTextInput input {
-    background: #1c2333 !important;
-    border: 1.5px solid rgba(99,91,255,0.20) !important;
+    background: #ffffff !important;
+    border: 1.5px solid #e2e8f0 !important;
     border-radius: 8px !important;
-    color: #e6edf3 !important;
+    color: #0f172a !important;
     font-size: 14px !important;
     padding: 10px 14px !important;
     transition: border-color 0.18s, box-shadow 0.18s !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04) !important;
 }
 input:focus, .stTextInput input:focus {
     border-color: #635bff !important;
-    box-shadow: 0 0 0 3px rgba(99,91,255,0.18) !important;
+    box-shadow: 0 0 0 3px rgba(99,91,255,0.12) !important;
     outline: none !important;
 }
-input::placeholder { color: #3d4a5c !important; }
+input::placeholder { color: #cbd5e1 !important; }
 .stTextInput > div, .stTextInput > div > div { background: transparent !important; }
 .stTextInput label { display: none !important; }
 
 /* Selectbox */
 [data-baseweb="select"] > div {
-    background: #1c2333 !important;
-    border: 1.5px solid rgba(99,91,255,0.20) !important;
+    background: #ffffff !important;
+    border: 1.5px solid #e2e8f0 !important;
     border-radius: 8px !important;
-    color: #e6edf3 !important;
+    color: #0f172a !important;
     font-size: 14px !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04) !important;
 }
 [data-baseweb="select"] > div:hover,
 [data-baseweb="select"] > div:focus-within {
     border-color: #635bff !important;
-    box-shadow: 0 0 0 3px rgba(99,91,255,0.12) !important;
+    box-shadow: 0 0 0 3px rgba(99,91,255,0.10) !important;
 }
-[data-baseweb="select"] svg { fill: #4a5568 !important; }
+[data-baseweb="select"] svg { fill: #94a3b8 !important; }
 [data-baseweb="popover"] {
-    background: #1c2333 !important;
-    border: 1px solid rgba(99,91,255,0.22) !important;
+    background: #ffffff !important;
+    border: 1px solid #e8ecf7 !important;
     border-radius: 10px !important;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.5) !important;
+    box-shadow: 0 16px 48px rgba(15,23,42,0.12) !important;
 }
-[role="option"] { background: transparent !important; color: #b0bac9 !important; font-size: 14px !important; border-radius: 6px !important; margin: 2px 6px !important; }
-[role="option"]:hover, [aria-selected="true"] { background: rgba(99,91,255,0.14) !important; color: #c4b5fd !important; }
+[role="option"] { background: transparent !important; color: #374151 !important; font-size: 14px !important; border-radius: 6px !important; margin: 2px 6px !important; }
+[role="option"]:hover, [aria-selected="true"] { background: rgba(99,91,255,0.07) !important; color: #635bff !important; }
 
 .stSelectbox label { color: #635bff !important; font-size: 11px !important; font-weight: 700 !important; text-transform: uppercase !important; letter-spacing: 0.08em !important; margin-bottom: 6px !important; display: block !important; }
 
 /* Slider */
-[data-testid="stSlider"] > div { color: #b0bac9 !important; }
 [data-testid="stSlider"] label { color: #635bff !important; font-size: 11px !important; font-weight: 700 !important; text-transform: uppercase !important; letter-spacing: 0.08em !important; }
 
 /* ── Data Table ── */
 [data-testid="stDataFrame"] {
-    border: 1px solid rgba(99,91,255,0.18) !important;
+    border: 1px solid #e8ecf7 !important;
     border-radius: 10px !important; overflow: hidden !important;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05) !important;
 }
 [data-testid="stDataFrame"] th {
-    background: #1c2333 !important;
+    background: #f8f9fc !important;
     color: #635bff !important;
     font-size: 11px !important; font-weight: 700 !important;
     text-transform: uppercase !important; letter-spacing: 0.06em !important;
 }
-[data-testid="stDataFrame"] td { font-size: 13px !important; color: #c9d1d9 !important; border-color: rgba(99,91,255,0.07) !important; }
+[data-testid="stDataFrame"] td { font-size: 13px !important; color: #374151 !important; border-color: #f1f5f9 !important; }
+[data-testid="stDataFrame"] tr:hover td { background: rgba(99,91,255,0.04) !important; }
 
 /* ── Metric ── */
 [data-testid="stMetric"] {
-    background: #1c2333 !important;
-    border: 1px solid rgba(99,91,255,0.18) !important;
+    background: #ffffff !important;
+    border: 1px solid #e8ecf7 !important;
     border-radius: 10px !important;
     padding: 22px !important;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05) !important;
 }
 [data-testid="stMetricLabel"] { color: #635bff !important; font-size: 11px !important; font-weight: 700 !important; letter-spacing: 0.08em !important; text-transform: uppercase !important; }
-[data-testid="stMetricValue"] { color: #e6edf3 !important; font-size: 36px !important; font-weight: 800 !important; letter-spacing: -1px !important; }
-[data-testid="stMetricDelta"] { color: #4a5568 !important; font-size: 12px !important; }
+[data-testid="stMetricValue"] { color: #0f172a !important; font-size: 36px !important; font-weight: 800 !important; letter-spacing: -1px !important; }
+[data-testid="stMetricDelta"] { color: #94a3b8 !important; font-size: 12px !important; }
 
 /* ── Tabs ── */
 .stTabs [data-baseweb="tab-list"] {
-    background: #1c2333 !important;
-    border-radius: 8px !important; border: 1px solid rgba(99,91,255,0.15) !important;
+    background: #f1f5f9 !important;
+    border-radius: 8px !important;
+    border: 1px solid #e2e8f0 !important;
     padding: 4px !important; gap: 4px !important;
 }
 .stTabs [data-baseweb="tab"] {
     background: transparent !important; border-radius: 6px !important;
-    color: #6b7280 !important; font-size: 13px !important; font-weight: 600 !important;
+    color: #94a3b8 !important; font-size: 13px !important; font-weight: 600 !important;
     border: none !important; padding: 8px 20px !important;
 }
-.stTabs [aria-selected="true"] { background: rgba(99,91,255,0.18) !important; color: #c4b5fd !important; }
+.stTabs [aria-selected="true"] { background: #ffffff !important; color: #635bff !important; box-shadow: 0 1px 4px rgba(0,0,0,0.08) !important; }
 .stTabs [data-baseweb="tab-border"], .stTabs [data-baseweb="tab-highlight"] { display: none !important; }
 
 /* Expander */
 [data-testid="stExpander"] {
-    background: #1c2333 !important;
-    border: 1px solid rgba(99,91,255,0.15) !important;
+    background: #ffffff !important;
+    border: 1px solid #e8ecf7 !important;
     border-radius: 10px !important;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04) !important;
 }
-[data-testid="stExpander"] summary { color: #b0bac9 !important; font-size: 14px !important; }
-
-/* ── Plotly ── */
-.js-plotly-plot .plotly .modebar { background: transparent !important; }
-.js-plotly-plot .plotly .modebar-btn path { fill: #4a5568 !important; }
+[data-testid="stExpander"] summary { color: #374151 !important; font-size: 14px !important; }
 
 /* ── General text ── */
-p, .stMarkdown p { font-size: 14px !important; color: #b0bac9 !important; line-height: 1.65 !important; }
+p, .stMarkdown p { font-size: 14px !important; color: #64748b !important; line-height: 1.65 !important; }
 
 /* ═══════════════════════════════════════════════════
    DESIGN COMPONENTS
@@ -276,7 +276,7 @@ p, .stMarkdown p { font-size: 14px !important; color: #b0bac9 !important; line-h
     display: flex; align-items: flex-start;
     justify-content: space-between;
     padding: 4px 0 20px 0;
-    border-bottom: 1px solid rgba(99,91,255,0.14);
+    border-bottom: 1px solid #e8ecf7;
     margin-bottom: 28px;
 }
 .sh-eyebrow {
@@ -284,27 +284,28 @@ p, .stMarkdown p { font-size: 14px !important; color: #b0bac9 !important; line-h
     text-transform: uppercase; color: #635bff; margin-bottom: 6px;
 }
 .sh-title {
-    font-size: 32px; font-weight: 800; color: #e6edf3;
+    font-size: 30px; font-weight: 800; color: #0f172a;
     letter-spacing: -1.2px; line-height: 1.1;
 }
-.sh-title-dim { color: rgba(230,237,243,0.30); }
+.sh-title-dim { color: #94a3b8; }
 
 .sh-pill-group { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-top: 4px; }
 .sh-pill {
     display: inline-flex; align-items: center; gap: 7px;
-    background: rgba(99,91,255,0.07);
-    border: 1px solid rgba(99,91,255,0.20);
+    background: #f8f9fc;
+    border: 1px solid #e2e8f0;
     border-radius: 8px; padding: 6px 14px;
-    font-size: 10px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: #6b7280;
+    font-size: 10px; font-weight: 700; letter-spacing: 0.07em;
+    text-transform: uppercase; color: #94a3b8;
 }
 .sh-dot {
     width: 7px; height: 7px; border-radius: 50%;
     background: #10b981;
-    box-shadow: 0 0 6px rgba(16,185,129,0.9), 0 0 14px rgba(16,185,129,0.4);
+    box-shadow: 0 0 6px rgba(16,185,129,0.8), 0 0 12px rgba(16,185,129,0.3);
     animation: sh-pulse 2.4s ease-in-out infinite; flex-shrink: 0;
 }
-.sh-dot-amber { background: #f59e0b; box-shadow: 0 0 6px rgba(245,158,11,0.9), 0 0 14px rgba(245,158,11,0.4); }
-@keyframes sh-pulse { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+.sh-dot-amber { background: #f59e0b; box-shadow: 0 0 6px rgba(245,158,11,0.8), 0 0 12px rgba(245,158,11,0.3); }
+@keyframes sh-pulse { 0%,100%{opacity:1;} 50%{opacity:0.35;} }
 
 /* ─ KPI row ─ */
 .sh-kpi-row {
@@ -316,18 +317,18 @@ p, .stMarkdown p { font-size: 14px !important; color: #b0bac9 !important; line-h
 @media(max-width:900px){ .sh-kpi-row { grid-template-columns: repeat(2,1fr) !important; } }
 
 .sh-kpi {
-    background: #1c2333;
-    border: 1px solid rgba(99,91,255,0.18);
+    background: #ffffff;
+    border: 1px solid #e8ecf7;
     border-radius: 12px;
     padding: 26px 22px 20px 22px;
     position: relative; overflow: hidden;
     transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05), 0 0 0 0 rgba(99,91,255,0);
 }
 .sh-kpi:hover {
     transform: translateY(-3px);
-    border-color: rgba(99,91,255,0.40);
-    box-shadow: 0 10px 36px rgba(99,91,255,0.14);
+    border-color: rgba(99,91,255,0.30);
+    box-shadow: 0 8px 28px rgba(99,91,255,0.12);
 }
 .sh-kpi-accent { position: absolute; top: 0; left: 0; right: 0; height: 3px; }
 .sh-kpi-label {
@@ -335,10 +336,10 @@ p, .stMarkdown p { font-size: 14px !important; color: #b0bac9 !important; line-h
     text-transform: uppercase; color: #635bff; margin-bottom: 14px; line-height: 1.4;
 }
 .sh-kpi-value {
-    font-size: 46px; font-weight: 800; color: #e6edf3;
+    font-size: 44px; font-weight: 800; color: #0f172a;
     line-height: 1; letter-spacing: -2px; margin-bottom: 10px;
 }
-.sh-kpi-delta { font-size: 12px; color: #4a5568; font-weight: 500; line-height: 1.5; }
+.sh-kpi-delta { font-size: 12px; color: #94a3b8; font-weight: 500; line-height: 1.5; }
 
 /* ─ Section heading ─ */
 .sh-section {
@@ -347,78 +348,79 @@ p, .stMarkdown p { font-size: 14px !important; color: #b0bac9 !important; line-h
     margin-top: 30px; margin-bottom: 14px;
     display: flex; align-items: center; gap: 14px;
 }
-.sh-section::after { content:''; flex:1; height:1px; background:rgba(99,91,255,0.12); }
+.sh-section::after { content:''; flex:1; height:1px; background:#e8ecf7; }
 
 /* ─ Card ─ */
 .sh-card {
-    background: #1c2333;
-    border: 1px solid rgba(99,91,255,0.14);
+    background: #ffffff;
+    border: 1px solid #e8ecf7;
     border-radius: 12px; padding: 22px 24px;
     transition: border-color 0.18s, box-shadow 0.18s;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
 }
-.sh-card:hover { border-color: rgba(99,91,255,0.32); box-shadow: 0 6px 24px rgba(99,91,255,0.10); }
+.sh-card:hover { border-color: rgba(99,91,255,0.28); box-shadow: 0 6px 22px rgba(99,91,255,0.09); }
 
 /* ─ Insight ─ */
 .sh-insight {
-    background: #1c2333;
-    border: 1px solid rgba(99,91,255,0.14);
+    background: #ffffff;
+    border: 1px solid #e8ecf7;
     border-radius: 12px; padding: 18px 20px; margin-bottom: 10px;
     transition: border-color 0.18s, box-shadow 0.18s;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
 }
-.sh-insight:hover { border-color: rgba(99,91,255,0.32); box-shadow: 0 6px 24px rgba(99,91,255,0.10); }
-.sh-insight-title { font-size: 15px; font-weight: 700; color: #e6edf3; margin-bottom: 6px; }
-.sh-insight-body  { font-size: 13px; color: #6b7280; line-height: 1.7; }
+.sh-insight:hover { border-color: rgba(99,91,255,0.28); box-shadow: 0 6px 22px rgba(99,91,255,0.09); }
+.sh-insight-title { font-size: 15px; font-weight: 700; color: #0f172a; margin-bottom: 6px; }
+.sh-insight-body  { font-size: 13px; color: #64748b; line-height: 1.7; }
 
 /* ─ Outlet detail card ─ */
 .sh-odc {
-    background: #1c2333;
-    border: 1px solid rgba(99,91,255,0.20);
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
     border-radius: 12px; padding: 26px 28px 22px 28px; margin-bottom: 24px;
-    box-shadow: 0 6px 28px rgba(99,91,255,0.10);
+    box-shadow: 0 4px 18px rgba(99,91,255,0.08);
 }
 .sh-odc-tag  { font-size: 11px; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase; color: #635bff; margin-bottom: 8px; }
-.sh-odc-name { font-size: 26px; font-weight: 800; color: #e6edf3; letter-spacing: -0.8px; line-height: 1.1; margin-bottom: 12px; }
-.sh-odc-meta { display:flex; gap:8px; align-items:center; flex-wrap:wrap; padding-bottom:16px; margin-bottom:16px; border-bottom:1px solid rgba(99,91,255,0.10); }
+.sh-odc-name { font-size: 26px; font-weight: 800; color: #0f172a; letter-spacing: -0.8px; line-height: 1.1; margin-bottom: 12px; }
+.sh-odc-meta { display:flex; gap:8px; align-items:center; flex-wrap:wrap; padding-bottom:16px; margin-bottom:16px; border-bottom:1px solid #f1f5f9; }
 .sh-odc-stats { display:flex; align-items:stretch; gap:0; }
 .sh-odc-stat  { flex:1; padding:0 22px; }
 .sh-odc-stat:first-child { padding-left:0; }
-.sh-odc-divider { width:1px; background:rgba(99,91,255,0.10); flex-shrink:0; }
+.sh-odc-divider { width:1px; background:#f1f5f9; flex-shrink:0; }
 .sh-odc-stat-label { font-size:11px; font-weight:700; letter-spacing:0.09em; text-transform:uppercase; color:#635bff; margin-bottom:8px; }
-.sh-odc-stat-value { font-size:26px; font-weight:800; letter-spacing:-0.8px; line-height:1; }
+.sh-odc-stat-value { font-size:26px; font-weight:800; letter-spacing:-0.8px; line-height:1; color:#0f172a; }
 
 /* ─ Banner ─ */
 .sh-banner {
-    background: rgba(99,91,255,0.07);
-    border: 1px solid rgba(99,91,255,0.18);
+    background: rgba(99,91,255,0.04);
+    border: 1px solid rgba(99,91,255,0.14);
     border-radius: 12px; padding: 14px 20px; margin-bottom: 20px;
     display: flex; align-items: center; gap: 14px;
 }
 
 /* ─ Badges ─ */
 .sh-badge { display:inline-block; padding:3px 12px; border-radius:6px; font-size:10px; font-weight:700; letter-spacing:0.07em; text-transform:uppercase; }
-.sh-badge-red    { background:rgba(239,68,68,0.12);   color:#fca5a5; border:1px solid rgba(239,68,68,0.25); }
-.sh-badge-orange { background:rgba(249,115,22,0.12);  color:#fdba74; border:1px solid rgba(249,115,22,0.25); }
-.sh-badge-blue   { background:rgba(99,91,255,0.12);   color:#c4b5fd; border:1px solid rgba(99,91,255,0.30); }
-.sh-badge-purple { background:rgba(168,85,247,0.12);  color:#d8b4fe; border:1px solid rgba(168,85,247,0.30); }
-.sh-badge-green  { background:rgba(16,185,129,0.12);  color:#6ee7b7; border:1px solid rgba(16,185,129,0.28); }
-.sh-badge-amber  { background:rgba(245,158,11,0.12);  color:#fde68a; border:1px solid rgba(245,158,11,0.28); }
+.sh-badge-red    { background:rgba(239,68,68,0.08);   color:#dc2626; border:1px solid rgba(239,68,68,0.20); }
+.sh-badge-orange { background:rgba(249,115,22,0.08);  color:#ea580c; border:1px solid rgba(249,115,22,0.20); }
+.sh-badge-blue   { background:rgba(99,91,255,0.08);   color:#635bff; border:1px solid rgba(99,91,255,0.22); }
+.sh-badge-purple { background:rgba(168,85,247,0.08);  color:#9333ea; border:1px solid rgba(168,85,247,0.22); }
+.sh-badge-green  { background:rgba(16,185,129,0.08);  color:#059669; border:1px solid rgba(16,185,129,0.22); }
+.sh-badge-amber  { background:rgba(245,158,11,0.08);  color:#d97706; border:1px solid rgba(245,158,11,0.22); }
 
 /* ─ Sidebar labels ─ */
 .sh-sidebar-label {
     font-size: 10px !important; font-weight: 700 !important;
     letter-spacing: 0.09em !important; text-transform: uppercase !important;
-    color: #3d4a5c !important; padding: 0 10px !important;
+    color: #cbd5e1 !important; padding: 0 10px !important;
     margin-bottom: 6px !important; margin-top: 18px !important; display: block;
 }
-.sh-sidebar-divider { height: 1px; background: rgba(99,91,255,0.10); margin: 16px 10px; }
+.sh-sidebar-divider { height: 1px; background: #f1f5f9; margin: 16px 10px; }
 
 /* ─ Errors ─ */
-.sh-error { background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.25); border-radius:10px; padding:16px 20px; color:#fca5a5; font-weight:600; font-size:14px; }
-.sh-warn  { background:rgba(245,158,11,0.08); border:1px solid rgba(245,158,11,0.25); border-radius:10px; padding:16px 20px; color:#fde68a; font-weight:600; font-size:14px; }
+.sh-error { background:rgba(239,68,68,0.06); border:1px solid rgba(239,68,68,0.20); border-radius:10px; padding:16px 20px; color:#dc2626; font-weight:600; font-size:14px; }
+.sh-warn  { background:rgba(245,158,11,0.06); border:1px solid rgba(245,158,11,0.20); border-radius:10px; padding:16px 20px; color:#d97706; font-weight:600; font-size:14px; }
 
 /* ─ Reveal ─ */
-.sh-reveal { opacity:0; transform:translateY(20px); transition:opacity 0.5s cubic-bezier(.16,1,.3,1), transform 0.5s cubic-bezier(.16,1,.3,1); }
+.sh-reveal { opacity:0; transform:translateY(18px); transition:opacity 0.45s cubic-bezier(.16,1,.3,1), transform 0.45s cubic-bezier(.16,1,.3,1); }
 .sh-reveal.visible { opacity:1; transform:translateY(0); }
 </style>
 """
@@ -427,13 +429,10 @@ _JS = """<script>
 (function(){
     const doc = window.parent.document;
 
-    /* ── Kill the keyboard_double_arrow_right element ── */
+    /* Kill keyboard_double_arrow_right and any material icon text nodes */
     function killHeaderJunk(){
-        /* The toolbar area that shows random icon text */
         const header = doc.querySelector('[data-testid="stHeader"]');
         if(header){ header.style.display='none'; header.style.height='0'; header.style.overflow='hidden'; }
-
-        /* Kill any element whose text content is a material icon name */
         doc.querySelectorAll('*').forEach(el=>{
             if(el.children.length === 0){
                 const t = el.textContent.trim();
@@ -445,7 +444,7 @@ _JS = """<script>
         });
     }
 
-    /* ── Nav active state ── */
+    /* Nav active highlight */
     const NAV_LABELS = ['Dashboard','Outlet Performance','Whitespace Detection','Expansion Strategy'];
     function highlightActiveNav(){
         const marker = doc.getElementById('sh-active-page');
@@ -454,49 +453,37 @@ _JS = """<script>
         doc.querySelectorAll('button').forEach(btn=>{
             const txt = btn.textContent.trim();
             if(!NAV_LABELS.includes(txt)) return;
-            if(btn.dataset.navActive === String(txt===active) && btn.dataset.navStyled) return;
+            if(btn.dataset.navStyled) return;
             btn.dataset.navStyled = '1';
-            btn.dataset.navActive = String(txt===active);
             if(txt===active){
-                btn.style.setProperty('background','rgba(99,91,255,0.18)','important');
-                btn.style.setProperty('color','#c4b5fd','important');
-                btn.style.setProperty('border-color','rgba(99,91,255,0.55)','important');
+                btn.style.setProperty('background','rgba(99,91,255,0.10)','important');
+                btn.style.setProperty('color','#635bff','important');
+                btn.style.setProperty('border-color','rgba(99,91,255,0.35)','important');
                 btn.style.setProperty('font-weight','700','important');
             } else {
-                btn.style.setProperty('background','transparent','important');
+                btn.style.setProperty('background','#ffffff','important');
                 btn.style.setProperty('color','#6b7280','important');
-                btn.style.setProperty('border-color','rgba(99,91,255,0.20)','important');
+                btn.style.setProperty('border-color','#e2e8f0','important');
                 btn.style.setProperty('font-weight','500','important');
             }
         });
     }
 
-    /* ── Country buttons ── */
+    /* Country button styling */
     function styleCountryBtns(){
         doc.querySelectorAll('button').forEach(btn=>{
             const txt = btn.textContent.trim();
             if(txt !== 'Nigeria' && txt !== 'Angola') return;
             if(btn.dataset.cbDone) return;
             btn.dataset.cbDone = '1';
-            btn.style.setProperty('color','#e6edf3','important');
-            btn.style.setProperty('background','rgba(99,91,255,0.14)','important');
-            btn.style.setProperty('border-color','rgba(99,91,255,0.40)','important');
+            btn.style.setProperty('color','#635bff','important');
+            btn.style.setProperty('background','rgba(99,91,255,0.06)','important');
+            btn.style.setProperty('border-color','rgba(99,91,255,0.28)','important');
             btn.style.setProperty('font-weight','700','important');
-            btn.style.setProperty('font-size','14px','important');
-            btn.addEventListener('mouseenter',()=>{
-                btn.style.setProperty('background','rgba(99,91,255,0.24)','important');
-                btn.style.setProperty('border-color','#635bff','important');
-                btn.style.setProperty('box-shadow','0 4px 16px rgba(99,91,255,0.24)','important');
-            });
-            btn.addEventListener('mouseleave',()=>{
-                btn.style.setProperty('background','rgba(99,91,255,0.14)','important');
-                btn.style.setProperty('border-color','rgba(99,91,255,0.40)','important');
-                btn.style.removeProperty('box-shadow');
-            });
         });
     }
 
-    /* ── Sidebar icons ── */
+    /* Sidebar icons */
     const ICONS = {
         'Dashboard':       '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>',
         'Command Center':  '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>',
@@ -518,13 +505,13 @@ _JS = """<script>
             link.dataset.icondone = '1';
             ts.innerHTML =
                 '<span style="display:inline-flex;align-items:center;gap:11px;width:100%;">'
-                +'<span style="display:flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:8px;flex-shrink:0;background:rgba(99,91,255,0.10);border:1px solid rgba(99,91,255,0.18);color:#8b7cf8;">'
+                +'<span style="display:flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:8px;flex-shrink:0;background:rgba(99,91,255,0.08);border:1px solid rgba(99,91,255,0.14);color:#8b7cf8;">'
                 + ICONS[label] +'</span>'
-                +'<span style="color:#b0bac9;font-size:13.5px;font-weight:500;">'+ label +'</span></span>';
+                +'<span style="color:#64748b;font-size:13.5px;font-weight:500;">'+ label +'</span></span>';
         });
     }
 
-    /* ── Scroll reveal ── */
+    /* Scroll reveal */
     function initReveal(){
         if(!window._shRevObs){
             window._shRevObs = new IntersectionObserver(entries=>{
@@ -543,14 +530,11 @@ _JS = """<script>
     }
 
     function run(){
-        killHeaderJunk();
-        addSidebarIcons(); styleCountryBtns();
+        killHeaderJunk(); addSidebarIcons(); styleCountryBtns();
         highlightActiveNav(); initReveal(); hideNav();
     }
 
-    setTimeout(run,150);
-    setTimeout(run,600);
-    setTimeout(run,1400);
+    setTimeout(run,150); setTimeout(run,600); setTimeout(run,1400);
     setInterval(run,1200);
 })();
 </script>"""
@@ -567,7 +551,7 @@ def sidebar_nav(refresh_key: str = "refresh_data"):
     with st.sidebar:
         st.markdown("""
         <div style="padding:16px 16px 8px 16px;">
-            <div style="font-size:10px;font-weight:700;letter-spacing:0.09em;text-transform:uppercase;color:#3d4a5c;margin-bottom:12px;">Navigation</div>
+            <div style="font-size:10px;font-weight:700;letter-spacing:0.09em;text-transform:uppercase;color:#cbd5e1;margin-bottom:12px;">Navigation</div>
         </div>""", unsafe_allow_html=True)
 
         st.page_link("app.py",                    label="Dashboard")
