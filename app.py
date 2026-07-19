@@ -167,24 +167,30 @@ dot_color = "#22C55E" if is_live else ("#6EC6F5" if is_hybrid else "#F59E0B")
 _dot_cls  = "" if is_live else ("" if is_hybrid else "sh-dot-amber")
 _dot_cls2 = "sh-dot-amber" if data_status == "csv" else ""
 
-logo_col, title_col = st.columns([1, 11])
-with logo_col:
-    st.markdown(
-        f'<img src="data:{_logo_mime};base64,{_logo_b64}" style="height:64px;width:auto;margin-top:6px;opacity:1;border-radius:8px;" />',
-        unsafe_allow_html=True
-    )
-with title_col:
-    st.markdown(f"""
-    <div class="sh-topbar">
+_logo_html = (
+    f'<img src="data:{_logo_mime};base64,{_logo_b64}" '
+    f'style="height:72px;width:auto;border-radius:10px;display:block;" />'
+) if _logo_file else (
+    '<div style="width:72px;height:72px;border-radius:10px;'
+    'background:linear-gradient(135deg,#635bff,#818cf8);'
+    'display:flex;align-items:center;justify-content:center;flex-shrink:0;">'
+    '<span style="color:#fff;font-size:20px;font-weight:800;letter-spacing:-1px;">SH</span></div>'
+)
+
+st.markdown(f"""
+<div class="sh-topbar" style="align-items:center;">
+    <div style="display:flex;align-items:center;gap:18px;">
+        {_logo_html}
         <div>
             <div class="sh-eyebrow">Shalina Healthcare &nbsp;&middot;&nbsp; Distribution Intelligence</div>
             <div class="sh-title">Distribution <span class="sh-title-dim">Depth</span> Analysis</div>
         </div>
-        <div class="sh-pill-group">
-            <div class="sh-pill"><div class="sh-dot"></div>SYSTEM ONLINE</div>
-            <div class="sh-pill"><div class="sh-dot {_dot_cls2}"></div>{sync_label}</div>
-        </div>
-    </div>""", unsafe_allow_html=True)
+    </div>
+    <div class="sh-pill-group">
+        <div class="sh-pill"><div class="sh-dot"></div>SYSTEM ONLINE</div>
+        <div class="sh-pill"><div class="sh-dot {_dot_cls2}"></div>{sync_label}</div>
+    </div>
+</div>""", unsafe_allow_html=True)
 
 # ── DATA SOURCE BANNER ────────────────────────────────────────────
 st.markdown(f"""

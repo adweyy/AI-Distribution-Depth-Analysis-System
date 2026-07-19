@@ -589,16 +589,98 @@ def apply_styles(active_page: str = ""):
 
 
 def sidebar_nav(refresh_key: str = "refresh_data"):
-    with st.sidebar:
-        # Top padding — brand injected by JS
-        st.markdown('<div style="height:8px;"></div>', unsafe_allow_html=True)
+    _NAV_HTML = """
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:transparent;font-family:'Inter',sans-serif;}
 
-        st.page_link("app.py",                    label="Dashboard")
-        st.page_link("pages/Command_Center.py",   label="Command Center")
-        st.page_link("pages/RFM_Analysis.py",     label="RFM Analysis")
-        st.page_link("pages/Churn_Prediction.py", label="Churn Prediction")
-        st.page_link("pages/Revenue_Forecast.py", label="Revenue Forecast")
-        st.page_link("pages/Upload_Data.py",      label="Upload Data")
+.brand{padding:18px 16px 14px;border-bottom:1px solid rgba(255,255,255,0.06);margin-bottom:6px;}
+.brand-sub{font-size:9.5px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.25);}
+.brand-title{font-size:13px;font-weight:700;color:rgba(255,255,255,0.82);margin-top:3px;letter-spacing:-0.2px;}
+
+.nav{padding:4px 8px;}
+.nav-item{display:flex;align-items:center;gap:12px;padding:9px 10px;border-radius:10px;cursor:pointer;margin-bottom:1px;border:none;background:transparent;width:100%;text-align:left;transition:background 0.14s;}
+.nav-item:hover{background:rgba(255,255,255,0.07);}
+.nav-item.active{background:rgba(255,255,255,0.09);border-left:3px solid #635bff;padding-left:7px;}
+
+.icon{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.label{font-size:13.5px;font-weight:500;color:rgba(255,255,255,0.58);white-space:nowrap;}
+.nav-item.active .label{color:#fff;font-weight:700;}
+.nav-item:hover .label{color:rgba(255,255,255,0.85);}
+
+.divider{height:1px;background:rgba(255,255,255,0.06);margin:10px 8px;}
+.section-label{font-size:9.5px;font-weight:700;letter-spacing:0.10em;text-transform:uppercase;color:rgba(255,255,255,0.22);padding:0 10px;margin:10px 0 6px;}
+</style>
+
+<div class="brand">
+  <div class="brand-sub">Shalina Healthcare</div>
+  <div class="brand-title">Distribution Intelligence</div>
+</div>
+
+<div class="nav">
+  <button class="nav-item" data-path="/" onclick="nav(this)">
+    <span class="icon" style="background:linear-gradient(135deg,#f97316,#fb923c);box-shadow:0 3px 10px rgba(249,115,22,0.35);">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+    </span>
+    <span class="label">Dashboard</span>
+  </button>
+
+  <button class="nav-item" data-path="/Command_Center" onclick="nav(this)">
+    <span class="icon" style="background:linear-gradient(135deg,#635bff,#818cf8);box-shadow:0 3px 10px rgba(99,91,255,0.35);">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+    </span>
+    <span class="label">Command Center</span>
+  </button>
+
+  <button class="nav-item" data-path="/RFM_Analysis" onclick="nav(this)">
+    <span class="icon" style="background:linear-gradient(135deg,#ec4899,#f472b6);box-shadow:0 3px 10px rgba(236,72,153,0.35);">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+    </span>
+    <span class="label">RFM Analysis</span>
+  </button>
+
+  <button class="nav-item" data-path="/Churn_Prediction" onclick="nav(this)">
+    <span class="icon" style="background:linear-gradient(135deg,#f59e0b,#fbbf24);box-shadow:0 3px 10px rgba(245,158,11,0.35);">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    </span>
+    <span class="label">Churn Prediction</span>
+  </button>
+
+  <button class="nav-item" data-path="/Revenue_Forecast" onclick="nav(this)">
+    <span class="icon" style="background:linear-gradient(135deg,#10b981,#34d399);box-shadow:0 3px 10px rgba(16,185,129,0.35);">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+    </span>
+    <span class="label">Revenue Forecast</span>
+  </button>
+
+  <button class="nav-item" data-path="/Upload_Data" onclick="nav(this)">
+    <span class="icon" style="background:linear-gradient(135deg,#06b6d4,#38bdf8);box-shadow:0 3px 10px rgba(6,182,212,0.35);">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>
+    </span>
+    <span class="label">Upload Data</span>
+  </button>
+</div>
+
+<script>
+(function(){
+  /* Mark active item based on current URL */
+  var path = window.parent.location.pathname.replace(/\/$/, '') || '/';
+  document.querySelectorAll('.nav-item').forEach(function(btn){
+    var dp = btn.dataset.path;
+    if(dp === path || (dp === '/' && (path === '' || path === '/')))
+      btn.classList.add('active');
+  });
+})();
+
+function nav(btn){
+  window.parent.location.href = btn.dataset.path;
+}
+</script>
+"""
+
+    with st.sidebar:
+        _stc.html(_NAV_HTML, height=380, scrolling=False)
 
         st.markdown('<div class="sh-sidebar-divider"></div>', unsafe_allow_html=True)
         st.markdown('<span class="sh-sidebar-label">Data</span>', unsafe_allow_html=True)
@@ -606,8 +688,3 @@ def sidebar_nav(refresh_key: str = "refresh_data"):
         if st.button("⟳  Refresh Data", use_container_width=True, key=refresh_key):
             st.cache_data.clear()
             st.rerun()
-
-        _stc.html("""<script>(function(){
-            function r(){ var n=window.parent.document.querySelector('[data-testid="stSidebarNav"]'); if(n)n.remove(); else setTimeout(r,200); }
-            r(); setTimeout(r,800);
-        })();</script>""", height=0)
