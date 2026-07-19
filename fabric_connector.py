@@ -372,19 +372,24 @@ def load_data():
                 pass  # SQL endpoint unavailable → try DAX next
 
         # ── Try Power BI / DAX for any country that SQL missed ────────────────
+        _ng_err_msg = ""
+        _user_tok_msg = ""
         if ng is None or ao is None:
             # Try user-credentials token first (bypasses RLS on Final Nigeria).
             # Fall back to service-principal token if user creds aren't set.
             pbi_token = None
             try:
                 pbi_token = _get_user_token()
+                _user_tok_msg = "user_token_ok"
                 print("[FABRIC] Using user token for UAT DAX queries")
             except Exception as _user_tok_err:
+                _user_tok_msg = f"user_token_failed:{str(_user_tok_err)[:80]}"
                 print(f"[FABRIC] User token failed ({_user_tok_err}), trying SP token")
                 try:
                     pbi_token = _get_pbi_token()
-                except Exception:
-                    pass
+                    _user_tok_msg += "|sp_token_ok"
+                except Exception as _sp_err:
+                    _user_tok_msg += f"|sp_failed:{str(_sp_err)[:60]}"
 
             if pbi_token:
                 if ng is None:
@@ -392,6 +397,7 @@ def load_data():
                         ng = _fetch_nigeria_dax(pbi_token)
                         ng_method = "dax"
                     except Exception as _ng_err:
+                        _ng_err_msg = str(_ng_err)[:100]
                         print(f"[FABRIC] Nigeria DAX error: {_ng_err}")
                         ng = None
                 if ao is None:
@@ -438,10 +444,20 @@ def load_data():
             live_c  = "Nigeria" if ng_live else "Angola"
             csv_c   = "Angola"  if ng_live else "Nigeria"
             live_m  = _method_label(ng_method if ng_live else ao_method)
-            label   = f"{live_c}: {live_m}  |  {csv_c}: CSV fallback"
+            diag = ""
+            if _user_tok_msg:
+                diag = f" [{_user_tok_msg}]"
+            if _ng_err_msg:
+                diag += f" [ng:{_ng_err_msg}]"
+            label   = f"{live_c}: {live_m}  |  {csv_c}: CSV fallback{diag}"
             status  = "hybrid"
         else:
-            label  = "Nigeria + Angola: CSV (Fabric unreachable)"
+            diag = ""
+            if _user_tok_msg:
+                diag = f" | diag:{_user_tok_msg}"
+            if _ng_err_msg:
+                diag += f" | ng_err:{_ng_err_msg}"
+            label  = f"Nigeria + Angola: CSV (Fabric unreachable){diag}"
             status = "csv"
 
         return df, label, status
@@ -670,7 +686,6 @@ def load_rfm_data(country="Nigeria"):
                 SUMMARIZECOLUMNS(
                     'SFA Orders Angola'[Outlet Name],
                     "Last Order Date", MAX('SFA Orders Angola'[Order Date]),
-                        "Order Count",     COUNTROWS('SFA Orders Angola'),
                     "Total Spend",     SUM('SFA Orders Angola'[Order Value])
                 )
                 """
