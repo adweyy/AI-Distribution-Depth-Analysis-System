@@ -63,55 +63,58 @@ header[data-testid="stHeader"] {
     position: relative; z-index: 1;
 }
 
-/* ── Sidebar — white panel ── */
+/* ── Sidebar — dark navy panel ── */
 section[data-testid="stSidebar"] {
-    background: #ffffff !important;
-    border-right: 1px solid #e8ecf7 !important;
-    min-width: 230px !important;
-    box-shadow: 2px 0 12px rgba(99,91,255,0.04) !important;
+    background: #0d0f1e !important;
+    border-right: none !important;
+    min-width: 240px !important;
+    box-shadow: 4px 0 24px rgba(0,0,0,0.20) !important;
 }
-section[data-testid="stSidebar"] > div:first-child { padding-top: 24px !important; }
+section[data-testid="stSidebar"] > div:first-child { padding-top: 20px !important; }
 
-/* Nav links */
+/* Nav links — base */
 section[data-testid="stSidebar"] a[data-testid="stPageLink"] {
-    border-radius: 8px !important;
-    padding: 9px 14px !important;
+    border-radius: 10px !important;
+    padding: 10px 14px !important;
     display: block !important;
-    margin: 2px 10px !important;
-    transition: background 0.15s, color 0.15s !important;
+    margin: 3px 12px !important;
+    transition: background 0.18s !important;
     text-decoration: none !important;
+    position: relative !important;
 }
 section[data-testid="stSidebar"] a[data-testid="stPageLink"] * {
-    color: #64748b !important;
+    color: rgba(255,255,255,0.60) !important;
     font-family: 'Inter', sans-serif !important;
-    font-size: 13.5px !important;
+    font-size: 14px !important;
     font-weight: 500 !important;
 }
 section[data-testid="stSidebar"] a[data-testid="stPageLink"]:hover {
-    background: rgba(99,91,255,0.07) !important;
+    background: rgba(255,255,255,0.07) !important;
 }
 section[data-testid="stSidebar"] a[data-testid="stPageLink"]:hover * {
-    color: #635bff !important;
+    color: #ffffff !important;
 }
 
-/* Sidebar text */
+/* Sidebar misc text */
 section[data-testid="stSidebar"] p,
 section[data-testid="stSidebar"] div,
-section[data-testid="stSidebar"] span { color: #64748b !important; font-family: 'Inter',sans-serif !important; }
+section[data-testid="stSidebar"] span { color: rgba(255,255,255,0.45) !important; font-family: 'Inter',sans-serif !important; }
 
-/* Sidebar button */
+/* Sidebar refresh button */
 section[data-testid="stSidebar"] .stButton > button {
-    color: #635bff !important;
-    border: 1.5px solid rgba(99,91,255,0.25) !important;
-    background: rgba(99,91,255,0.05) !important;
-    font-size: 13px !important; font-weight: 600 !important;
+    color: rgba(255,255,255,0.55) !important;
+    border: 1px solid rgba(255,255,255,0.10) !important;
+    background: rgba(255,255,255,0.05) !important;
+    font-size: 12.5px !important; font-weight: 600 !important;
     padding: 9px 16px !important;
-    border-radius: 8px !important;
+    border-radius: 10px !important;
     width: 100% !important;
+    letter-spacing: 0.01em !important;
 }
 section[data-testid="stSidebar"] .stButton > button:hover {
-    background: rgba(99,91,255,0.10) !important;
-    border-color: rgba(99,91,255,0.45) !important;
+    background: rgba(99,91,255,0.20) !important;
+    color: #ffffff !important;
+    border-color: rgba(99,91,255,0.50) !important;
 }
 
 /* Sidebar toggle */
@@ -123,11 +126,11 @@ section[data-testid="stSidebar"] .stButton > button:hover {
 [data-testid="stExpandSidebarButton"] {
     position: fixed !important; top: 12px !important; left: 12px !important;
     width: 34px !important; height: 34px !important;
-    background: #ffffff !important;
-    border: 1px solid #e8ecf7 !important;
+    background: #0d0f1e !important;
+    border: 1px solid rgba(255,255,255,0.10) !important;
     border-radius: 8px !important;
     align-items: center !important; justify-content: center !important;
-    box-shadow: 0 2px 8px rgba(99,91,255,0.08) !important;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.30) !important;
 }
 
 /* ── Main content buttons ── */
@@ -410,10 +413,10 @@ p, .stMarkdown p { font-size: 14px !important; color: #64748b !important; line-h
 .sh-sidebar-label {
     font-size: 10px !important; font-weight: 700 !important;
     letter-spacing: 0.09em !important; text-transform: uppercase !important;
-    color: #cbd5e1 !important; padding: 0 10px !important;
-    margin-bottom: 6px !important; margin-top: 18px !important; display: block;
+    color: rgba(255,255,255,0.22) !important; padding: 0 14px !important;
+    margin-bottom: 6px !important; margin-top: 20px !important; display: block;
 }
-.sh-sidebar-divider { height: 1px; background: #f1f5f9; margin: 16px 10px; }
+.sh-sidebar-divider { height: 1px; background: rgba(255,255,255,0.06); margin: 16px 12px; }
 
 /* ─ Errors ─ */
 .sh-error { background:rgba(239,68,68,0.06); border:1px solid rgba(239,68,68,0.20); border-radius:10px; padding:16px 20px; color:#dc2626; font-weight:600; font-size:14px; }
@@ -483,31 +486,69 @@ _JS = """<script>
         });
     }
 
-    /* Sidebar icons */
-    const ICONS = {
-        'Dashboard':       '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>',
-        'Command Center':  '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>',
-        'RFM Analysis':    '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>',
-        'Churn Prediction':'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>',
-        'Revenue Forecast':'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>',
-        'Upload Data':     '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>',
+    /* ── Sidebar icons — coloured circular badges ── */
+    const NAV_CONFIG = {
+        'Dashboard':        { grad:'linear-gradient(135deg,#f97316,#fb923c)', svg:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>' },
+        'Command Center':   { grad:'linear-gradient(135deg,#635bff,#818cf8)', svg:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>' },
+        'RFM Analysis':     { grad:'linear-gradient(135deg,#ec4899,#f472b6)', svg:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>' },
+        'Churn Prediction': { grad:'linear-gradient(135deg,#f59e0b,#fbbf24)', svg:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>' },
+        'Revenue Forecast': { grad:'linear-gradient(135deg,#10b981,#34d399)', svg:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>' },
+        'Upload Data':      { grad:'linear-gradient(135deg,#06b6d4,#38bdf8)', svg:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>' },
     };
+
     function addSidebarIcons(){
         const sb = doc.querySelector('[data-testid="stSidebar"]');
         if(!sb) return;
+
+        /* Style the sidebar brand area at top */
+        if(!sb.dataset.brandDone){
+            sb.dataset.brandDone='1';
+            const brand = doc.createElement('div');
+            brand.style.cssText='padding:12px 20px 20px 20px;border-bottom:1px solid rgba(255,255,255,0.06);margin-bottom:8px;';
+            brand.innerHTML='<div style="font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.25);">Shalina Healthcare</div>'
+                           +'<div style="font-size:13px;font-weight:700;color:rgba(255,255,255,0.80);margin-top:3px;letter-spacing:-0.3px;">Distribution Intelligence</div>';
+            const inner = sb.querySelector(':scope > div > div');
+            if(inner && inner.firstChild) inner.insertBefore(brand, inner.firstChild);
+        }
+
         sb.querySelectorAll('a[data-testid="stPageLink"]').forEach(link=>{
             if(link.dataset.icondone) return;
             const spans = link.querySelectorAll('span');
             let ts = null;
-            for(const sp of spans){ const t=sp.textContent.trim(); if(ICONS[t]){ts=sp;break;} }
+            for(const sp of spans){
+                const t = sp.textContent.trim();
+                if(NAV_CONFIG[t]){ ts = sp; break; }
+            }
             if(!ts) return;
             const label = ts.textContent.trim();
+            const cfg   = NAV_CONFIG[label];
             link.dataset.icondone = '1';
+
+            /* Check if this is the active page */
+            const isActive = link.getAttribute('aria-current') === 'page'
+                          || link.classList.contains('active')
+                          || link.href?.endsWith(window.parent.location.pathname);
+
             ts.innerHTML =
-                '<span style="display:inline-flex;align-items:center;gap:11px;width:100%;">'
-                +'<span style="display:flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:8px;flex-shrink:0;background:rgba(99,91,255,0.08);border:1px solid rgba(99,91,255,0.14);color:#8b7cf8;">'
-                + ICONS[label] +'</span>'
-                +'<span style="color:#64748b;font-size:13.5px;font-weight:500;">'+ label +'</span></span>';
+                '<span style="display:inline-flex;align-items:center;gap:13px;width:100%;padding:1px 0;">'
+                /* Coloured circular icon */
+                +'<span style="display:flex;align-items:center;justify-content:center;'
+                +'width:34px;height:34px;border-radius:50%;flex-shrink:0;'
+                +'background:'+ cfg.grad +';'
+                +'box-shadow:0 3px 10px rgba(0,0,0,0.30);">'
+                + cfg.svg +'</span>'
+                /* Label */
+                +'<span style="font-size:14px;font-weight:'+(isActive?'700':'500')+';'
+                +'color:'+(isActive?'#ffffff':'rgba(255,255,255,0.62)')+';'
+                +'letter-spacing:-0.1px;">'
+                + label +'</span></span>';
+
+            /* Highlight active row */
+            if(isActive){
+                link.style.setProperty('background','rgba(255,255,255,0.08)','important');
+                link.style.setProperty('border-left','3px solid #635bff','important');
+                link.style.setProperty('padding-left','11px','important');
+            }
         });
     }
 
@@ -549,10 +590,8 @@ def apply_styles(active_page: str = ""):
 
 def sidebar_nav(refresh_key: str = "refresh_data"):
     with st.sidebar:
-        st.markdown("""
-        <div style="padding:16px 16px 8px 16px;">
-            <div style="font-size:10px;font-weight:700;letter-spacing:0.09em;text-transform:uppercase;color:#cbd5e1;margin-bottom:12px;">Navigation</div>
-        </div>""", unsafe_allow_html=True)
+        # Top padding — brand injected by JS
+        st.markdown('<div style="height:8px;"></div>', unsafe_allow_html=True)
 
         st.page_link("app.py",                    label="Dashboard")
         st.page_link("pages/Command_Center.py",   label="Command Center")
