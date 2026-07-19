@@ -4,429 +4,25 @@ import numpy as np
 import plotly.express as px
 import os, sys
 
-# Ensure root project directory is on path so fabric_connector can be found
-# Works both locally (pages/ subfolder) and on Streamlit Cloud
-_here = os.path.dirname(os.path.abspath(__file__))          # .../pages/
-_root = os.path.dirname(_here)                               # .../project root/
+# Ensure root project directory is on path
+_here = os.path.dirname(os.path.abspath(__file__))
+_root = os.path.dirname(_here)
 if _root not in sys.path:
     sys.path.insert(0, _root)
 if _here not in sys.path:
     sys.path.insert(0, _here)
 
+from fabric_connector import load_data as _load_data, load_rfm_data as _load_rfm
+from styles import apply_styles, sidebar_nav
+
 st.set_page_config(layout="wide", page_title="RFM Analysis | Shalina", initial_sidebar_state="expanded")
+
+sidebar_nav(refresh_key="rfm_refresh")
 apply_styles()
 
-#  SIDEBAR 
-sidebar_nav(refresh_key="rfm_refresh")
+# ── LOAD DATA ─────────────────────────────────────────────────────────────────
 
-
-#  LOAD DATA 
-from fabric_connector import load_data as _load_data
-from styles import apply_styles, sidebar_nav, load_rfm_data as _load_rfm
-import streamlit.components.v1 as _fx_c
-_fx_c.html("""<script>
-(function() {
-    const doc = window.parent.document;
-
-    //  INJECT GLOBAL STYLES 
-    function injectStyles() {
-        if (doc.getElementById('shalina-fx-styles')) return;
-        const style = doc.createElement('style');
-        style.id = 'shalina-fx-styles';
-        style.textContent = `
-            /*  GRAIN TEXTURE OVERLAY  */
-            body::after {
-                content: '';
-                position: fixed;
-                inset: 0;
-                pointer-events: none;
-                z-index: 9999;
-                opacity: 0.035;
-                background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-                background-size: 200px 200px;
-            }
-
-            /*  FLOATING GRADIENT ORBS  */
-            .shalina-orb {
-                position: fixed;
-                border-radius: 50%;
-                pointer-events: none;
-                z-index: 0;
-                filter: blur(80px);
-                animation: orbFloat linear infinite;
-                opacity: 0;
-            }
-            @keyframes orbFloat {
-                0%   { transform: translate(0px, 0px) scale(1);   opacity: 0.18; }
-                25%  { transform: translate(40px, -60px) scale(1.1); opacity: 0.22; }
-                50%  { transform: translate(-30px, 30px) scale(0.95); opacity: 0.15; }
-                75%  { transform: translate(20px, 50px) scale(1.05); opacity: 0.20; }
-                100% { transform: translate(0px, 0px) scale(1);   opacity: 0.18; }
-            }
-
-            /*  MESH ANIMATED GRADIENT on main bg  */
-            @keyframes meshShift {
-                0%   { background-position: 0% 50%; }
-                50%  { background-position: 100% 50%; }
-                100% { background-position: 0% 50%; }
-            }
-
-            /*  TILT 3D CARDS  */
-            .kpi-card {
-                transform-style: preserve-3d;
-                will-change: transform;
-                transition: transform 0.15s ease, box-shadow 0.15s ease !important;
-            }
-
-            /*  SPOTLIGHT ON CARDS  */
-            .kpi-card { position: relative; overflow: hidden; }
-            .kpi-card .spotlight {
-                position: absolute;
-                width: 300px; height: 300px;
-                background: radial-gradient(circle, rgba(255,255,255,0.12) 0%, transparent 70%);
-                border-radius: 50%;
-                pointer-events: none;
-                transform: translate(-50%, -50%);
-                opacity: 0;
-                transition: opacity 0.2s ease;
-            }
-            .kpi-card:hover .spotlight { opacity: 1; }
-
-            /*  REVEAL ON SCROLL  */
-            .shalina-reveal {
-                opacity: 0;
-                transform: translateY(48px) scale(0.97);
-                transition: opacity 0.75s cubic-bezier(.16,1,.3,1),
-                            transform 0.75s cubic-bezier(.16,1,.3,1);
-                will-change: opacity, transform;
-            }
-            .shalina-reveal.visible {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-            /* stagger siblings */
-            .shalina-reveal:nth-child(2) { transition-delay: 0.08s; }
-            .shalina-reveal:nth-child(3) { transition-delay: 0.16s; }
-            .shalina-reveal:nth-child(4) { transition-delay: 0.24s; }
-
-            /*  ELASTIC BUTTON  */
-
-            /*  GLASSMORPHISM PANELS  */
-            .ds-banner, .insight-card {
-                backdrop-filter: blur(24px) saturate(1.4) !important;
-                -webkit-backdrop-filter: blur(24px) saturate(1.4) !important;
-            }
-
-            /*  ANIMATED GRADIENT BORDER on hover  */
-            .kpi-card::after {
-                content: '';
-                position: absolute;
-                inset: -1px;
-                border-radius: 14px;
-                padding: 1px;
-                background: linear-gradient(135deg, rgba(33,150,220,0), rgba(110,198,245,0.5), rgba(168,85,247,0.3), rgba(33,150,220,0));
-                background-size: 300% 300%;
-                -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-                mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-                -webkit-mask-composite: xor;
-                mask-composite: exclude;
-                opacity: 0;
-                transition: opacity 0.3s ease;
-                animation: gradBorderSpin 3s linear infinite;
-                pointer-events: none;
-            }
-            .kpi-card:hover::after { opacity: 1; }
-            @keyframes gradBorderSpin {
-                0%   { background-position: 0% 50%; }
-                50%  { background-position: 100% 50%; }
-                100% { background-position: 0% 50%; }
-            }
-
-            /*  MAGNETIC BUTTON glow  */
-            [data-testid="stHorizontalBlock"] button:hover {
-                box-shadow: 0 0 24px rgba(33,150,220,0.55), 0 0 8px rgba(110,198,245,0.4), inset 0 0 20px rgba(33,150,220,0.2) !important;
-            }
-
-            /*  PARTICLE CANVAS  */
-            #shalina-particles {
-                position: fixed;
-                top: 0; left: 0;
-                width: 100%; height: 100%;
-                pointer-events: none;
-                z-index: 0;
-                opacity: 0.45;
-            }
-        `;
-        doc.head.appendChild(style);
-    }
-
-    //  FLOATING ORBS 
-    function addOrbs() {
-        if (doc.getElementById('shalina-orb-1')) return;
-        const orbs = [
-            { id:'shalina-orb-1', w:600, h:600, top:'5%',  left:'10%',  color:'rgba(33,100,200,0.5)',  dur:'18s', delay:'0s'  },
-            { id:'shalina-orb-2', w:500, h:500, top:'50%', left:'70%',  color:'rgba(100,50,200,0.4)',  dur:'24s', delay:'-8s' },
-            { id:'shalina-orb-3', w:400, h:400, top:'80%', left:'20%',  color:'rgba(0,150,220,0.35)',  dur:'20s', delay:'-5s' },
-            { id:'shalina-orb-4', w:350, h:350, top:'20%', left:'55%',  color:'rgba(80,20,180,0.3)',   dur:'15s', delay:'-12s'},
-        ];
-        orbs.forEach(o => {
-            const el = doc.createElement('div');
-            el.id = o.id;
-            el.className = 'shalina-orb';
-            Object.assign(el.style, {
-                width: o.w+'px', height: o.h+'px',
-                top: o.top, left: o.left,
-                background: o.color,
-                animationDuration: o.dur,
-                animationDelay: o.delay,
-            });
-            doc.body.prepend(el);
-        });
-    }
-
-    //  PARTICLE BACKGROUND 
-    function addParticles() {
-        if (doc.getElementById('shalina-particles')) return;
-        const canvas = doc.createElement('canvas');
-        canvas.id = 'shalina-particles';
-        doc.body.prepend(canvas);
-
-        const ctx = canvas.getContext('2d');
-        let W, H, particles = [];
-
-        function resize() {
-            W = canvas.width  = doc.body.clientWidth  || window.parent.innerWidth;
-            H = canvas.height = doc.body.clientHeight || window.parent.innerHeight;
-        }
-        resize();
-        window.parent.addEventListener('resize', resize);
-
-        const N = 80;
-        for (let i = 0; i < N; i++) {
-            particles.push({
-                x: Math.random() * W,
-                y: Math.random() * H,
-                r: Math.random() * 1.8 + 0.4,
-                vx: (Math.random() - 0.5) * 0.35,
-                vy: (Math.random() - 0.5) * 0.35,
-                alpha: Math.random() * 0.5 + 0.15,
-            });
-        }
-
-        function draw() {
-            ctx.clearRect(0, 0, W, H);
-            particles.forEach(p => {
-                p.x += p.vx; p.y += p.vy;
-                if (p.x < 0) p.x = W; if (p.x > W) p.x = 0;
-                if (p.y < 0) p.y = H; if (p.y > H) p.y = 0;
-
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(110,198,245,${p.alpha})`;
-                ctx.fill();
-            });
-
-            // Draw connecting lines
-            for (let i = 0; i < N; i++) {
-                for (let j = i + 1; j < N; j++) {
-                    const dx = particles[i].x - particles[j].x;
-                    const dy = particles[i].y - particles[j].y;
-                    const dist = Math.sqrt(dx*dx + dy*dy);
-                    if (dist < 120) {
-                        ctx.beginPath();
-                        ctx.moveTo(particles[i].x, particles[i].y);
-                        ctx.lineTo(particles[j].x, particles[j].y);
-                        ctx.strokeStyle = `rgba(33,150,196,${0.12 * (1 - dist/120)})`;
-                        ctx.lineWidth = 0.5;
-                        ctx.stroke();
-                    }
-                }
-            }
-            requestAnimationFrame(draw);
-        }
-        draw();
-    }
-
-    //  3D TILT + SPOTLIGHT on KPI cards 
-    function addTiltCards() {
-        // Subtle lift + spotlight only — no 3D rotation
-        const cards = doc.querySelectorAll('.kpi-card');
-        cards.forEach(card => {
-            if (card.dataset.tiltDone) return;
-            card.dataset.tiltDone = '1';
-
-            const spot = doc.createElement('div');
-            spot.className = 'spotlight';
-            card.appendChild(spot);
-
-            card.addEventListener('mousemove', e => {
-                const rect = card.getBoundingClientRect();
-                spot.style.left = (e.clientX - rect.left) + 'px';
-                spot.style.top  = (e.clientY - rect.top)  + 'px';
-            });
-            card.addEventListener('mouseenter', () => {
-                card.style.transform = 'translateY(-4px) scale(1.015)';
-                card.style.boxShadow = '0 16px 40px rgba(0,0,0,0.45), 0 0 24px rgba(33,150,220,0.2)';
-                card.style.transition = 'transform 0.2s ease, box-shadow 0.2s ease';
-            });
-            card.addEventListener('mouseleave', () => {
-                card.style.transform = 'translateY(0) scale(1)';
-                card.style.boxShadow = '';
-            });
-        });
-    }
-
-    //  REVEAL ON SCROLL 
-    function addRevealOnScroll() {
-        // Wider target list — catches charts, tables, cards, metric blocks
-        const targets = doc.querySelectorAll(
-            '.kpi-card, .insight-card, .ds-banner, ' +
-            '[data-testid="stPlotlyChart"], [data-testid="stDataFrame"], ' +
-            '[data-testid="stMetric"], [data-testid="stMarkdown"] .header-wrap, ' +
-            '[data-testid="stVerticalBlock"] > div > div > div > div'
-        );
-        targets.forEach(el => {
-            if (el.dataset.revealDone) return;
-            // Skip tiny or already-visible elements
-            const rect = el.getBoundingClientRect();
-            if (rect.height < 40) return;
-            el.dataset.revealDone = '1';
-            el.classList.add('shalina-reveal');
-        });
-
-        if (!window._shalinaRevealObserver) {
-            window._shalinaRevealObserver = new IntersectionObserver(entries => {
-                entries.forEach((e, i) => {
-                    if (e.isIntersecting) {
-                        // Stagger each element by 80ms based on its position
-                        const delay = Math.min(i * 80, 400);
-                        setTimeout(() => e.target.classList.add('visible'), delay);
-                        window._shalinaRevealObserver.unobserve(e.target);
-                    }
-                });
-            }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
-        }
-
-        doc.querySelectorAll('.shalina-reveal:not(.visible)').forEach(el => {
-            window._shalinaRevealObserver.observe(el);
-        });
-    }
-
-    //  MOUSE POSITION REACTIVE GRADIENT 
-    function addMouseGradient() {
-        if (doc.getElementById('mouse-gradient')) return;
-        const el = doc.createElement('div');
-        el.id = 'mouse-gradient';
-        Object.assign(el.style, {
-            position: 'fixed',
-            width: '800px', height: '800px',
-            borderRadius: '50%',
-            background: 'radial-gradient(circle, rgba(33,100,220,0.07) 0%, transparent 70%)',
-            pointerEvents: 'none',
-            zIndex: '1',
-            transform: 'translate(-50%,-50%)',
-            transition: 'none',
-            left: '50%', top: '50%',
-        });
-        doc.body.appendChild(el);
-        doc.addEventListener('mousemove', e => {
-            el.style.left = e.clientX + 'px';
-            el.style.top  = e.clientY + 'px';
-        });
-    }
-
-    //  MAGNETIC BUTTONS 
-    function addMagneticButtons() {
-        // Only style the top navbar buttons (country switcher + nav row)
-        // No magnetic movement — just glow on hover via CSS
-        const btns = doc.querySelectorAll('[data-testid="stHorizontalBlock"] button');
-        btns.forEach(btn => {
-            if (btn.dataset.magnetDone) return;
-            btn.dataset.magnetDone = '1';
-            btn.style.background = 'rgba(13,40,80,0.75)';
-            btn.style.color = '#FFFFFF';
-            btn.style.border = '1px solid rgba(33,150,196,0.25)';
-            btn.style.borderRadius = '12px';
-            btn.style.fontWeight = '600';
-            btn.style.fontSize = '14px';
-            btn.style.width = '100%';
-            btn.style.transition = 'box-shadow 0.2s ease, border-color 0.2s ease';
-            btn.addEventListener('mouseenter', () => {
-                btn.style.borderColor = 'rgba(110,198,245,0.8)';
-                btn.style.boxShadow = '0 0 20px rgba(33,150,220,0.5), inset 0 0 16px rgba(33,150,220,0.15)';
-            });
-            btn.addEventListener('mouseleave', () => {
-                btn.style.borderColor = 'rgba(33,150,196,0.25)';
-                btn.style.boxShadow = '';
-            });
-        });
-    }
-
-    //  NAVBAR HIDE 
-    function hideNav() {
-        const nav = doc.querySelector('[data-testid="stSidebarNav"]');
-        if (nav) nav.remove();
-    }
-
-    function hideImageButtons() {
-        // Remove the fullscreen expand button that appears on images
-        doc.querySelectorAll('[data-testid="StyledFullScreenButton"]').forEach(b => b.remove());
-        doc.querySelectorAll('[data-testid="stImageContainer"] button').forEach(b => b.remove());
-        // Also catch by class pattern
-        doc.querySelectorAll('button[title="View fullscreen"]').forEach(b => b.remove());
-        doc.querySelectorAll('button[title="Fullscreen"]').forEach(b => b.remove());
-    }
-
-    //  PERSISTENT RE-INJECTION 
-    // Streamlit wipes the DOM on every navigation — we poll every 800ms
-    // to re-inject anything that got removed, and re-apply interactive effects.
-
-    function fullInit() {
-        try { injectStyles(); }    catch(e) {}
-        try { addOrbs(); }         catch(e) {}
-        try { addParticles(); }    catch(e) {}
-        try { addMouseGradient(); } catch(e) {}
-        try { addMagneticButtons(); } catch(e) {}
-        try { addTiltCards(); }    catch(e) {}
-        try { addRevealOnScroll(); } catch(e) {}
-        try { hideNav(); }         catch(e) {}
-        try { hideImageButtons(); } catch(e) {}
-    }
-
-    function lightRefresh() {
-        // Only re-apply interactive effects to newly rendered elements
-        // (particles/orbs persist on body so no need to re-add)
-        try { addMagneticButtons(); } catch(e) {}
-        try { addTiltCards(); }       catch(e) {}
-        try { addRevealOnScroll(); }  catch(e) {}
-        try { hideNav(); }            catch(e) {}
-        try { hideImageButtons(); }   catch(e) {}
-
-        // If canvas got removed (Streamlit full re-render), rebuild it
-        if (!doc.getElementById('shalina-particles')) {
-            try { addParticles(); } catch(e) {}
-        }
-        if (!doc.getElementById('shalina-orb-1')) {
-            try { addOrbs(); } catch(e) {}
-        }
-        if (!doc.getElementById('mouse-gradient')) {
-            try { addMouseGradient(); } catch(e) {}
-        }
-        if (!doc.getElementById('shalina-fx-styles')) {
-            try { injectStyles(); } catch(e) {}
-        }
-    }
-
-    // Initial load
-    setTimeout(fullInit, 300);
-    setTimeout(fullInit, 800);
-
-    // Continuous polling — catches every Streamlit re-render
-    setInterval(lightRefresh, 800);
-
-})();
-</script>
-""", height=0)
+# (removed legacy FX block)
 
 df_all, _, _ = _load_data()
 
@@ -434,36 +30,23 @@ if df_all is None:
     st.error("No data available. Please check Fabric connection or add shalina_combined_data.csv.")
     st.stop()
 
-#  HEADER 
-_logo_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "shalina_healthcare_logo.png")
-_logo_tag = ""
-if os.path.exists(_logo_path):
-    import base64
-    with open(_logo_path,"rb") as _f:
-        _logo_b64 = base64.b64encode(_f.read()).decode()
-    _logo_tag = f'<img src="data:image/png;base64,{_logo_b64}" style="width:70px;margin-right:16px;flex-shrink:0;" />'
-
-st.markdown(f"""
-<div class="mc-topbar" style="display:flex;align-items:center;">
-    {_logo_tag}
-    <div class="mc-title-wrap" style="flex:1;">
-        <div class="mc-eyebrow">Shalina Healthcare &nbsp;·&nbsp; Distribution Intelligence Platform</div>
-        <div class="mc-title">RFM <span>Analysis</span></div>
+# ── PAGE HEADER ───────────────────────────────────────────────────────────────
+st.markdown("""
+<div class="sh-topbar">
+    <div>
+        <div class="sh-eyebrow">Shalina Healthcare &nbsp;&middot;&nbsp; Predictive Analytics</div>
+        <div class="sh-title">RFM <span class="sh-title-dim">Analysis</span></div>
     </div>
-    <div class="mc-status-group">
-        <div class="mc-status-pill">
-            <div class="mc-status-dot"></div>
-            SYS: ONLINE
-        </div>
+    <div class="sh-pill-group">
+        <div class="sh-pill"><div class="sh-dot"></div>SYSTEM ONLINE</div>
     </div>
-</div>
-""", unsafe_allow_html=True)
+</div>""", unsafe_allow_html=True)
 
-#  COUNTRY SWITCHER 
+# ── COUNTRY SWITCHER ──────────────────────────────────────────────────────────
 if "rfm_country" not in st.session_state:
     st.session_state.rfm_country = "Nigeria"
 
-st.markdown("<div style='margin:12px 0 6px 0;font-family:Poppins,sans-serif;font-size:10px;font-weight:700;color:#90C8E8;text-transform:uppercase;letter-spacing:1.5px;'>Select Country</div>", unsafe_allow_html=True)
+st.markdown("<div style='margin:14px 0 8px 0;font-size:9px;font-weight:700;color:#635bff;text-transform:uppercase;letter-spacing:3px;'>Select Country</div>", unsafe_allow_html=True)
 cc1, cc2, cc3 = st.columns([1, 1, 8])
 with cc1:
     if st.button("Nigeria", use_container_width=True, key="rfm_ng"):
@@ -479,12 +62,13 @@ accent = "#4CAF50" if country == "Nigeria" else "#CE93D8"
 st.markdown(f"<div style='height:3px;background:linear-gradient(90deg,{accent},transparent);border-radius:2px;margin-bottom:16px;'></div>", unsafe_allow_html=True)
 
 chart_layout = dict(
-    paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(10,30,60,0.5)",
-    font=dict(color="#90C8E8", size=11), height=380,
-    xaxis=dict(gridcolor="rgba(33,150,196,0.1)", linecolor="rgba(33,150,196,0.2)", color="#6AACE0"),
-    yaxis=dict(gridcolor="rgba(33,150,196,0.1)", linecolor="rgba(33,150,196,0.2)", color="#6AACE0"),
+    paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
+    font=dict(color="#94a3b8", size=12), height=380,
+    xaxis=dict(gridcolor="rgba(99,91,255,0.08)", linecolor="rgba(99,91,255,0.10)", color="#94a3b8"),
+    yaxis=dict(gridcolor="rgba(99,91,255,0.08)", linecolor="rgba(99,91,255,0.10)", color="#94a3b8"),
     margin=dict(l=0, r=0, t=20, b=0),
-    legend=dict(font=dict(color="#FFFFFF"), bgcolor="rgba(10,30,60,0.7)")
+    legend=dict(font=dict(color="#e2e8f0"), bgcolor="rgba(22,27,39,0.95)",
+                bordercolor="rgba(99,91,255,0.15)", borderwidth=1)
 )
 
 #  TRY REAL SFA TRANSACTION DATA 
