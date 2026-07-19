@@ -14,37 +14,12 @@ if _here not in sys.path:
     sys.path.insert(0, _here)
 
 st.set_page_config(layout="wide", page_title="RFM Analysis | Shalina", initial_sidebar_state="expanded")
-st.markdown("""
-<style>
-[data-testid="stSidebarNav"],
-[data-testid="stSidebarNavItems"],
-section[data-testid="stSidebar"] nav,
-ul[data-testid="stSidebarNavItems"] { display: none !important; visibility: hidden !important; }
-</style>
-""", unsafe_allow_html=True)
+apply_styles()
 
 #  SIDEBAR 
-with st.sidebar:
-    st.markdown("""
-    <div style="padding:20px 8px 10px 8px;">
-        <div style="font-family:'Poppins',sans-serif;font-size:10px;font-weight:700;
-        color:rgba(100,180,220,0.7);text-transform:uppercase;letter-spacing:2px;margin-bottom:20px;">
-            Navigation
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
-    st.page_link("app.py",                       label="Dashboard")
-    st.page_link("pages/Command_Center.py",      label="Command Center")
-    st.page_link("pages/RFM_Analysis.py",        label="RFM Analysis")
-    st.page_link("pages/Churn_Prediction.py",    label="Churn Prediction")
-    st.page_link("pages/Upload_Data.py",         label="Upload Data")
-    st.markdown("""<div style="margin-top:16px;padding:0 8px;">
-        <div style="height:1px;background:linear-gradient(90deg,transparent,rgba(33,150,196,0.35),transparent);"></div>
-    </div>""", unsafe_allow_html=True)
-    if st.button("Refresh Data", use_container_width=True, key="rfm_refresh"):
-        st.cache_data.clear()
-        st.rerun()
-    import streamlit.components.v1 as _sc
+sidebar_nav(refresh_key="rfm_refresh")
+
+import streamlit.components.v1 as _sc
     _sc.html("""<script>(function(){function r(){var n=window.parent.document.querySelector('[data-testid="stSidebarNav"]');if(n){n.remove();}else{setTimeout(r,200);}}r();setTimeout(r,800);setTimeout(r,2500);})();</script>""", height=0)
 
 #  STYLES 
@@ -57,7 +32,7 @@ st.markdown("""
 .stApp {
     font-family: 'Inter', sans-serif;
     color: #E2E8F0;
-    background: #0d1526;
+    background: #060606;
     min-height: 100vh;
     position: relative;
 }
@@ -81,7 +56,7 @@ section[data-testid="stSidebar"] {
     background: rgba(8,13,26,0.95) !important;
     border-right: 1px solid rgba(255,255,255,0.06) !important;
 }
-section[data-testid="stSidebar"] * { color: #94A3B8 !important; font-family: 'Inter', sans-serif !important; }
+section[data-testid="stSidebar"] * { color: #555 !important; font-family: 'Inter', sans-serif !important; }
 section[data-testid="stSidebar"] a:hover { color: #fff !important; background: rgba(255,255,255,0.06) !important; border-radius: 8px !important; }
 [data-testid="stSidebarNav"],[data-testid="stSidebarNavItems"],section[data-testid="stSidebar"] nav { display:none !important; }
 [data-testid="stDecoration"],#MainMenu,footer { display:none !important; }
@@ -98,14 +73,14 @@ header[data-testid="stHeader"] { background:transparent !important; }
 [data-testid="stExpandSidebarButton"] * { font-size:0 !important; }
 [data-testid="stSidebarCollapseButton"]::before {
     content:"‹";
-    color:#94A3B8;
+    color:#555;
     font-size:26px;
     line-height:1;
 }
 [data-testid="collapsedControl"]::before,
 [data-testid="stExpandSidebarButton"]::before {
     content:"›";
-    color:#94A3B8;
+    color:#555;
     font-size:26px;
     line-height:1;
 }
@@ -139,7 +114,7 @@ header[data-testid="stHeader"] { background:transparent !important; }
 .mc-title-wrap {}
 .mc-eyebrow {
     font-size: 10px; font-weight: 600; letter-spacing: 3px;
-    text-transform: uppercase; color: #475569; margin-bottom: 4px;
+    text-transform: uppercase; color: #333; margin-bottom: 4px;
 }
 .mc-title {
     font-size: 22px; font-weight: 800; color: #F1F5F9;
@@ -153,7 +128,7 @@ header[data-testid="stHeader"] { background:transparent !important; }
     border: 1px solid rgba(255,255,255,0.08);
     border-radius: 20px; padding: 5px 12px;
     font-size: 10px; font-weight: 700; letter-spacing: 1.5px;
-    text-transform: uppercase; color: #94A3B8;
+    text-transform: uppercase; color: #555;
 }
 .mc-status-dot {
     width: 7px; height: 7px; border-radius: 50%;
@@ -243,19 +218,19 @@ header[data-testid="stHeader"] { background:transparent !important; }
 }
 .kpi-label {
     font-size: 10px; font-weight: 600; letter-spacing: 1.5px;
-    text-transform: uppercase; color: #64748B; margin-bottom: 6px;
+    text-transform: uppercase; color: #333; margin-bottom: 6px;
 }
 .kpi-value {
     font-size: 36px; font-weight: 800; color: #F8FAFC;
     line-height: 1; font-family: 'Inter', sans-serif;
     letter-spacing: -1px;
 }
-.kpi-delta { font-size: 11px; color: #475569; margin-top: 6px; }
+.kpi-delta { font-size: 11px; color: #333; margin-top: 6px; }
 
 /*  SECTION TITLE — BORDERLESS  */
 .section-title {
     font-size: 11px; font-weight: 700; letter-spacing: 2px;
-    text-transform: uppercase; color: #475569;
+    text-transform: uppercase; color: #333;
     margin-top: 24px; margin-bottom: 12px;
     display: flex; align-items: center; gap: 10px;
 }
@@ -277,7 +252,7 @@ header[data-testid="stHeader"] { background:transparent !important; }
     border-color: rgba(255,255,255,0.12);
 }
 .insight-title { font-size: 14px; font-weight: 700; color: #F1F5F9; margin-bottom: 4px; }
-.insight-detail { font-size: 12px; color: #64748B; line-height: 1.6; }
+.insight-detail { font-size: 12px; color: #333; line-height: 1.6; }
 
 /*  BADGES  */
 .badge { display:inline-block; padding:3px 10px; border-radius:20px; font-size:10px; font-weight:700; margin-bottom:8px; letter-spacing:0.5px; }
@@ -299,15 +274,15 @@ header[data-testid="stHeader"] { background:transparent !important; }
 .ds-ripple { position:absolute; top:0; left:0; width:10px; height:10px; border-radius:50%; animation: ripple 2s ease-out infinite; z-index:1; }
 @keyframes ripple { 0% { transform:scale(1); opacity:0.6; } 100% { transform:scale(2.8); opacity:0; } }
 .ds-label { font-size:12px; font-weight:600; color:#E2E8F0; }
-.ds-sub { font-size:11px; color:#475569; margin-top:1px; }
+.ds-sub { font-size:11px; color:#333; margin-top:1px; }
 .ds-legend { display:flex; flex-direction:column; gap:4px; align-items:flex-end; margin-left:auto; }
-.ds-legend-item { display:flex; align-items:center; gap:5px; font-size:9px; color:#475569; font-weight:600; text-transform:uppercase; letter-spacing:1px; }
+.ds-legend-item { display:flex; align-items:center; gap:5px; font-size:9px; color:#333; font-weight:600; text-transform:uppercase; letter-spacing:1px; }
 .ds-legend-dot { width:6px; height:6px; border-radius:50%; flex-shrink:0; }
 
 /*  COUNTRY BUTTON  */
 div[data-testid="stHorizontalBlock"] div[data-testid="column"] .stButton > button {
     background: rgba(255,255,255,0.04) !important;
-    color: #94A3B8 !important;
+    color: #555 !important;
     border: 1px solid rgba(255,255,255,0.08) !important;
     border-radius: 8px !important;
     font-weight: 600 !important; font-size: 13px !important;
@@ -321,7 +296,7 @@ div[data-testid="stHorizontalBlock"] div[data-testid="column"] .stButton > butto
 }
 
 /*  SELECTS  */
-.stSelectbox label { color:#475569 !important; font-size:10px !important; font-weight:700 !important; text-transform:uppercase; letter-spacing:1px; }
+.stSelectbox label { color:#333 !important; font-size:10px !important; font-weight:700 !important; text-transform:uppercase; letter-spacing:1px; }
 [data-baseweb="select"] > div { background:rgba(255,255,255,0.04) !important; border:1px solid rgba(255,255,255,0.08) !important; border-radius:8px !important; color:#E2E8F0 !important; }
 [data-baseweb="select"] svg { fill:#475569 !important; }
 [data-baseweb="popover"] { background:#0f172a !important; border:1px solid rgba(255,255,255,0.1) !important; }
@@ -355,7 +330,8 @@ div[data-testid="stHorizontalBlock"] div[data-testid="column"] .stButton > butto
 """, unsafe_allow_html=True)
 
 #  LOAD DATA 
-from fabric_connector import load_data as _load_data, load_rfm_data as _load_rfm
+from fabric_connector import load_data as _load_data
+from styles import apply_styles, sidebar_nav, load_rfm_data as _load_rfm
 import streamlit.components.v1 as _fx_c
 _fx_c.html("""<script>
 (function() {
@@ -956,7 +932,7 @@ seg_colors = {
     'Potential Loyalist':'#F9A825',
     'Need Attention':    '#F97316',
     'At Risk':           '#EF4444',
-    'Hibernating':       '#64748B',
+    'Hibernating':       '#333',
     'Lost':              '#1E293B',
 }
 
@@ -980,26 +956,26 @@ at_risk= seg_counts.get('At Risk', 0)
 lost   = seg_counts.get('Lost', 0)
 
 st.markdown(f"""
-<div class="kpi-row">
-    <div class="kpi-card purple">
-        <div class="kpi-label">Champions</div>
-        <div class="kpi-value">{champs:,}</div>
-        <div class="kpi-delta">RFM score ≥ 12 — top accounts</div>
+<div class="sh-kpi-row">
+    <div class="sh-kpi purple">
+        <div class="sh-kpi-label">Champions</div>
+        <div class="sh-kpi-value">{champs:,}</div>
+        <div class="sh-kpi-delta">RFM score ≥ 12 — top accounts</div>
     </div>
-    <div class="kpi-card green">
-        <div class="kpi-label">Loyal Customers</div>
-        <div class="kpi-value">{loyal:,}</div>
-        <div class="kpi-delta">Consistent high-value outlets</div>
+    <div class="sh-kpi green">
+        <div class="sh-kpi-label">Loyal Customers</div>
+        <div class="sh-kpi-value">{loyal:,}</div>
+        <div class="sh-kpi-delta">Consistent high-value outlets</div>
     </div>
-    <div class="kpi-card gold">
-        <div class="kpi-label">At Risk</div>
-        <div class="kpi-value">{at_risk:,}</div>
-        <div class="kpi-delta">Were good — need urgent outreach</div>
+    <div class="sh-kpi gold">
+        <div class="sh-kpi-label">At Risk</div>
+        <div class="sh-kpi-value">{at_risk:,}</div>
+        <div class="sh-kpi-delta">Were good — need urgent outreach</div>
     </div>
-    <div class="kpi-card red">
-        <div class="kpi-label">Lost</div>
-        <div class="kpi-value">{lost:,}</div>
-        <div class="kpi-delta">Zero engagement — reassess</div>
+    <div class="sh-kpi red">
+        <div class="sh-kpi-label">Lost</div>
+        <div class="sh-kpi-value">{lost:,}</div>
+        <div class="sh-kpi-delta">Zero engagement — reassess</div>
     </div>
 </div>
 """, unsafe_allow_html=True)
@@ -1007,7 +983,7 @@ st.markdown(f"""
 #  CHARTS 
 c1, c2 = st.columns([3, 2])
 with c1:
-    st.markdown('<div class="section-title">Segment Distribution</div>', unsafe_allow_html=True)
+    st.markdown('<div class="sh-section">Segment Distribution</div>', unsafe_allow_html=True)
     seg_df = seg_counts.reset_index()
     seg_df.columns = ['Segment', 'Count']
     fig_seg = px.bar(seg_df, x='Count', y='Segment', orientation='h',
@@ -1017,7 +993,7 @@ with c1:
     st.plotly_chart(fig_seg, use_container_width=True)
 
 with c2:
-    st.markdown('<div class="section-title">Avg Monetary by Segment</div>', unsafe_allow_html=True)
+    st.markdown('<div class="sh-section">Avg Monetary by Segment</div>', unsafe_allow_html=True)
     avg_m = rfm[rfm['M_raw'] > 0].groupby('Segment')['M_raw'].mean().reset_index()
     avg_m.columns = ['Segment', 'Avg Value']
     avg_m = avg_m.sort_values('Avg Value', ascending=False)
@@ -1028,7 +1004,7 @@ with c2:
     st.plotly_chart(fig_avg, use_container_width=True)
 
 #  OUTLET TABLE 
-st.markdown('<div class="section-title">Full Outlet RFM Table</div>', unsafe_allow_html=True)
+st.markdown('<div class="sh-section">Full Outlet RFM Table</div>', unsafe_allow_html=True)
 seg_filter = st.selectbox("Filter by Segment", ["All"] + sorted(rfm['Segment'].unique().tolist()), key="rfm_seg_filter")
 rfm_show = rfm if seg_filter == "All" else rfm[rfm['Segment'] == seg_filter]
 
@@ -1054,19 +1030,19 @@ st.download_button(" Export RFM Scores", csv_rfm,
                    f"rfm_analysis_{country.lower()}.csv", "text/csv", key="rfm_export")
 
 #  ACTION PLAYBOOK 
-st.markdown('<div class="section-title">Segment Action Playbook</div>', unsafe_allow_html=True)
+st.markdown('<div class="sh-section">Segment Action Playbook</div>', unsafe_allow_html=True)
 action_cols = st.columns(2)
 for i, (seg, action) in enumerate(seg_actions.items()):
     count = seg_counts.get(seg, 0)
     color = seg_colors.get(seg, '#2196C4')
     with action_cols[i % 2]:
         st.markdown(f"""
-        <div class="insight-card" style="border-left:4px solid {color};margin-bottom:10px;">
+        <div class="sh-insight sh-card" style="border-left:4px solid {color};margin-bottom:10px;">
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;">
-                <div class="insight-title" style="color:{color};">{seg}</div>
+                <div class="sh-insight-title" style="color:{color};">{seg}</div>
                 <div style="font-family:'Poppins',sans-serif;font-size:18px;font-weight:700;color:#FFFFFF;">{count:,}</div>
             </div>
-            <div class="insight-detail">{action}</div>
+            <div class="sh-insight-body">{action}</div>
         </div>
         """, unsafe_allow_html=True)
 

@@ -1,4 +1,7 @@
 import streamlit as st
+import os as _os_sty, sys as _sys_sty
+_sys_sty.path.insert(0, _os_sty.path.dirname(_os_sty.path.dirname(_os_sty.path.abspath(__file__))))
+from styles import apply_styles, sidebar_nav
 import streamlit.components.v1 as components
 import pandas as pd
 import numpy as np
@@ -7,14 +10,7 @@ import os, sys
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 st.set_page_config(layout="wide", page_title="Upload Data | Shalina")
-st.markdown("""
-<style>
-[data-testid="stSidebarNav"],
-[data-testid="stSidebarNavItems"],
-section[data-testid="stSidebar"] nav,
-ul[data-testid="stSidebarNavItems"] { display: none !important; visibility: hidden !important; }
-</style>
-""", unsafe_allow_html=True)
+apply_styles()
 import streamlit.components.v1 as _fx_c
 _fx_c.html("""<script>
 (function() {
@@ -421,26 +417,7 @@ _fx_c.html("""<script>
 """, height=0)
 
 #  SIDEBAR 
-with st.sidebar:
-    st.markdown("""
-    <div style="padding:20px 8px 10px 8px;">
-        <div style="font-family:'Poppins',sans-serif;font-size:10px;font-weight:700;
-        color:rgba(100,180,220,0.7);text-transform:uppercase;letter-spacing:2px;margin-bottom:20px;">
-            Navigation
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
-    st.page_link("app.py",                   label="Dashboard")
-    st.page_link("pages/Command_Center.py",  label="Command Center")
-    st.page_link("pages/RFM_Analysis.py",   label="RFM Analysis")
-    st.page_link("pages/Churn_Prediction.py", label="Churn Prediction")
-    st.page_link("pages/Upload_Data.py",    label="Upload Data")
-    st.markdown("""<div style="margin-top:16px;padding:0 8px;">
-        <div style="height:1px;background:linear-gradient(90deg,transparent,rgba(33,150,196,0.35),transparent);"></div>
-    </div>""", unsafe_allow_html=True)
-    import streamlit.components.v1 as _sc
-    _sc.html("""<script>(function(){function r(){var n=window.parent.document.querySelector('[data-testid="stSidebarNav"]');if(n){n.remove();}else{setTimeout(r,200);}}r();setTimeout(r,800);setTimeout(r,2500);})();</script>""", height=0)
-
+sidebar_nav(refresh_key="up_refresh")
 
 st.markdown("""
 <style>
@@ -451,7 +428,7 @@ st.markdown("""
 .stApp {
     font-family: 'Inter', sans-serif;
     color: #E2E8F0;
-    background: #0d1526;
+    background: #060606;
     min-height: 100vh;
     position: relative;
 }
@@ -475,7 +452,7 @@ section[data-testid="stSidebar"] {
     background: rgba(8,13,26,0.95) !important;
     border-right: 1px solid rgba(255,255,255,0.06) !important;
 }
-section[data-testid="stSidebar"] * { color: #94A3B8 !important; font-family: 'Inter', sans-serif !important; }
+section[data-testid="stSidebar"] * { color: #555 !important; font-family: 'Inter', sans-serif !important; }
 section[data-testid="stSidebar"] a:hover { color: #fff !important; background: rgba(255,255,255,0.06) !important; border-radius: 8px !important; }
 [data-testid="stSidebarNav"],[data-testid="stSidebarNavItems"],section[data-testid="stSidebar"] nav { display:none !important; }
 [data-testid="stDecoration"],#MainMenu,footer { display:none !important; }
@@ -492,14 +469,14 @@ header[data-testid="stHeader"] { background:transparent !important; }
 [data-testid="stExpandSidebarButton"] * { font-size:0 !important; }
 [data-testid="stSidebarCollapseButton"]::before {
     content:"‹";
-    color:#94A3B8;
+    color:#555;
     font-size:26px;
     line-height:1;
 }
 [data-testid="collapsedControl"]::before,
 [data-testid="stExpandSidebarButton"]::before {
     content:"›";
-    color:#94A3B8;
+    color:#555;
     font-size:26px;
     line-height:1;
 }
@@ -533,7 +510,7 @@ header[data-testid="stHeader"] { background:transparent !important; }
 .mc-title-wrap {}
 .mc-eyebrow {
     font-size: 10px; font-weight: 600; letter-spacing: 3px;
-    text-transform: uppercase; color: #475569; margin-bottom: 4px;
+    text-transform: uppercase; color: #333; margin-bottom: 4px;
 }
 .mc-title {
     font-size: 22px; font-weight: 800; color: #F1F5F9;
@@ -547,7 +524,7 @@ header[data-testid="stHeader"] { background:transparent !important; }
     border: 1px solid rgba(255,255,255,0.08);
     border-radius: 20px; padding: 5px 12px;
     font-size: 10px; font-weight: 700; letter-spacing: 1.5px;
-    text-transform: uppercase; color: #94A3B8;
+    text-transform: uppercase; color: #555;
 }
 .mc-status-dot {
     width: 7px; height: 7px; border-radius: 50%;
@@ -637,19 +614,19 @@ header[data-testid="stHeader"] { background:transparent !important; }
 }
 .kpi-label {
     font-size: 10px; font-weight: 600; letter-spacing: 1.5px;
-    text-transform: uppercase; color: #64748B; margin-bottom: 6px;
+    text-transform: uppercase; color: #333; margin-bottom: 6px;
 }
 .kpi-value {
     font-size: 36px; font-weight: 800; color: #F8FAFC;
     line-height: 1; font-family: 'Inter', sans-serif;
     letter-spacing: -1px;
 }
-.kpi-delta { font-size: 11px; color: #475569; margin-top: 6px; }
+.kpi-delta { font-size: 11px; color: #333; margin-top: 6px; }
 
 /*  SECTION TITLE — BORDERLESS  */
 .section-title {
     font-size: 11px; font-weight: 700; letter-spacing: 2px;
-    text-transform: uppercase; color: #475569;
+    text-transform: uppercase; color: #333;
     margin-top: 24px; margin-bottom: 12px;
     display: flex; align-items: center; gap: 10px;
 }
@@ -671,7 +648,7 @@ header[data-testid="stHeader"] { background:transparent !important; }
     border-color: rgba(255,255,255,0.12);
 }
 .insight-title { font-size: 14px; font-weight: 700; color: #F1F5F9; margin-bottom: 4px; }
-.insight-detail { font-size: 12px; color: #64748B; line-height: 1.6; }
+.insight-detail { font-size: 12px; color: #333; line-height: 1.6; }
 
 /*  BADGES  */
 .badge { display:inline-block; padding:3px 10px; border-radius:20px; font-size:10px; font-weight:700; margin-bottom:8px; letter-spacing:0.5px; }
@@ -693,15 +670,15 @@ header[data-testid="stHeader"] { background:transparent !important; }
 .ds-ripple { position:absolute; top:0; left:0; width:10px; height:10px; border-radius:50%; animation: ripple 2s ease-out infinite; z-index:1; }
 @keyframes ripple { 0% { transform:scale(1); opacity:0.6; } 100% { transform:scale(2.8); opacity:0; } }
 .ds-label { font-size:12px; font-weight:600; color:#E2E8F0; }
-.ds-sub { font-size:11px; color:#475569; margin-top:1px; }
+.ds-sub { font-size:11px; color:#333; margin-top:1px; }
 .ds-legend { display:flex; flex-direction:column; gap:4px; align-items:flex-end; margin-left:auto; }
-.ds-legend-item { display:flex; align-items:center; gap:5px; font-size:9px; color:#475569; font-weight:600; text-transform:uppercase; letter-spacing:1px; }
+.ds-legend-item { display:flex; align-items:center; gap:5px; font-size:9px; color:#333; font-weight:600; text-transform:uppercase; letter-spacing:1px; }
 .ds-legend-dot { width:6px; height:6px; border-radius:50%; flex-shrink:0; }
 
 /*  COUNTRY BUTTON  */
 div[data-testid="stHorizontalBlock"] div[data-testid="column"] .stButton > button {
     background: rgba(255,255,255,0.04) !important;
-    color: #94A3B8 !important;
+    color: #555 !important;
     border: 1px solid rgba(255,255,255,0.08) !important;
     border-radius: 8px !important;
     font-weight: 600 !important; font-size: 13px !important;
@@ -715,7 +692,7 @@ div[data-testid="stHorizontalBlock"] div[data-testid="column"] .stButton > butto
 }
 
 /*  SELECTS  */
-.stSelectbox label { color:#475569 !important; font-size:10px !important; font-weight:700 !important; text-transform:uppercase; letter-spacing:1px; }
+.stSelectbox label { color:#333 !important; font-size:10px !important; font-weight:700 !important; text-transform:uppercase; letter-spacing:1px; }
 [data-baseweb="select"] > div { background:rgba(255,255,255,0.04) !important; border:1px solid rgba(255,255,255,0.08) !important; border-radius:8px !important; color:#E2E8F0 !important; }
 [data-baseweb="select"] svg { fill:#475569 !important; }
 [data-baseweb="popover"] { background:#0f172a !important; border:1px solid rgba(255,255,255,0.1) !important; }
@@ -796,7 +773,7 @@ else:
     st.markdown('<div class="status-warn">Dashboard is running on demo data. Upload your CSV below to analyse real data.</div>', unsafe_allow_html=True)
 
 #  STEP 1 
-st.markdown('<div class="section-title">Step 1 — Download the Data Template</div>', unsafe_allow_html=True)
+st.markdown('<div class="sh-section">Step 1 — Download the Data Template</div>', unsafe_allow_html=True)
 st.markdown("""
 <div style="background:white;border-radius:12px;padding:16px 20px;border:1px solid rgba(11,46,89,0.08);
 box-shadow:0 2px 8px rgba(11,46,89,0.04);margin-bottom:12px;font-size:13px;color:#5B8DB8;line-height:1.7;">
@@ -822,7 +799,7 @@ with st.expander("View all 5 column descriptions"):
         """, unsafe_allow_html=True)
 
 #  STEP 2 — UPLOADER (no HTML box above it) 
-st.markdown('<div class="section-title">Step 2 — Upload Your CSV File</div>', unsafe_allow_html=True)
+st.markdown('<div class="sh-section">Step 2 — Upload Your CSV File</div>', unsafe_allow_html=True)
 
 # The native uploader IS the drop target — nothing sits on top of it
 uploaded_file = st.file_uploader(
@@ -906,14 +883,14 @@ if uploaded_file is not None:
             if st.button("Go to Dashboard →", key="go_dash"):
                 st.switch_page("app.py")
 
-            st.markdown('<div class="section-title">Data Summary</div>', unsafe_allow_html=True)
+            st.markdown('<div class="sh-section">Data Summary</div>', unsafe_allow_html=True)
             s1, s2, s3, s4 = st.columns(4)
             s1.metric("Total Outlets",   f"{len(df):,}")
             s2.metric("Primary Outlets", f"{len(df[df['Retailer Subtype']=='Primary']):,}")
             s3.metric("Secondary Outlets", f"{len(df[df['Retailer Subtype']=='Secondary']):,}")
             s4.metric("Active Outlets",  f"{len(df[df['YTD Retailing Value']>0]):,}")
 
-            st.markdown('<div class="section-title">Preview (first 20 rows)</div>', unsafe_allow_html=True)
+            st.markdown('<div class="sh-section">Preview (first 20 rows)</div>', unsafe_allow_html=True)
             st.dataframe(df.head(20), use_container_width=True, hide_index=True)
 
     except Exception as e:
@@ -922,7 +899,7 @@ if uploaded_file is not None:
 #  RESET 
 if "uploaded_data" in st.session_state:
     st.markdown("<div style='margin-top:24px;'></div>", unsafe_allow_html=True)
-    st.markdown('<div class="section-title">Reset</div>', unsafe_allow_html=True)
+    st.markdown('<div class="sh-section">Reset</div>', unsafe_allow_html=True)
     st.markdown('<div style="font-size:13px;color:#5B8DB8;margin-bottom:10px;">Clear your uploaded data and revert to demo.</div>', unsafe_allow_html=True)
     if st.button("Clear uploaded data — revert to demo", key="clear_data"):
         for key in ["uploaded_data","data_source","default_year","default_channel","default_brand","default_region"]:

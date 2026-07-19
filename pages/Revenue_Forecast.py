@@ -16,99 +16,13 @@ import sys, os, io
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from fabric_connector import load_data as _load_data
+from styles import apply_styles, sidebar_nav
 
 # ── SIDEBAR ───────────────────────────────────────────────────────────────────
-with st.sidebar:
-    st.markdown("""
-    <div style="padding:20px 8px 10px 8px;">
-        <div style="font-family:Inter,sans-serif;font-size:10px;font-weight:700;
-        color:rgba(100,180,220,0.7);text-transform:uppercase;letter-spacing:2px;
-        margin-bottom:20px;">Navigation</div>
-    </div>""", unsafe_allow_html=True)
-    st.page_link("app.py",                       label="Dashboard")
-    st.page_link("pages/Command_Center.py",       label="Command Center")
-    st.page_link("pages/RFM_Analysis.py",         label="RFM Analysis")
-    st.page_link("pages/Churn_Prediction.py",     label="Churn Prediction")
-    st.page_link("pages/Revenue_Forecast.py",     label="Revenue Forecast")
-    st.page_link("pages/Upload_Data.py",          label="Upload Data")
-    st.markdown("""<div style="margin-top:16px;padding:0 8px;">
-        <div style="height:1px;background:linear-gradient(90deg,transparent,
-        rgba(33,150,196,0.35),transparent);"></div></div>""", unsafe_allow_html=True)
-    import streamlit.components.v1 as _sc
-    _sc.html("""<script>(function(){function r(){var n=window.parent.document
-        .querySelector('[data-testid="stSidebarNav"]');
-        if(n){n.remove();}else{setTimeout(r,200);}}
-        r();setTimeout(r,800);setTimeout(r,2500);})();</script>""", height=0)
+sidebar_nav(refresh_key="rev_refresh")
 
 # ── CSS ───────────────────────────────────────────────────────────────────────
-st.markdown("""
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
-* { box-sizing: border-box; }
-.stApp { font-family:'Inter',sans-serif; color:#E2E8F0; background:#0d1526; min-height:100vh; }
-.stApp::before { content:''; position:fixed; inset:0;
-    background:
-        radial-gradient(ellipse 80% 50% at 10% 0%,  rgba(20,100,220,0.22) 0%, transparent 60%),
-        radial-gradient(ellipse 50% 40% at 90% 10%,  rgba(100,30,200,0.18) 0%, transparent 55%),
-        radial-gradient(ellipse 60% 60% at 50% 100%, rgba(15,60,160,0.20) 0%, transparent 60%);
-    pointer-events:none; z-index:0; }
-.main .block-container { background:transparent; padding-top:1rem;
-    padding-left:1.5rem; padding-right:1.5rem; max-width:1500px; position:relative; z-index:1; }
-section[data-testid="stSidebar"] { background:rgba(8,13,26,0.95) !important;
-    border-right:1px solid rgba(255,255,255,0.06) !important; }
-section[data-testid="stSidebar"] * { color:#94A3B8 !important; font-family:'Inter',sans-serif !important; }
-[data-testid="stDecoration"],#MainMenu,footer { display:none !important; }
-[data-testid="stToolbar"] { display:flex !important; background:transparent !important; }
-header[data-testid="stHeader"] { background:transparent !important; }
-[data-testid="stSidebarCollapseButton"]::before { content:"‹"; color:#94A3B8; font-size:26px; line-height:1; }
-[data-testid="collapsedControl"]::before,[data-testid="stExpandSidebarButton"]::before {
-    content:"›"; color:#94A3B8; font-size:26px; line-height:1; }
-[data-testid="stExpandSidebarButton"] {
-    display:flex !important; visibility:visible !important; opacity:1 !important;
-    position:fixed !important; top:16px !important; left:16px !important;
-    width:34px !important; height:34px !important; z-index:999999 !important;
-    align-items:center !important; justify-content:center !important;
-    background:rgba(8,13,26,0.82) !important; border:1px solid rgba(255,255,255,0.12) !important;
-    border-radius:8px !important; }
-.page-header { padding:20px 0 16px 0; border-bottom:1px solid rgba(255,255,255,0.06); margin-bottom:24px; }
-.page-eyebrow { font-size:10px; font-weight:600; letter-spacing:3px; text-transform:uppercase; color:#475569; margin-bottom:6px; }
-.page-title { font-size:24px; font-weight:800; color:#F1F5F9; letter-spacing:-0.5px; }
-.page-title span { color:#22C55E; }
-.kpi-row { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:24px; }
-.kpi-card { border-radius:12px; padding:20px 20px 16px 20px; position:relative; overflow:hidden;
-    min-height:110px; border:1px solid rgba(255,255,255,0.08); transition:transform 0.2s ease; }
-.kpi-card:hover { transform:translateY(-2px); }
-.kpi-card.mc-green  { background:linear-gradient(135deg,#051a0f 0%,#0d5c2a 100%); box-shadow:0 4px 24px rgba(34,197,94,0.15),inset 0 1px 0 rgba(34,197,94,0.2); border-color:rgba(34,197,94,0.25); }
-.kpi-card.mc-blue   { background:linear-gradient(135deg,#0f172a 0%,#1e3a5f 100%); box-shadow:0 4px 24px rgba(59,130,246,0.15),inset 0 1px 0 rgba(59,130,246,0.2); border-color:rgba(59,130,246,0.25); }
-.kpi-card.mc-purple { background:linear-gradient(135deg,#0f0a1a 0%,#3b1f6e 100%); box-shadow:0 4px 24px rgba(139,92,246,0.15),inset 0 1px 0 rgba(139,92,246,0.2); border-color:rgba(139,92,246,0.25); }
-.kpi-card.mc-amber  { background:linear-gradient(135deg,#1a1400 0%,#5c4500 100%); box-shadow:0 4px 24px rgba(245,158,11,0.15),inset 0 1px 0 rgba(245,158,11,0.2); border-color:rgba(245,158,11,0.25); }
-.kpi-accent-line { height:2px; width:40px; border-radius:1px; margin-bottom:12px; }
-.kpi-label { font-size:10px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color:#64748B; margin-bottom:6px; }
-.kpi-value { font-size:32px; font-weight:800; color:#F8FAFC; line-height:1; letter-spacing:-1px; }
-.kpi-delta { font-size:11px; color:#475569; margin-top:6px; }
-.section-title { font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase;
-    color:#475569; margin-top:24px; margin-bottom:12px; display:flex; align-items:center; gap:10px; }
-.section-title::after { content:''; flex:1; height:1px; background:linear-gradient(90deg,rgba(255,255,255,0.08),transparent); }
-.scenario-card { border-radius:12px; padding:18px 20px; border:1px solid; margin-bottom:8px; }
-.scenario-bear  { background:rgba(239,68,68,0.06);  border-color:rgba(239,68,68,0.2); }
-.scenario-base  { background:rgba(59,130,246,0.06); border-color:rgba(59,130,246,0.2); }
-.scenario-bull  { background:rgba(34,197,94,0.06);  border-color:rgba(34,197,94,0.2); }
-.insight-card { background:rgba(255,255,255,0.025); border-radius:12px; padding:16px 20px;
-    border:1px solid rgba(255,255,255,0.07); margin-bottom:10px; }
-.insight-title  { font-size:14px; font-weight:700; color:#F1F5F9; margin-bottom:4px; }
-.insight-detail { font-size:12px; color:#64748B; line-height:1.6; }
-[data-baseweb="select"] > div { background:rgba(255,255,255,0.04) !important;
-    border:1px solid rgba(255,255,255,0.08) !important; border-radius:8px !important; color:#E2E8F0 !important; }
-[data-baseweb="popover"] { background:#0f172a !important; border:1px solid rgba(255,255,255,0.1) !important; }
-[role="option"] { background:#0f172a !important; color:#E2E8F0 !important; }
-[role="option"]:hover { background:rgba(34,197,94,0.15) !important; }
-.stSelectbox label,.stSlider label { color:#475569 !important; font-size:10px !important;
-    font-weight:700 !important; text-transform:uppercase; letter-spacing:1px; }
-[data-testid="stDataFrame"] { border-radius:10px !important; border:1px solid rgba(255,255,255,0.07) !important; }
-.stDownloadButton > button { background:rgba(34,197,94,0.15) !important; color:#86EFAC !important;
-    border:1px solid rgba(34,197,94,0.3) !important; border-radius:8px !important; font-weight:600 !important; }
-</style>
-""", unsafe_allow_html=True)
+apply_styles()
 
 # ── LOAD DATA ─────────────────────────────────────────────────────────────────
 @st.cache_data(show_spinner=False)
@@ -199,35 +113,35 @@ ytd_per_active  = df_base[df_base["ytd"] > 0]["ytd"].mean()
 
 # ── KPI CARDS ─────────────────────────────────────────────────────────────────
 st.markdown(f"""
-<div class="kpi-row">
-    <div class="kpi-card mc-blue">
+<div class="sh-kpi-row">
+    <div class="sh-kpi mc-blue">
         <div class="kpi-accent-line" style="background:linear-gradient(90deg,#3B82F6,#60A5FA);"></div>
-        <div class="kpi-label">YTD Revenue ({datetime.now().strftime('%b %Y')})</div>
-        <div class="kpi-value">&#8358;{ytd_total/1_000_000:.1f}M</div>
-        <div class="kpi-delta">{months_elapsed} months elapsed &mdash; {active_outlets:,} active outlets</div>
+        <div class="sh-kpi-label">YTD Revenue ({datetime.now().strftime('%b %Y')})</div>
+        <div class="sh-kpi-value">&#8358;{ytd_total/1_000_000:.1f}M</div>
+        <div class="sh-kpi-delta">{months_elapsed} months elapsed &mdash; {active_outlets:,} active outlets</div>
     </div>
-    <div class="kpi-card mc-green">
+    <div class="sh-kpi mc-green">
         <div class="kpi-accent-line" style="background:linear-gradient(90deg,#22C55E,#4ADE80);"></div>
-        <div class="kpi-label">Base Year-End Forecast</div>
-        <div class="kpi-value">&#8358;{base_year_end/1_000_000:.1f}M</div>
-        <div class="kpi-delta">At current run-rate through Dec</div>
+        <div class="sh-kpi-label">Base Year-End Forecast</div>
+        <div class="sh-kpi-value">&#8358;{base_year_end/1_000_000:.1f}M</div>
+        <div class="sh-kpi-delta">At current run-rate through Dec</div>
     </div>
-    <div class="kpi-card mc-purple">
+    <div class="sh-kpi mc-purple">
         <div class="kpi-accent-line" style="background:linear-gradient(90deg,#8B5CF6,#A78BFA);"></div>
-        <div class="kpi-label">Bull Forecast (Optimistic)</div>
-        <div class="kpi-value">&#8358;{bull_year_end/1_000_000:.1f}M</div>
-        <div class="kpi-delta">+30% acceleration on remaining months</div>
+        <div class="sh-kpi-label">Bull Forecast (Optimistic)</div>
+        <div class="sh-kpi-value">&#8358;{bull_year_end/1_000_000:.1f}M</div>
+        <div class="sh-kpi-delta">+30% acceleration on remaining months</div>
     </div>
-    <div class="kpi-card mc-amber">
+    <div class="sh-kpi mc-amber">
         <div class="kpi-accent-line" style="background:linear-gradient(90deg,#F59E0B,#FCD34D);"></div>
-        <div class="kpi-label">Forecast Range</div>
-        <div class="kpi-value">&#8358;{(bull_year_end - bear_year_end)/1_000_000:.1f}M</div>
-        <div class="kpi-delta">Bear &#8358;{bear_year_end/1_000_000:.1f}M &rarr; Bull &#8358;{bull_year_end/1_000_000:.1f}M</div>
+        <div class="sh-kpi-label">Forecast Range</div>
+        <div class="sh-kpi-value">&#8358;{(bull_year_end - bear_year_end)/1_000_000:.1f}M</div>
+        <div class="sh-kpi-delta">Bear &#8358;{bear_year_end/1_000_000:.1f}M &rarr; Bull &#8358;{bull_year_end/1_000_000:.1f}M</div>
     </div>
 </div>""", unsafe_allow_html=True)
 
 # ── SCENARIO WATERFALL CHART ──────────────────────────────────────────────────
-st.markdown('<div class="section-title">Year-End Revenue Scenarios</div>', unsafe_allow_html=True)
+st.markdown('<div class="sh-section">Year-End Revenue Scenarios</div>', unsafe_allow_html=True)
 
 months_labels = ["Jan","Feb","Mar","Apr","May","Jun",
                  "Jul","Aug","Sep","Oct","Nov","Dec"]
@@ -292,12 +206,12 @@ for name, series, color, dash in [
 fig_forecast.update_layout(
     paper_bgcolor="rgba(0,0,0,0)",
     plot_bgcolor="rgba(255,255,255,0.02)",
-    font=dict(color="#64748B", size=11),
+    font=dict(color="#333", size=11),
     height=380,
     xaxis=dict(gridcolor="rgba(255,255,255,0.04)", linecolor="rgba(255,255,255,0.06)"),
     yaxis=dict(gridcolor="rgba(255,255,255,0.04)", linecolor="rgba(255,255,255,0.06)",
                title="Monthly Revenue (₦K)"),
-    legend=dict(font=dict(color="#94A3B8"), bgcolor="rgba(8,13,26,0.8)",
+    legend=dict(font=dict(color="#555"), bgcolor="rgba(8,13,26,0.8)",
                 bordercolor="rgba(255,255,255,0.08)", borderwidth=1),
     margin=dict(l=0, r=0, t=10, b=0),
     hovermode="x unified",
@@ -324,11 +238,11 @@ for col, label, val, cls, color, desc in [
                 &#8358;{val/1_000_000:.1f}M</div>
             <div style="font-size:11px;color:{color};margin-top:4px;font-weight:600;">
                 + &#8358;{uplift/1_000_000:.1f}M remaining</div>
-            <div style="font-size:11px;color:#64748B;margin-top:6px;line-height:1.5;">{desc}</div>
+            <div style="font-size:11px;color:#333;margin-top:6px;line-height:1.5;">{desc}</div>
         </div>""", unsafe_allow_html=True)
 
 # ── BY COUNTRY ────────────────────────────────────────────────────────────────
-st.markdown('<div class="section-title">Year-End Forecast by Country</div>', unsafe_allow_html=True)
+st.markdown('<div class="sh-section">Year-End Forecast by Country</div>', unsafe_allow_html=True)
 
 country_summary = []
 for cntry in df_all["country"].unique():
@@ -369,7 +283,7 @@ fig_country.add_trace(go.Scatter(
     y=country_df["YTD Revenue"] / 1_000_000,
     mode="markers",
     marker=dict(symbol="diamond", size=14, color="#FFFFFF",
-                line=dict(color="#94A3B8", width=2)),
+                line=dict(color="#555", width=2)),
     hovertemplate="<b>YTD Actual</b><br>%{x}: ₦%{y:.1f}M<extra></extra>",
 ))
 
@@ -377,17 +291,17 @@ fig_country.update_layout(
     barmode="group",
     paper_bgcolor="rgba(0,0,0,0)",
     plot_bgcolor="rgba(255,255,255,0.02)",
-    font=dict(color="#64748B", size=11), height=360,
+    font=dict(color="#333", size=11), height=360,
     xaxis=dict(gridcolor="rgba(255,255,255,0.04)"),
     yaxis=dict(gridcolor="rgba(255,255,255,0.04)", title="Revenue (₦M)"),
-    legend=dict(font=dict(color="#94A3B8"), bgcolor="rgba(8,13,26,0.8)",
+    legend=dict(font=dict(color="#555"), bgcolor="rgba(8,13,26,0.8)",
                 bordercolor="rgba(255,255,255,0.08)", borderwidth=1),
     margin=dict(l=0, r=0, t=10, b=0),
 )
 st.plotly_chart(fig_country, use_container_width=True)
 
 # ── BY RETAILER SUBTYPE ───────────────────────────────────────────────────────
-st.markdown('<div class="section-title">Forecast by Retailer Type</div>', unsafe_allow_html=True)
+st.markdown('<div class="sh-section">Forecast by Retailer Type</div>', unsafe_allow_html=True)
 
 subtype_rows = []
 for sub_t in df_all["Retailer Subtype"].dropna().unique():
@@ -420,21 +334,21 @@ fig_sub = px.bar(
 fig_sub.update_layout(
     paper_bgcolor="rgba(0,0,0,0)",
     plot_bgcolor="rgba(255,255,255,0.02)",
-    font=dict(color="#64748B", size=11),
+    font=dict(color="#333", size=11),
     xaxis=dict(gridcolor="rgba(255,255,255,0.04)"),
     yaxis=dict(gridcolor="rgba(255,255,255,0.04)"),
-    legend=dict(font=dict(color="#94A3B8"), bgcolor="rgba(8,13,26,0.8)",
+    legend=dict(font=dict(color="#555"), bgcolor="rgba(8,13,26,0.8)",
                 bordercolor="rgba(255,255,255,0.08)", borderwidth=1),
     margin=dict(l=0, r=0, t=10, b=0),
 )
 st.plotly_chart(fig_sub, use_container_width=True)
 
 # ── OPPORTUNITY UPLIFT TABLE ──────────────────────────────────────────────────
-st.markdown('<div class="section-title">Revenue Uplift by Opportunity Category</div>',
+st.markdown('<div class="sh-section">Revenue Uplift by Opportunity Category</div>',
             unsafe_allow_html=True)
 st.markdown("""
 <div style="background:rgba(34,197,94,0.06);border:1px solid rgba(34,197,94,0.18);
-     border-radius:10px;padding:12px 18px;margin-bottom:14px;font-size:12px;color:#64748B;line-height:1.6;">
+     border-radius:10px;padding:12px 18px;margin-bottom:14px;font-size:12px;color:#333;line-height:1.6;">
     <strong style="color:#86EFAC;">How to read this:</strong> The "Recoverable Revenue" column shows
     how much additional revenue Shalina could capture from currently underperforming outlets
     if they were brought up to the peer median. This is the commercial opportunity.
@@ -462,7 +376,7 @@ opp_df = pd.DataFrame(opp_rows)
 st.dataframe(opp_df, use_container_width=True, hide_index=True)
 
 # ── TOP GROWTH & DECLINE OUTLETS ─────────────────────────────────────────────
-st.markdown('<div class="section-title">Outlet-Level Growth Outlook</div>', unsafe_allow_html=True)
+st.markdown('<div class="sh-section">Outlet-Level Growth Outlook</div>', unsafe_allow_html=True)
 col_g, col_d = st.columns(2)
 
 active_base = df_base[df_base["ytd"] > 0].copy()
@@ -501,7 +415,7 @@ with col_d:
     st.dataframe(low_base, use_container_width=True)
 
 # ── STRATEGIC INSIGHTS ────────────────────────────────────────────────────────
-st.markdown('<div class="section-title">Forecast Insights</div>', unsafe_allow_html=True)
+st.markdown('<div class="sh-section">Forecast Insights</div>', unsafe_allow_html=True)
 
 total_recoverable = opp_df[
     opp_df["Category"].isin(["Underperforming","Dead Whitespace","Low Performer"])
@@ -510,28 +424,28 @@ total_recoverable = opp_df[
 bull_upside = (bull_year_end - base_year_end) / 1_000_000
 
 st.markdown(f"""
-<div class="insight-card">
+<div class="sh-insight sh-card">
     <span style="display:inline-block;padding:3px 10px;border-radius:4px;font-size:10px;
          font-weight:700;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:8px;
          background:rgba(34,197,94,0.12);color:#86EFAC;border:1px solid rgba(34,197,94,0.3);">
         Growth Opportunity</span>
-    <div class="insight-title">
+    <div class="sh-insight-title">
         &#8358;{total_recoverable:.1f}M Recoverable from Underperforming Outlets</div>
-    <div class="insight-detail">
+    <div class="sh-insight-body">
         If underperforming and low-performer outlets were brought up to the active outlet median,
         Shalina could recover an additional <strong style="color:#FFFFFF">&#8358;{total_recoverable:.1f}M</strong>
         in annual revenue without acquiring a single new outlet.
         Focus the commercial team on these existing but underactivated accounts first.
     </div>
 </div>
-<div class="insight-card">
+<div class="sh-insight sh-card">
     <span style="display:inline-block;padding:3px 10px;border-radius:4px;font-size:10px;
          font-weight:700;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:8px;
          background:rgba(59,130,246,0.12);color:#93C5FD;border:1px solid rgba(59,130,246,0.3);">
         Scenario Gap</span>
-    <div class="insight-title">
+    <div class="sh-insight-title">
         Bull vs Base Gap is &#8358;{bull_upside:.1f}M — Achievable with Right Actions</div>
-    <div class="insight-detail">
+    <div class="sh-insight-body">
         The difference between the base and optimistic scenario is
         <strong style="color:#FFFFFF">&#8358;{bull_upside:.1f}M</strong>.
         This gap is closeable through three levers: activating dead whitespace outlets,
@@ -539,14 +453,14 @@ st.markdown(f"""
         The Churn Prediction and Command Center pages identify exactly which outlets to act on.
     </div>
 </div>
-<div class="insight-card">
+<div class="sh-insight sh-card">
     <span style="display:inline-block;padding:3px 10px;border-radius:4px;font-size:10px;
          font-weight:700;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:8px;
          background:rgba(245,158,11,0.12);color:#FCD34D;border:1px solid rgba(245,158,11,0.3);">
         Time Sensitivity</span>
-    <div class="insight-title">
+    <div class="sh-insight-title">
         {months_remaining} Months Left — Every Month of Delay Costs Revenue</div>
-    <div class="insight-detail">
+    <div class="sh-insight-body">
         With {months_remaining} months remaining in the year, each month of inaction on
         dead whitespace outlets costs approximately
         <strong style="color:#FFFFFF">&#8358;{(bull_year_end - base_year_end) / max(months_remaining,1) / 1_000_000:.1f}M</strong>
@@ -556,7 +470,7 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 
 # ── EXPORT ────────────────────────────────────────────────────────────────────
-st.markdown('<div class="section-title">Export Forecast</div>', unsafe_allow_html=True)
+st.markdown('<div class="sh-section">Export Forecast</div>', unsafe_allow_html=True)
 
 ex1, ex2, _ = st.columns([1, 1, 4])
 

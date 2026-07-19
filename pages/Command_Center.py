@@ -8,6 +8,7 @@ import streamlit as st
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from fabric_connector import load_data as _load_data
+from styles import apply_styles, sidebar_nav
 
 
 st.set_page_config(
@@ -17,37 +18,9 @@ st.set_page_config(
 )
 
 
-with st.sidebar:
-    st.markdown(
-        """
-        <div style="padding:20px 8px 10px 8px;">
-            <div style="font-family:Inter,sans-serif;font-size:10px;font-weight:700;
-            color:rgba(100,180,220,0.7);text-transform:uppercase;letter-spacing:2px;margin-bottom:20px;">
-                Navigation
-            </div>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
-    st.page_link("app.py", label="Dashboard")
-    st.page_link("pages/Command_Center.py", label="Command Center")
-    st.page_link("pages/RFM_Analysis.py", label="RFM Analysis")
-    st.page_link("pages/Churn_Prediction.py", label="Churn Prediction")
-    st.page_link("pages/Upload_Data.py", label="Upload Data")
-    st.markdown(
-        """
-        <div style="margin-top:16px;padding:0 8px;">
-            <div style="height:1px;background:linear-gradient(90deg,transparent,
-            rgba(33,150,196,0.35),transparent);"></div>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
-    if st.button("Refresh Data", use_container_width=True, key="cc_refresh"):
-        st.cache_data.clear()
-        st.rerun()
+sidebar_nav(refresh_key="cc_refresh")
 
-    import streamlit.components.v1 as _sc
+import streamlit.components.v1 as _sc
 
     _sc.html(
         """<script>(function(){function r(){var n=window.parent.document.querySelector('[data-testid="stSidebarNav"]');if(n){n.remove();}else{setTimeout(r,200);}}r();setTimeout(r,800);setTimeout(r,2500);})();</script>""",
@@ -55,179 +28,7 @@ with st.sidebar:
     )
 
 
-st.markdown(
-    """
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap');
-* { box-sizing: border-box; }
-.stApp {
-    font-family: 'Inter', sans-serif;
-    color: #E2E8F0;
-    background: #0d1526;
-    min-height: 100vh;
-}
-.stApp::before {
-    content: '';
-    position: fixed; inset: 0;
-    background:
-        radial-gradient(ellipse 70% 48% at 10% 0%, rgba(20,100,220,0.20) 0%, transparent 60%),
-        radial-gradient(ellipse 48% 42% at 90% 10%, rgba(100,30,200,0.15) 0%, transparent 55%),
-        radial-gradient(ellipse 55% 55% at 50% 100%, rgba(15,90,120,0.18) 0%, transparent 60%);
-    pointer-events: none; z-index: 0;
-}
-.main .block-container {
-    background: transparent;
-    padding-top: 1rem;
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
-    max-width: 1500px;
-    position: relative;
-    z-index: 1;
-}
-section[data-testid="stSidebar"] {
-    background: rgba(8,13,26,0.95) !important;
-    border-right: 1px solid rgba(255,255,255,0.06) !important;
-}
-section[data-testid="stSidebar"] * {
-    color: #94A3B8 !important;
-    font-family: 'Inter', sans-serif !important;
-}
-section[data-testid="stSidebar"] a:hover {
-    color: #fff !important;
-    background: rgba(255,255,255,0.06) !important;
-    border-radius: 8px !important;
-}
-[data-testid="stSidebarNav"],[data-testid="stSidebarNavItems"],section[data-testid="stSidebar"] nav,
-[data-testid="stDecoration"],#MainMenu,footer {
-    display: none !important;
-}
-[data-testid="stToolbar"] { display:flex !important; background:transparent !important; }
-header[data-testid="stHeader"] { background:transparent !important; }
-[data-testid="collapsedControl"],[data-testid="stSidebarCollapseButton"],button[kind="header"] {
-    display:flex !important;
-    visibility:visible !important;
-    opacity:1 !important;
-    z-index:999999 !important;
-}
-[data-testid="stSidebarCollapseButton"] *,
-[data-testid="collapsedControl"] *,
-[data-testid="stExpandSidebarButton"] * { font-size:0 !important; }
-[data-testid="stSidebarCollapseButton"]::before {
-    content:"‹";
-    color:#94A3B8;
-    font-size:26px;
-    line-height:1;
-}
-[data-testid="collapsedControl"]::before,
-[data-testid="stExpandSidebarButton"]::before {
-    content:"›";
-    color:#94A3B8;
-    font-size:26px;
-    line-height:1;
-}
-[data-testid="stExpandSidebarButton"] {
-    display:flex !important;
-    visibility:visible !important;
-    opacity:1 !important;
-    position:fixed !important;
-    top:16px !important;
-    left:16px !important;
-    width:34px !important;
-    height:34px !important;
-    min-width:34px !important;
-    z-index:999999 !important;
-    align-items:center !important;
-    justify-content:center !important;
-    background:rgba(8,13,26,0.82) !important;
-    border:1px solid rgba(255,255,255,0.12) !important;
-    border-radius:8px !important;
-}
-.cc-header {
-    padding: 20px 0 16px 0;
-    border-bottom: 1px solid rgba(255,255,255,0.06);
-    margin-bottom: 18px;
-}
-.cc-eyebrow {
-    font-size: 10px; font-weight: 700; letter-spacing: 3px;
-    text-transform: uppercase; color: #5B8DB8; margin-bottom: 6px;
-}
-.cc-title {
-    font-size: 28px; font-weight: 850; color: #F8FAFC;
-    letter-spacing: -0.4px; line-height: 1.12;
-}
-.cc-title span { color: #38BDF8; }
-.cc-subtitle {
-    color: #8EA7C5; font-size: 13px; line-height: 1.6;
-    max-width: 900px; margin-top: 8px;
-}
-.kpi-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin:18px 0 20px; }
-.kpi-card {
-    border-radius: 10px; padding: 18px 18px 16px; min-height: 118px;
-    border: 1px solid rgba(255,255,255,0.08);
-    background: rgba(255,255,255,0.035);
-    box-shadow: 0 10px 32px rgba(0,0,0,0.22);
-}
-.kpi-card.blue { background: linear-gradient(135deg,#0f172a 0%,#1e3a5f 100%); border-color: rgba(59,130,246,0.25); }
-.kpi-card.green { background: linear-gradient(135deg,#06170e 0%,#0f5132 100%); border-color: rgba(34,197,94,0.25); }
-.kpi-card.amber { background: linear-gradient(135deg,#1a1400 0%,#5c4500 100%); border-color: rgba(245,158,11,0.25); }
-.kpi-card.red { background: linear-gradient(135deg,#1a0505 0%,#5c1010 100%); border-color: rgba(239,68,68,0.25); }
-.kpi-label {
-    font-size: 10px; font-weight: 700; color: #7A8DA8;
-    letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 8px;
-}
-.kpi-value { font-size: 34px; font-weight: 850; color: #F8FAFC; line-height: 1; }
-.kpi-note { font-size: 11px; color: #9DB0C8; margin-top: 7px; line-height: 1.35; }
-.section-title {
-    font-size: 11px; font-weight: 750; letter-spacing: 2px;
-    text-transform: uppercase; color: #607692;
-    margin-top: 24px; margin-bottom: 12px;
-    display: flex; align-items: center; gap: 10px;
-}
-.section-title::after {
-    content: ''; flex: 1; height: 1px;
-    background: linear-gradient(90deg,rgba(255,255,255,0.08),transparent);
-}
-.briefing-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom: 10px; }
-.brief-card {
-    min-height: 150px;
-    border-radius: 10px;
-    padding: 16px 18px;
-    border: 1px solid rgba(255,255,255,0.08);
-    background: rgba(255,255,255,0.03);
-}
-.brief-tag {
-    display:inline-block; padding:3px 9px; border-radius:4px;
-    font-size:9px; font-weight:800; letter-spacing:0.9px;
-    text-transform:uppercase; margin-bottom:10px;
-    background:rgba(56,189,248,0.12); color:#BAE6FD; border:1px solid rgba(56,189,248,0.26);
-}
-.brief-title { font-size:15px; font-weight:800; color:#F1F5F9; margin-bottom:7px; }
-.brief-body { font-size:12px; color:#8EA7C5; line-height:1.55; }
-.stSelectbox label,.stSlider label {
-    color:#607692 !important; font-size:10px !important; font-weight:800 !important;
-    text-transform:uppercase; letter-spacing:1px;
-}
-[data-baseweb="select"] > div {
-    background:rgba(255,255,255,0.04) !important;
-    border:1px solid rgba(255,255,255,0.08) !important;
-    border-radius:8px !important; color:#E2E8F0 !important;
-}
-[data-baseweb="popover"] { background:#0f172a !important; border:1px solid rgba(255,255,255,0.1) !important; }
-[role="option"] { background:#0f172a !important; color:#E2E8F0 !important; }
-[role="option"]:hover { background:rgba(56,189,248,0.15) !important; }
-[data-testid="stDataFrame"] { border-radius:10px !important; border:1px solid rgba(255,255,255,0.07) !important; }
-.stDownloadButton > button {
-    background:rgba(56,189,248,0.14) !important; color:#BAE6FD !important;
-    border:1px solid rgba(56,189,248,0.3) !important; border-radius:8px !important;
-    font-weight:700 !important;
-}
-@media (max-width: 900px) {
-    .kpi-grid, .briefing-grid { grid-template-columns: 1fr; }
-}
-</style>
-""",
-    unsafe_allow_html=True,
-)
+apply_styles()
 
 
 @st.cache_data(show_spinner=False)
@@ -385,24 +186,24 @@ valid_gps_pct = float(view["gps_valid"].mean() * 100) if len(view) else 0
 st.markdown(
     f"""
     <div class="kpi-grid">
-        <div class="kpi-card blue">
-            <div class="kpi-label">Outlets In Scope</div>
-            <div class="kpi-value">{compact(len(view))}</div>
+        <div class="sh-kpi blue">
+            <div class="sh-kpi-label">Outlets In Scope</div>
+            <div class="sh-kpi-value">{compact(len(view))}</div>
             <div class="kpi-note">{country if country != "All" else "Nigeria + Angola"} filtered commercial universe</div>
         </div>
-        <div class="kpi-card red">
-            <div class="kpi-label">Dead Whitespace</div>
-            <div class="kpi-value">{compact(dead_count)}</div>
+        <div class="sh-kpi red">
+            <div class="sh-kpi-label">Dead Whitespace</div>
+            <div class="sh-kpi-value">{compact(dead_count)}</div>
             <div class="kpi-note">Outlets with zero YTD value requiring recovery validation</div>
         </div>
-        <div class="kpi-card amber">
-            <div class="kpi-label">Underperforming</div>
-            <div class="kpi-value">{compact(under_count)}</div>
+        <div class="sh-kpi amber">
+            <div class="sh-kpi-label">Underperforming</div>
+            <div class="sh-kpi-value">{compact(under_count)}</div>
             <div class="kpi-note">Active but below local commercial threshold</div>
         </div>
-        <div class="kpi-card green">
-            <div class="kpi-label">Scenario Value Gap</div>
-            <div class="kpi-value">{money(scenario_uplift)}</div>
+        <div class="sh-kpi green">
+            <div class="sh-kpi-label">Scenario Value Gap</div>
+            <div class="sh-kpi-value">{money(scenario_uplift)}</div>
             <div class="kpi-note">At {int(conversion_rate * 100)}% recovery on top {activation_count} priorities</div>
         </div>
     </div>
@@ -432,7 +233,7 @@ quality_text = (
     "Prioritize corrections before sending field teams into weak-coordinate areas."
 )
 
-st.markdown('<div class="section-title">Executive Briefing</div>', unsafe_allow_html=True)
+st.markdown('<div class="sh-section">Executive Briefing</div>', unsafe_allow_html=True)
 st.markdown(
     f"""
     <div class="briefing-grid">
@@ -458,7 +259,7 @@ st.markdown(
 
 chart_left, chart_right = st.columns([1.15, 0.85])
 with chart_left:
-    st.markdown('<div class="section-title">Priority Zone Map</div>', unsafe_allow_html=True)
+    st.markdown('<div class="sh-section">Priority Zone Map</div>', unsafe_allow_html=True)
     map_zones = zone_stats.sort_values("zone_gap", ascending=False).head(80)
     if not map_zones.empty:
         fig_map = px.scatter_mapbox(
@@ -496,7 +297,7 @@ with chart_left:
         st.info("No target zones available for the selected filters.")
 
 with chart_right:
-    st.markdown('<div class="section-title">Action Mix</div>', unsafe_allow_html=True)
+    st.markdown('<div class="sh-section">Action Mix</div>', unsafe_allow_html=True)
     action_mix = (
         action_plan.head(activation_count)["Opportunity"]
         .value_counts()
@@ -528,7 +329,7 @@ with chart_right:
         )
         st.plotly_chart(fig_mix, use_container_width=True)
 
-st.markdown('<div class="section-title">Field Action Plan</div>', unsafe_allow_html=True)
+st.markdown('<div class="sh-section">Field Action Plan</div>', unsafe_allow_html=True)
 show_cols = [
     "Shop Name",
     "country",
@@ -553,7 +354,7 @@ display_plan = action_plan[show_cols].rename(
 st.dataframe(display_plan.head(activation_count), use_container_width=True, hide_index=True)
 
 # ── EXPORT BUTTONS ────────────────────────────────────────────────────────────
-st.markdown('<div class="section-title">Export</div>', unsafe_allow_html=True)
+st.markdown('<div class="sh-section">Export</div>', unsafe_allow_html=True)
 
 _cc_filename = f"shalina_command_center_{country.lower().replace(' ', '_')}"
 _cc_export_df = display_plan.head(activation_count)
@@ -591,13 +392,13 @@ with dl2:
     )
 
 # ── WRITE-BACK TO FABRIC ──────────────────────────────────────────────────────
-st.markdown('<div class="section-title">Fabric Write-Back</div>', unsafe_allow_html=True)
+st.markdown('<div class="sh-section">Fabric Write-Back</div>', unsafe_allow_html=True)
 st.markdown("""
 <div style="background:rgba(56,189,248,0.05);border:1px solid rgba(56,189,248,0.2);
      border-radius:12px;padding:14px 20px;margin-bottom:12px;">
     <div style="font-size:12px;color:#BAE6FD;font-weight:600;margin-bottom:4px;">
         Publish whitespace scores back to your Fabric warehouse</div>
-    <div style="font-size:11px;color:#64748B;line-height:1.6;">
+    <div style="font-size:11px;color:#333;line-height:1.6;">
         Creates a <code style="color:#BAE6FD">WhitespaceScores</code> table in Fabric containing
         every outlet's opportunity category and revenue gap. Available immediately in Power BI.
         Requires FABRIC_SQL_ENDPOINT to be configured.

@@ -3,6 +3,9 @@ import pandas as pd
 import numpy as np
 import plotly.express as px
 import os
+import sys as _sys
+_sys.path.insert(0, os.path.dirname(__file__))
+from styles import apply_styles, sidebar_nav
 
 st.set_page_config(
     layout="wide",
@@ -15,238 +18,15 @@ if "country"         not in st.session_state: st.session_state.country         =
 if "nav_page"        not in st.session_state: st.session_state.nav_page        = "Dashboard"
 if "selected_outlet" not in st.session_state: st.session_state.selected_outlet = None
 
-# ── SIDEBAR PART 1 : Navigation links ────────────────────────────
+# ── SIDEBAR ───────────────────────────────────────────────────────
+sidebar_nav(refresh_key="refresh_data")
+
+# Outlet search (sidebar part 2 — added after data loads below)
 with st.sidebar:
-    st.markdown("""
-    <div style="padding:24px 8px 12px 8px;">
-        <div style="font-family:'Inter',sans-serif;font-size:9px;font-weight:700;
-             color:#2a2a2a;text-transform:uppercase;letter-spacing:3px;margin-bottom:20px;">
-            Navigation
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
+    pass  # sidebar_nav() above already handles nav
 
-    st.page_link("app.py",                    label="Dashboard")
-    st.page_link("pages/Command_Center.py",   label="Command Center")
-    st.page_link("pages/RFM_Analysis.py",     label="RFM Analysis")
-    st.page_link("pages/Churn_Prediction.py",  label="Churn Prediction")
-    st.page_link("pages/Revenue_Forecast.py",  label="Revenue Forecast")
-    st.page_link("pages/Upload_Data.py",       label="Upload Data")
-
-    st.markdown("""
-    <div style="margin-top:20px;padding:0 8px;">
-        <div style="height:1px;background:rgba(255,255,255,0.04);"></div>
-    </div>""", unsafe_allow_html=True)
-
-    st.markdown("""
-    <div style='margin-top:20px;padding:0 8px;font-family:Inter,sans-serif;font-size:9px;
-         font-weight:700;color:#2a2a2a;text-transform:uppercase;letter-spacing:3px;margin-bottom:8px;'>
-         Data
-    </div>""", unsafe_allow_html=True)
-
-    if st.button("Refresh Data", use_container_width=True, key="refresh_data"):
-        st.cache_data.clear()
-        st.rerun()
-
-    import streamlit.components.v1 as _sc
-    _sc.html("""<script>(function(){
-        function r(){var n=window.parent.document.querySelector('[data-testid="stSidebarNav"]');
-        if(n){n.remove();}else{setTimeout(r,200);}}
-        r();setTimeout(r,800);setTimeout(r,2500);
-    })();</script>""", height=0)
-
-# ── GLOBAL CSS ────────────────────────────────────────────────────
-st.markdown("""
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap');
-* { box-sizing: border-box; }
-
-.stApp {
-    font-family: 'Inter', sans-serif;
-    color: #E2E8F0;
-    background: #050505;
-    min-height: 100vh;
-    position: relative;
-}
-.stApp::before {
-    content: '';
-    position: fixed; inset: 0;
-    background:
-        radial-gradient(ellipse 60% 40% at 5% 0%,   rgba(15,60,180,0.12) 0%, transparent 55%),
-        radial-gradient(ellipse 40% 30% at 95% 5%,   rgba(80,20,160,0.10) 0%, transparent 50%),
-        radial-gradient(ellipse 50% 50% at 50% 100%, rgba(10,40,120,0.10) 0%, transparent 55%);
-    pointer-events: none; z-index: 0;
-}
-.main .block-container {
-    background: transparent;
-    padding-top: 0rem; padding-left: 1.5rem; padding-right: 1.5rem;
-    max-width: 1500px; position: relative; z-index: 1;
-}
-section[data-testid="stSidebar"] {
-    background: rgba(3,3,3,0.98) !important;
-    border-right: 1px solid rgba(255,255,255,0.06) !important;
-}
-section[data-testid="stSidebar"] * { color: #94A3B8 !important; font-family: 'Inter', sans-serif !important; }
-section[data-testid="stSidebar"] a:hover { color: #fff !important; background: rgba(255,255,255,0.06) !important; border-radius: 100px !important; }
-[data-testid="stSidebarNav"],[data-testid="stSidebarNavItems"],section[data-testid="stSidebar"] nav { display:none !important; }
-[data-testid="stDecoration"],#MainMenu,footer { display:none !important; }
-[data-testid="stToolbar"] { display:flex !important; background:transparent !important; }
-header[data-testid="stHeader"] { background:transparent !important; }
-[data-testid="collapsedControl"],[data-testid="stSidebarCollapseButton"],button[kind="header"] {
-    display:flex !important;
-    visibility:visible !important;
-    opacity:1 !important;
-    z-index:999999 !important;
-}
-[data-testid="stSidebarCollapseButton"] *,
-[data-testid="collapsedControl"] *,
-[data-testid="stExpandSidebarButton"] * { font-size:0 !important; }
-[data-testid="stSidebarCollapseButton"]::before {
-    content:"‹";
-    color:#555;
-    font-size:26px;
-    line-height:1;
-}
-[data-testid="collapsedControl"]::before,
-[data-testid="stExpandSidebarButton"]::before {
-    content:"›";
-    color:#555;
-    font-size:26px;
-    line-height:1;
-}
-[data-testid="stExpandSidebarButton"] {
-    display:flex !important;
-    visibility:visible !important;
-    opacity:1 !important;
-    position:fixed !important;
-    top:16px !important;
-    left:16px !important;
-    width:34px !important;
-    height:34px !important;
-    min-width:34px !important;
-    z-index:999999 !important;
-    align-items:center !important;
-    justify-content:center !important;
-    background:rgba(10,10,10,0.90) !important;
-    border:1px solid rgba(255,255,255,0.10) !important;
-    border-radius:100px !important;
-}
-
-/* ── TOP BAR ── */
-.mc-topbar { display:flex; align-items:center; justify-content:space-between; padding:18px 0 14px 0; border-bottom:1px solid rgba(255,255,255,0.05); margin-bottom:20px; }
-.mc-eyebrow { font-size:10px; font-weight:500; letter-spacing:3px; text-transform:uppercase; color:#3a3a3a; margin-bottom:6px; }
-.mc-title   { font-size:28px; font-weight:900; color:#FFFFFF; letter-spacing:-1px; line-height:1.05; }
-.mc-title span { color:#FFFFFF; opacity:0.45; }
-.mc-status-group { display:flex; gap:10px; align-items:center; }
-.mc-status-pill { display:flex; align-items:center; gap:7px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.07); border-radius:100px; padding:6px 14px; font-size:10px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:#555; }
-.mc-status-dot { width:6px; height:6px; border-radius:50%; background:#22C55E; box-shadow:0 0 8px rgba(34,197,94,0.8),0 0 16px rgba(34,197,94,0.4); animation:statusPulse 2s ease-in-out infinite; }
-.mc-status-dot.amber { background:#F59E0B; box-shadow:0 0 8px rgba(245,158,11,0.8),0 0 16px rgba(245,158,11,0.4); }
-@keyframes statusPulse { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
-
-/* ── KPI CARDS ── */
-.kpi-row { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:24px; }
-.kpi-card { border-radius:16px; padding:24px 22px 18px 22px; position:relative; overflow:hidden; min-height:128px; border:1px solid rgba(255,255,255,0.07); transition:transform 0.25s cubic-bezier(.16,1,.3,1),box-shadow 0.25s ease; cursor:default; background:#0e0e0e; }
-.kpi-card:hover { transform:translateY(-4px); box-shadow:0 20px 60px rgba(0,0,0,0.6); }
-.kpi-card.mc-blue   { border-color:rgba(59,130,246,0.20);  box-shadow:0 2px 20px rgba(0,0,0,0.4),inset 0 1px 0 rgba(59,130,246,0.12); }
-.kpi-card.mc-orange { border-color:rgba(249,115,22,0.20);  box-shadow:0 2px 20px rgba(0,0,0,0.4),inset 0 1px 0 rgba(249,115,22,0.12); }
-.kpi-card.mc-purple { border-color:rgba(139,92,246,0.20);  box-shadow:0 2px 20px rgba(0,0,0,0.4),inset 0 1px 0 rgba(139,92,246,0.12); }
-.kpi-card.mc-amber  { border-color:rgba(245,158,11,0.20);  box-shadow:0 2px 20px rgba(0,0,0,0.4),inset 0 1px 0 rgba(245,158,11,0.12); }
-.kpi-card.mc-red    { border-color:rgba(239,68,68,0.20);   box-shadow:0 2px 20px rgba(0,0,0,0.4),inset 0 1px 0 rgba(239,68,68,0.12); }
-.kpi-card.mc-green  { border-color:rgba(34,197,94,0.20);   box-shadow:0 2px 20px rgba(0,0,0,0.4),inset 0 1px 0 rgba(34,197,94,0.12); }
-.kpi-accent-line { height:2px; width:32px; border-radius:100px; margin-bottom:14px; }
-.kpi-label { font-size:10px; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:#444; margin-bottom:8px; }
-.kpi-value { font-size:42px; font-weight:900; color:#FFFFFF; line-height:1; letter-spacing:-2px; }
-.kpi-delta { font-size:11px; color:#333; margin-top:8px; }
-
-/* ── SECTION TITLES ── */
-.section-title { font-size:10px; font-weight:700; letter-spacing:3px; text-transform:uppercase; color:#333; margin-top:28px; margin-bottom:14px; display:flex; align-items:center; gap:12px; }
-.section-title::after { content:''; flex:1; height:1px; background:rgba(255,255,255,0.05); }
-
-/* ── INSIGHT CARDS ── */
-.insight-card { background:#0c0c0c; border-radius:14px; padding:18px 22px; border:1px solid rgba(255,255,255,0.06); margin-bottom:10px; transition:border-color 0.2s,background 0.2s; }
-.insight-card:hover { background:#111; border-color:rgba(255,255,255,0.10); }
-.insight-title  { font-size:14px; font-weight:700; color:#F1F5F9; margin-bottom:4px; }
-.insight-detail { font-size:12px; color:#444; line-height:1.7; }
-
-/* ── BADGES ── */
-.badge { display:inline-block; padding:3px 12px; border-radius:100px; font-size:10px; font-weight:700; margin-bottom:8px; letter-spacing:0.5px; text-transform:uppercase; }
-.badge-dead  { background:rgba(239,68,68,0.10);  color:#FCA5A5; border:1px solid rgba(239,68,68,0.25); }
-.badge-under { background:rgba(249,115,22,0.10); color:#FDBA74; border:1px solid rgba(249,115,22,0.25); }
-.badge-low   { background:rgba(59,130,246,0.10); color:#93C5FD; border:1px solid rgba(59,130,246,0.25); }
-.badge-high  { background:rgba(139,92,246,0.10); color:#C4B5FD; border:1px solid rgba(139,92,246,0.25); }
-
-/* ── OUTLET DETAIL CARD ── */
-.odc-wrap { background:#0c0c0c; border:1px solid rgba(255,255,255,0.08); border-radius:16px; padding:22px 26px 18px 26px; margin-bottom:22px; box-shadow:0 8px 40px rgba(0,0,0,0.5); position:relative; overflow:hidden; }
-.odc-eyebrow { font-size:9px; font-weight:700; letter-spacing:3px; text-transform:uppercase; color:#3B82F6; margin-bottom:6px; }
-.odc-name    { font-size:24px; font-weight:900; color:#FFFFFF; letter-spacing:-0.6px; line-height:1.1; }
-.odc-meta    { display:flex; gap:8px; align-items:center; margin-top:8px; margin-bottom:16px; padding-bottom:16px; border-bottom:1px solid rgba(255,255,255,0.05); flex-wrap:wrap; }
-.odc-stats   { display:flex; align-items:center; gap:0; margin-bottom:4px; }
-.odc-stat    { flex:1; padding:0 20px; }
-.odc-stat:first-child { padding-left:0; }
-.odc-divider { width:1px; height:40px; background:rgba(255,255,255,0.06); flex-shrink:0; }
-.odc-stat-label { font-size:9px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:#333; margin-bottom:6px; }
-.odc-stat-value { font-size:24px; font-weight:900; letter-spacing:-0.5px; line-height:1; }
-
-/* ── INPUTS ── */
-section[data-testid="stSidebar"] .stTextInput input {
-    background: #0a0a0a !important;
-    border: 1px solid rgba(255,255,255,0.10) !important;
-    border-radius: 100px !important;
-    color: #E2E8F0 !important;
-    font-size: 12px !important;
-    caret-color: #60A5FA !important;
-    box-shadow: none !important;
-}
-section[data-testid="stSidebar"] .stTextInput input:focus {
-    border-color: rgba(255,255,255,0.25) !important;
-    outline: none !important;
-}
-section[data-testid="stSidebar"] .stTextInput input::placeholder {
-    color: #333 !important;
-}
-section[data-testid="stSidebar"] .stTextInput > div,
-section[data-testid="stSidebar"] .stTextInput > div > div { background:transparent !important; }
-section[data-testid="stSidebar"] .stSelectbox [data-baseweb="select"] > div { background:#0a0a0a !important; border:1px solid rgba(255,255,255,0.08) !important; border-radius:100px !important; }
-
-/* ── BUTTONS — PILL STYLE ── */
-div[data-testid="stHorizontalBlock"] div[data-testid="column"] .stButton > button {
-    background: #111 !important;
-    color: #666 !important;
-    border: 1px solid rgba(255,255,255,0.07) !important;
-    border-radius: 100px !important;
-    font-weight: 600 !important;
-    font-size: 13px !important;
-    width: 100% !important;
-    transition: all 0.2s ease !important;
-    letter-spacing: 0.2px !important;
-}
-div[data-testid="stHorizontalBlock"] div[data-testid="column"] .stButton > button:hover {
-    background: #1a1a1a !important;
-    border-color: rgba(255,255,255,0.15) !important;
-    color: #FFFFFF !important;
-}
-
-/* ── SELECTS ── */
-.stSelectbox label { color:#333 !important; font-size:10px !important; font-weight:700 !important; text-transform:uppercase; letter-spacing:1.5px; }
-[data-baseweb="select"] > div { background:#0e0e0e !important; border:1px solid rgba(255,255,255,0.07) !important; border-radius:100px !important; color:#E2E8F0 !important; }
-[data-baseweb="select"] svg { fill:#333 !important; }
-[data-baseweb="popover"] { background:#0a0a0a !important; border:1px solid rgba(255,255,255,0.08) !important; border-radius:12px !important; }
-[role="option"] { background:#0a0a0a !important; color:#E2E8F0 !important; }
-[role="option"]:hover { background:rgba(255,255,255,0.05) !important; }
-
-/* ── MISC ── */
-[data-testid="stImageContainer"] button,[data-testid="StyledFullScreenButton"] { display:none !important; }
-[data-testid="stDataFrame"] { border-radius:12px !important; border:1px solid rgba(255,255,255,0.06) !important; }
-.stDownloadButton > button { background:#111 !important; color:#555 !important; border:1px solid rgba(255,255,255,0.08) !important; border-radius:100px !important; font-weight:600 !important; }
-.stDownloadButton > button:hover { background:#1a1a1a !important; color:#fff !important; }
-
-.ds-banner { background:#0a0a0a; border:1px solid rgba(255,255,255,0.06); border-radius:14px; padding:14px 20px; margin-bottom:16px; display:flex; align-items:center; gap:14px; }
-
-.shalina-reveal { opacity:0; transform:translateY(40px) scale(0.98); transition:opacity 0.7s cubic-bezier(.16,1,.3,1),transform 0.7s cubic-bezier(.16,1,.3,1); will-change:opacity,transform; }
-.shalina-reveal.visible { opacity:1; transform:translateY(0) scale(1); }
-.shalina-reveal:nth-child(2){transition-delay:0.08s;} .shalina-reveal:nth-child(3){transition-delay:0.16s;} .shalina-reveal:nth-child(4){transition-delay:0.24s;}
-</style>
-""", unsafe_allow_html=True)
+# ── STYLES ───────────────────────────────────────────────────────
+apply_styles(active_page=st.session_state.get("nav_page","Dashboard"))
 
 # ── LOAD DATA ─────────────────────────────────────────────────────
 import sys, os as _os
@@ -374,71 +154,57 @@ else:
     _logo_b64  = ("iVBORw0KGgoAAAANSUhEUgAAAjAAAACMCAYAAABRTFQrAAAABmJLR0QA"
                   "/wD/AP+gvaeTAAAADUlEQVQI12NgYGD4DwABBAEBhc9HaQAAAABJRU5ErkJggg==")
 
+# ── TOP BAR ───────────────────────────────────────────────────────
+is_live   = data_status == "live"
+is_hybrid = data_status == "hybrid"
+status_label = data_source
+status_sub = (
+    "Live — both countries pulling from Microsoft Fabric" if is_live else
+    ("Hybrid — one country live, one on CSV fallback" if is_hybrid else
+     "CSV fallback — Fabric unreachable")
+)
+dot_color = "#22C55E" if is_live else ("#6EC6F5" if is_hybrid else "#F59E0B")
+_dot_cls  = "" if is_live else ("" if is_hybrid else "sh-dot-amber")
+_dot_cls2 = "sh-dot-amber" if data_status == "csv" else ""
+
 logo_col, title_col = st.columns([1, 11])
 with logo_col:
     st.markdown(
-        f'<img src="data:{_logo_mime};base64,{_logo_b64}" style="width:180px;margin-top:4px;" />',
+        f'<img src="data:{_logo_mime};base64,{_logo_b64}" style="height:40px;width:auto;margin-top:12px;opacity:0.9;" />',
         unsafe_allow_html=True
     )
 with title_col:
-    _dot_cls = "amber" if data_status == "csv" else ""
     st.markdown(f"""
-    <div class="mc-topbar">
+    <div class="sh-topbar">
         <div>
-            <div class="mc-eyebrow">Shalina Healthcare &nbsp;&middot;&nbsp; Distribution Intelligence</div>
-            <div class="mc-title">Distribution <span>Depth</span> Analysis</div>
+            <div class="sh-eyebrow">Shalina Healthcare &nbsp;&middot;&nbsp; Distribution Intelligence</div>
+            <div class="sh-title">Distribution <span class="sh-title-dim">Depth</span> Analysis</div>
         </div>
-        <div class="mc-status-group">
-            <div class="mc-status-pill"><div class="mc-status-dot"></div>ONLINE</div>
-            <div class="mc-status-pill"><div class="mc-status-dot {_dot_cls}"></div>{sync_label}</div>
+        <div class="sh-pill-group">
+            <div class="sh-pill"><div class="sh-dot"></div>SYSTEM ONLINE</div>
+            <div class="sh-pill"><div class="sh-dot {_dot_cls2}"></div>{sync_label}</div>
         </div>
     </div>""", unsafe_allow_html=True)
 
 # ── DATA SOURCE BANNER ────────────────────────────────────────────
-is_live   = data_status == "live"
-is_hybrid = data_status == "hybrid"
-dot_color = "#4CAF50" if is_live else ("#6EC6F5" if is_hybrid else "#F9A825")
-dot_glow  = ("rgba(76,175,80,0.6)"    if is_live  else
-             ("rgba(110,198,245,0.6)" if is_hybrid else "rgba(249,168,37,0.6)"))
-status_label = data_source  # always use actual label from fabric_connector
-status_sub = (
-    "Live data — both countries pulling from Microsoft Fabric" if is_live else
-    ("Hybrid mode — one country live, one using CSV fallback" if is_hybrid else
-     "Fabric unreachable — using CSV fallback for both countries")
-)
-
 st.markdown(f"""
-<style>
-@keyframes pulse {{
-  0%   {{ box-shadow:0 0 0 0 {dot_glow},0 0 8px {dot_color};opacity:1; }}
-  50%  {{ box-shadow:0 0 0 8px transparent,0 0 16px {dot_color};opacity:0.7; }}
-  100% {{ box-shadow:0 0 0 0 {dot_glow},0 0 8px {dot_color};opacity:1; }}
-}}
-@keyframes ripple {{
-  0%   {{ transform:scale(1);opacity:0.6; }}
-  100% {{ transform:scale(2.5);opacity:0; }}
-}}
-</style>
-<div class="ds-banner" style="border-radius:12px;padding:12px 20px;backdrop-filter:blur(10px);">
-    <div style="position:relative;width:14px;height:14px;flex-shrink:0;">
-        <div style="position:absolute;top:0;left:0;width:14px;height:14px;border-radius:50%;
-             background:{dot_color};animation:ripple 2s ease-out infinite;z-index:1;"></div>
-        <div style="width:14px;height:14px;border-radius:50%;background:{dot_color};
-             animation:pulse 2s ease-in-out infinite;position:relative;z-index:2;"></div>
-    </div>
+<div class="sh-banner">
+    <div style="width:8px;height:8px;border-radius:50%;background:{dot_color};
+         box-shadow:0 0 8px {dot_color};flex-shrink:0;
+         animation:sh-pulse 2.2s ease-in-out infinite;"></div>
     <div style="flex:1;">
-        <div style="font-family:'Inter',sans-serif;font-size:13px;font-weight:700;color:#FFFFFF;">{status_label}</div>
-        <div style="font-size:11px;color:#90B8D0;margin-top:2px;">{status_sub}</div>
+        <div style="font-size:13px;font-weight:700;color:#fff;">{status_label}</div>
+        <div style="font-size:11px;color:#2a2a2a;margin-top:2px;">{status_sub}</div>
     </div>
-    <div style="display:flex;flex-direction:column;gap:5px;align-items:flex-end;">
-        <div style="display:flex;align-items:center;gap:6px;font-size:10px;color:#90B8D0;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;">
-            <div style="width:8px;height:8px;border-radius:50%;background:#4CAF50;box-shadow:0 0 6px rgba(76,175,80,0.7);"></div>Live &mdash; Microsoft Fabric
+    <div style="display:flex;gap:16px;align-items:center;">
+        <div style="display:flex;align-items:center;gap:6px;font-size:9px;color:#2a2a2a;font-weight:700;text-transform:uppercase;letter-spacing:2px;">
+            <div style="width:5px;height:5px;border-radius:50%;background:#22C55E;"></div>Live Fabric
         </div>
-        <div style="display:flex;align-items:center;gap:6px;font-size:10px;color:#90B8D0;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;">
-            <div style="width:8px;height:8px;border-radius:50%;background:#6EC6F5;box-shadow:0 0 6px rgba(110,198,245,0.7);"></div>Hybrid &mdash; CSV + Fabric
+        <div style="display:flex;align-items:center;gap:6px;font-size:9px;color:#2a2a2a;font-weight:700;text-transform:uppercase;letter-spacing:2px;">
+            <div style="width:5px;height:5px;border-radius:50%;background:#6EC6F5;"></div>Hybrid
         </div>
-        <div style="display:flex;align-items:center;gap:6px;font-size:10px;color:#90B8D0;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;">
-            <div style="width:8px;height:8px;border-radius:50%;background:#F9A825;box-shadow:0 0 6px rgba(249,168,37,0.7);"></div>CSV Fallback
+        <div style="display:flex;align-items:center;gap:6px;font-size:9px;color:#2a2a2a;font-weight:700;text-transform:uppercase;letter-spacing:2px;">
+            <div style="width:5px;height:5px;border-radius:50%;background:#F59E0B;"></div>CSV
         </div>
     </div>
 </div>
@@ -494,233 +260,7 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# ── JS : FX + SVG ICONS + ACTIVE NAV ─────────────────────────────
-import streamlit.components.v1 as _fx_c
-_fx_c.html("""<script>
-(function(){
-    const doc = window.parent.document;
-
-    // No icons on main navbar buttons — icons are sidebar-only
-
-    const SIDEBAR_ICONS = {
-        'Dashboard':
-            '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>',
-        'RFM Analysis':
-            '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>',
-        'Churn Prediction':
-            '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>',
-        'Upload Data':
-            '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>',
-    };
-
-    // ── Sidebar icon injection ───────────────────────────────────
-    function addSidebarIcons() {
-        const sidebar = doc.querySelector('[data-testid="stSidebar"]');
-        if (!sidebar) return;
-
-        // Target both st.page_link anchors AND plain sidebar buttons
-        // st.page_link renders as <a data-testid="stPageLink"> containing a <span> with text
-        sidebar.querySelectorAll('a[data-testid="stPageLink"]').forEach(link => {
-            if (link.dataset.siconDone) return;
-
-            // Find the deepest text span — Streamlit nests several spans
-            const allSpans = link.querySelectorAll('span');
-            let textSpan = null;
-            for (const sp of allSpans) {
-                const t = sp.textContent.trim();
-                if (SIDEBAR_ICONS[t]) { textSpan = sp; break; }
-            }
-            if (!textSpan) return;
-
-            const label = textSpan.textContent.trim();
-            const svg   = SIDEBAR_ICONS[label];
-            link.dataset.siconDone = '1';
-
-            textSpan.innerHTML =
-                '<span style="display:inline-flex;align-items:center;gap:10px;width:100%;">'
-                + '<span style="display:flex;align-items:center;justify-content:center;'
-                + 'width:28px;height:28px;border-radius:8px;flex-shrink:0;'
-                + 'background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.09);">'
-                + svg + '</span>'
-                + '<span style="color:#94A3B8;font-size:13px;font-weight:500;">'
-                + label + '</span></span>';
-        });
-    }
-
-    // ── Country button text — make Nigeria & Angola clearly visible ──
-    function styleCountryButtons() {
-        doc.querySelectorAll('button').forEach(btn => {
-            const txt = btn.textContent.trim();
-            if (txt !== 'Nigeria' && txt !== 'Angola') return;
-            if (btn.dataset.countryStyled) return;
-            btn.dataset.countryStyled = '1';
-            btn.style.setProperty('color', '#FFFFFF', 'important');
-            btn.style.setProperty('background', '#1a1a1a', 'important');
-            btn.style.setProperty('border-color', 'rgba(255,255,255,0.15)', 'important');
-            btn.style.setProperty('font-weight', '700', 'important');
-            btn.style.setProperty('border-radius', '100px', 'important');
-            btn.style.setProperty('letter-spacing', '0.3px', 'important');
-            btn.addEventListener('mouseenter', () => {
-                btn.style.setProperty('background', '#252525', 'important');
-                btn.style.setProperty('color', '#FFFFFF', 'important');
-                btn.style.setProperty('border-color', 'rgba(255,255,255,0.28)', 'important');
-            });
-            btn.addEventListener('mouseleave', () => {
-                btn.style.setProperty('background', '#1a1a1a', 'important');
-                btn.style.setProperty('color', '#FFFFFF', 'important');
-                btn.style.setProperty('border-color', 'rgba(255,255,255,0.15)', 'important');
-            });
-        });
-    }
-
-    const NAV_LABELS = ['Dashboard','Outlet Performance','Whitespace Detection','Expansion Strategy'];
-
-    function highlightActiveNav() {
-        const marker = doc.getElementById('shalina-active-page');
-        if (!marker) return;
-        const active = marker.getAttribute('data-page');
-        doc.querySelectorAll('button').forEach(btn => {
-            const txt = btn.textContent.trim();
-            if (!NAV_LABELS.includes(txt)) return;
-            const isActive = (txt === active);
-            if (isActive) {
-                btn.style.setProperty('background','#1a1a1a','important');
-                btn.style.setProperty('border-color','rgba(255,255,255,0.18)','important');
-                btn.style.setProperty('color','#FFFFFF','important');
-                btn.style.setProperty('box-shadow','none','important');
-                btn.style.setProperty('font-weight','700','important');
-            } else {
-                btn.style.setProperty('background','#111','important');
-                btn.style.setProperty('border-color','rgba(255,255,255,0.07)','important');
-                btn.style.setProperty('color','#555','important');
-                btn.style.removeProperty('box-shadow');
-                btn.style.setProperty('font-weight','600','important');
-            }
-        });
-    }
-
-    function injectStyles() {
-        if (doc.getElementById('shalina-fx-styles')) return;
-        const s = doc.createElement('style');
-        s.id = 'shalina-fx-styles';
-        s.textContent = `
-            body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;opacity:0.025;
-            background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-            background-size:200px 200px;}
-            .shalina-orb{position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(100px);animation:orbFloat linear infinite;opacity:0;}
-            @keyframes orbFloat{0%{transform:translate(0,0) scale(1);opacity:0.10;}25%{transform:translate(40px,-60px) scale(1.1);opacity:0.14;}50%{transform:translate(-30px,30px) scale(0.95);opacity:0.08;}75%{transform:translate(20px,50px) scale(1.05);opacity:0.12;}100%{transform:translate(0,0) scale(1);opacity:0.10;}}
-            .kpi-card{position:relative;overflow:hidden;}
-            .kpi-card .spotlight{position:absolute;width:300px;height:300px;background:radial-gradient(circle,rgba(255,255,255,0.06) 0%,transparent 70%);border-radius:50%;pointer-events:none;transform:translate(-50%,-50%);opacity:0;transition:opacity 0.2s ease;}
-            .kpi-card:hover .spotlight{opacity:1;}
-            .kpi-card::after{content:'';position:absolute;inset:-1px;border-radius:16px;background:linear-gradient(135deg,rgba(255,255,255,0),rgba(255,255,255,0.15),rgba(255,255,255,0));background-size:300% 300%;-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:0;transition:opacity 0.3s ease;animation:gradBorder 4s linear infinite;pointer-events:none;}
-            .kpi-card:hover::after{opacity:1;}
-            @keyframes gradBorder{0%{background-position:0% 50%;}50%{background-position:100% 50%;}100%{background-position:0% 50%;}}
-            .shalina-reveal{opacity:0;transform:translateY(44px) scale(0.97);transition:opacity 0.75s cubic-bezier(.16,1,.3,1),transform 0.75s cubic-bezier(.16,1,.3,1);will-change:opacity,transform;}
-            .shalina-reveal.visible{opacity:1;transform:translateY(0) scale(1);}
-            .shalina-reveal:nth-child(2){transition-delay:0.08s;}.shalina-reveal:nth-child(3){transition-delay:0.16s;}.shalina-reveal:nth-child(4){transition-delay:0.24s;}
-            #shalina-particles{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:0.25;}
-        `;
-        doc.head.appendChild(s);
-    }
-
-    function addOrbs() {
-        if (doc.getElementById('shalina-orb-1')) return;
-        [{id:'shalina-orb-1',w:700,h:700,top:'0%',  left:'5%', color:'rgba(20,60,160,0.35)', dur:'22s',delay:'0s'},
-         {id:'shalina-orb-2',w:500,h:500,top:'50%',left:'72%',color:'rgba(70,20,140,0.28)', dur:'28s',delay:'-8s'},
-         {id:'shalina-orb-3',w:400,h:400,top:'85%',left:'15%',color:'rgba(0,80,160,0.22)',  dur:'24s',delay:'-5s'},
-         {id:'shalina-orb-4',w:350,h:350,top:'25%',left:'55%',color:'rgba(50,10,120,0.20)', dur:'18s',delay:'-12s'}
-        ].forEach(o => {
-            const el = doc.createElement('div');
-            el.id = o.id; el.className = 'shalina-orb';
-            Object.assign(el.style,{width:o.w+'px',height:o.h+'px',top:o.top,left:o.left,
-                background:o.color,animationDuration:o.dur,animationDelay:o.delay});
-            doc.body.prepend(el);
-        });
-    }
-
-    function addParticles() {
-        if (doc.getElementById('shalina-particles')) return;
-        const canvas = doc.createElement('canvas');
-        canvas.id = 'shalina-particles'; doc.body.prepend(canvas);
-        const ctx = canvas.getContext('2d');
-        let W, H, P = [];
-        function resize(){W=canvas.width=doc.body.clientWidth||window.parent.innerWidth;H=canvas.height=doc.body.clientHeight||window.parent.innerHeight;}
-        resize(); window.parent.addEventListener('resize',resize);
-        for(let i=0;i<60;i++) P.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.2+0.3,vx:(Math.random()-.5)*.25,vy:(Math.random()-.5)*.25,alpha:Math.random()*.3+.08});
-        (function draw(){
-            ctx.clearRect(0,0,W,H);
-            P.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0)p.x=W;if(p.x>W)p.x=0;if(p.y<0)p.y=H;if(p.y>H)p.y=0;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle='rgba(255,255,255,'+p.alpha+')';ctx.fill();});
-            for(let i=0;i<P.length;i++) for(let j=i+1;j<P.length;j++){const dx=P[i].x-P[j].x,dy=P[i].y-P[j].y,d=Math.sqrt(dx*dx+dy*dy);if(d<100){ctx.beginPath();ctx.moveTo(P[i].x,P[i].y);ctx.lineTo(P[j].x,P[j].y);ctx.strokeStyle='rgba(255,255,255,'+(0.06*(1-d/100))+')';ctx.lineWidth=.4;ctx.stroke();}}
-            requestAnimationFrame(draw);
-        })();
-    }
-
-    function addTiltCards() {
-        doc.querySelectorAll('.kpi-card').forEach(card=>{
-            if(card.dataset.tiltDone) return; card.dataset.tiltDone='1';
-            const spot=doc.createElement('div'); spot.className='spotlight'; card.appendChild(spot);
-            card.addEventListener('mousemove',e=>{const r=card.getBoundingClientRect();spot.style.left=(e.clientX-r.left)+'px';spot.style.top=(e.clientY-r.top)+'px';});
-            card.addEventListener('mouseenter',()=>{card.style.transform='translateY(-4px) scale(1.015)';card.style.boxShadow='0 16px 40px rgba(0,0,0,0.4),0 0 20px rgba(33,150,220,0.16)';});
-            card.addEventListener('mouseleave',()=>{card.style.transform='';card.style.boxShadow='';});
-        });
-    }
-
-    function addRevealOnScroll() {
-        doc.querySelectorAll('.kpi-card,.insight-card,.ds-banner,.odc-wrap,[data-testid="stPlotlyChart"],[data-testid="stDataFrame"],[data-testid="stMetric"]').forEach(el=>{
-            if(el.dataset.revealDone) return;
-            if(el.getBoundingClientRect().height<40) return;
-            el.dataset.revealDone='1'; el.classList.add('shalina-reveal');
-        });
-        if(!window._shalinaRevealObs){window._shalinaRevealObs=new IntersectionObserver(entries=>{entries.forEach((e,i)=>{if(e.isIntersecting){setTimeout(()=>e.target.classList.add('visible'),Math.min(i*80,400));window._shalinaRevealObs.unobserve(e.target);}});},{threshold:.08,rootMargin:'0px 0px -40px 0px'});}
-        doc.querySelectorAll('.shalina-reveal:not(.visible)').forEach(el=>window._shalinaRevealObs.observe(el));
-    }
-
-    function addMouseGradient() {
-        if(doc.getElementById('mouse-gradient')) return;
-        const el=doc.createElement('div'); el.id='mouse-gradient';
-        Object.assign(el.style,{position:'fixed',width:'600px',height:'600px',borderRadius:'50%',background:'radial-gradient(circle,rgba(255,255,255,0.025) 0%,transparent 70%)',pointerEvents:'none',zIndex:'1',transform:'translate(-50%,-50%)',left:'50%',top:'50%'});
-        doc.body.appendChild(el);
-        doc.addEventListener('mousemove',e=>{el.style.left=e.clientX+'px';el.style.top=e.clientY+'px';});
-    }
-
-    function hideNav(){const n=doc.querySelector('[data-testid="stSidebarNav"]');if(n)n.remove();}
-    function hideImgBtns(){doc.querySelectorAll('[data-testid="StyledFullScreenButton"],button[title="View fullscreen"],button[title="Fullscreen"]').forEach(b=>b.remove());}
-
-    function fullInit(){
-        try{injectStyles();}catch(e){}
-        try{addOrbs();}catch(e){}
-        try{addParticles();}catch(e){}
-        try{addMouseGradient();}catch(e){}
-        try{addTiltCards();}catch(e){}
-        try{addRevealOnScroll();}catch(e){}
-        try{hideNav();}catch(e){}
-        try{hideImgBtns();}catch(e){}
-        try{addSidebarIcons();}catch(e){}
-        try{styleCountryButtons();}catch(e){}
-        try{highlightActiveNav();}catch(e){}
-    }
-
-    function lightRefresh(){
-        try{addSidebarIcons();}catch(e){}
-        try{styleCountryButtons();}catch(e){}
-        try{highlightActiveNav();}catch(e){}
-        try{addTiltCards();}catch(e){}
-        try{addRevealOnScroll();}catch(e){}
-        try{hideNav();}catch(e){}
-        try{hideImgBtns();}catch(e){}
-        if(!doc.getElementById('shalina-particles')){try{addParticles();}catch(e){}}
-        if(!doc.getElementById('shalina-orb-1')){try{addOrbs();}catch(e){}}
-        if(!doc.getElementById('mouse-gradient')){try{addMouseGradient();}catch(e){}}
-        if(!doc.getElementById('shalina-fx-styles')){try{injectStyles();}catch(e){}}
-    }
-
-    setTimeout(fullInit, 300);
-    setTimeout(fullInit, 900);
-    setInterval(lightRefresh, 850);
-})();
-</script>""", height=0)
-
-# ── FILTERS ───────────────────────────────────────────────────────
+# ── FILTERS────────────────────────────────────────────
 st.markdown("<div style='margin-top:12px;'></div>", unsafe_allow_html=True)
 f1, f2 = st.columns(2)
 with f1:
@@ -802,10 +342,10 @@ if st.session_state.selected_outlet:
         _pct_clr  = "#22C55E" if _pct >= 66 else ("#F59E0B" if _pct >= 33 else "#EF4444")
 
         st.markdown(f"""
-        <div class="odc-wrap">
-            <div class="odc-eyebrow">Outlet Detail View</div>
-            <div class="odc-name">{_name}</div>
-            <div class="odc-meta">
+        <div class="sh-odc">
+            <div class="sh-odc-tag">Outlet Detail View</div>
+            <div class="sh-odc-name">{_name}</div>
+            <div class="sh-odc-meta">
                 <span style="background:{_opp_bg};color:{_opp_clr};border:1px solid {_opp_clr}55;
                     border-radius:4px;padding:3px 10px;font-size:10px;font-weight:700;
                     letter-spacing:0.5px;text-transform:uppercase;">{_opp}</span>
@@ -817,27 +357,27 @@ if st.session_state.selected_outlet:
                 <span style="color:#475569;font-size:11px;font-family:'JetBrains Mono',monospace;">
                     {'No GPS data' if not _coords_valid else f'{_lat:.4f}, {_lon:.4f}'}</span>
             </div>
-            <div class="odc-stats">
-                <div class="odc-stat">
-                    <div class="odc-stat-label">YTD Revenue</div>
-                    <div class="odc-stat-value" style="color:#F1F5F9;">&#8358;{_ytd:,.1f}K</div>
+            <div class="sh-odc-stats">
+                <div class="sh-odc-stat">
+                    <div class="sh-odc-stat-label">YTD Revenue</div>
+                    <div class="sh-odc-stat-value" style="color:#F1F5F9;">&#8358;{_ytd:,.1f}K</div>
                 </div>
-                <div class="odc-divider"></div>
-                <div class="odc-stat">
-                    <div class="odc-stat-label">Percentile Rank</div>
-                    <div class="odc-stat-value" style="color:{_pct_clr};">
+                <div class="sh-odc-divider"></div>
+                <div class="sh-odc-stat">
+                    <div class="sh-odc-stat-label">Percentile Rank</div>
+                    <div class="sh-odc-stat-value" style="color:{_pct_clr};">
                         {_pct:.0f}<span style="font-size:13px;color:#475569;">th</span></div>
                 </div>
-                <div class="odc-divider"></div>
-                <div class="odc-stat">
-                    <div class="odc-stat-label">vs Country Avg</div>
-                    <div class="odc-stat-value" style="color:{_vs_clr};">
+                <div class="sh-odc-divider"></div>
+                <div class="sh-odc-stat">
+                    <div class="sh-odc-stat-label">vs Country Avg</div>
+                    <div class="sh-odc-stat-value" style="color:{_vs_clr};">
                         {_vs_arrow} {abs(_vs_avg):.1f}%</div>
                 </div>
-                <div class="odc-divider"></div>
-                <div class="odc-stat">
-                    <div class="odc-stat-label">Country Avg YTD</div>
-                    <div class="odc-stat-value" style="color:#94A3B8;font-size:16px;">
+                <div class="sh-odc-divider"></div>
+                <div class="sh-odc-stat">
+                    <div class="sh-odc-stat-label">Country Avg YTD</div>
+                    <div class="sh-odc-stat-value" style="color:#94A3B8;font-size:16px;">
                         &#8358;{_avg:,.1f}K</div>
                 </div>
             </div>
@@ -845,7 +385,7 @@ if st.session_state.selected_outlet:
 
         # ── Mini map — only render when coordinates are valid ────────
         # ── Section label ──────────────────────────────────────────
-        st.markdown('<div class="section-title">Outlet Location</div>', unsafe_allow_html=True)
+        st.markdown('<div class="sh-section">Outlet Location</div>', unsafe_allow_html=True)
 
         if _coords_valid:
             # ── Nearby outlets within 0.3° — valid coordinates only ──
@@ -1036,34 +576,34 @@ if page == "Dashboard":
                            label_lo="low", label_mid="moderate", label_hi="strong")
 
     st.markdown(f"""
-    <div class="kpi-row">
-        <div class="kpi-card mc-blue">
-            <div class="kpi-accent-line" style="background:linear-gradient(90deg,#3B82F6,#60A5FA);"></div>
-            <div class="kpi-label">Total Outlets &mdash; {country}</div>
-            <div class="kpi-value">{total_outlets:,}</div>
-            <div class="kpi-delta" style="color:#475569;">Distribution network</div>
+    <div class="sh-kpi-row">
+        <div class="sh-kpi">
+            <div class="sh-kpi-accent" style="background:linear-gradient(90deg,#2563eb,transparent);"></div>
+            <div class="sh-kpi-label">Total Outlets &mdash; {country}</div>
+            <div class="sh-kpi-value">{total_outlets:,}</div>
+            <div class="sh-kpi-delta">Distribution network</div>
         </div>
-        <div class="kpi-card mc-red">
-            <div class="kpi-accent-line" style="background:linear-gradient(90deg,#EF4444,#F87171);"></div>
-            <div class="kpi-label">Dead Whitespace</div>
-            <div class="kpi-value">{dead_outlets:,}</div>
-            <div class="kpi-delta">{_ws_delta} of outlets</div>
+        <div class="sh-kpi">
+            <div class="sh-kpi-accent" style="background:linear-gradient(90deg,#dc2626,transparent);"></div>
+            <div class="sh-kpi-label">Dead Whitespace</div>
+            <div class="sh-kpi-value">{dead_outlets:,}</div>
+            <div class="sh-kpi-delta">{_ws_delta} of outlets</div>
         </div>
-        <div class="kpi-card mc-purple">
-            <div class="kpi-accent-line" style="background:linear-gradient(90deg,#8B5CF6,#A78BFA);"></div>
-            <div class="kpi-label">High Performers</div>
-            <div class="kpi-value">{high_performers:,}</div>
-            <div class="kpi-delta">{_hp_delta} of network</div>
+        <div class="sh-kpi">
+            <div class="sh-kpi-accent" style="background:linear-gradient(90deg,#7c3aed,transparent);"></div>
+            <div class="sh-kpi-label">High Performers</div>
+            <div class="sh-kpi-value">{high_performers:,}</div>
+            <div class="sh-kpi-delta">{_hp_delta} of network</div>
         </div>
-        <div class="kpi-card mc-amber">
-            <div class="kpi-accent-line" style="background:linear-gradient(90deg,#F59E0B,#FCD34D);"></div>
-            <div class="kpi-label">Total YTD Revenue</div>
-            <div class="kpi-value">&#8358;{total_ytd/1000:,.0f}M</div>
-            <div class="kpi-delta" style="color:#64748B;">Avg &#8358;{avg_per_outlet:,.0f}K per active outlet</div>
+        <div class="sh-kpi">
+            <div class="sh-kpi-accent" style="background:linear-gradient(90deg,#d97706,transparent);"></div>
+            <div class="sh-kpi-label">Total YTD Revenue</div>
+            <div class="sh-kpi-value" style="font-size:42px;">&#8358;{total_ytd/1000:,.0f}M</div>
+            <div class="sh-kpi-delta">Avg &#8358;{avg_per_outlet:,.0f}K per active outlet</div>
         </div>
     </div>""", unsafe_allow_html=True)
 
-    st.markdown('<div class="section-title">Geographic Outlet Distribution</div>', unsafe_allow_html=True)
+    st.markdown('<div class="sh-section">Geographic Outlet Distribution</div>', unsafe_allow_html=True)
     # Filter rows with valid coordinates before mapping
     _valid_coords = (
         df['latitude'].notna()  & df['longitude'].notna() &
@@ -1090,7 +630,7 @@ if page == "Dashboard":
 
     c1, c2 = st.columns(2)
     with c1:
-        st.markdown('<div class="section-title">Opportunity Breakdown</div>', unsafe_allow_html=True)
+        st.markdown('<div class="sh-section">Opportunity Breakdown</div>', unsafe_allow_html=True)
         opp_counts = df['Opportunity'].value_counts().reset_index()
         opp_counts.columns = ['Category','Count']
         fig_pie = px.pie(opp_counts, values='Count', names='Category',
@@ -1100,7 +640,7 @@ if page == "Dashboard":
                                font=dict(color="#90C8E8"), margin=dict(l=0,r=0,t=20,b=0))
         st.plotly_chart(fig_pie, use_container_width=True)
     with c2:
-        st.markdown('<div class="section-title">Retailer Subtype Split</div>', unsafe_allow_html=True)
+        st.markdown('<div class="sh-section">Retailer Subtype Split</div>', unsafe_allow_html=True)
         sub_counts = df['Retailer Subtype'].value_counts().reset_index()
         sub_counts.columns = ['Type','Count']
         fig_bar = px.bar(sub_counts, x='Type', y='Count', color='Type',
@@ -1112,7 +652,7 @@ if page == "Dashboard":
 #  OUTLET PERFORMANCE
 # ══════════════════════════════════════════════════════════════════
 elif page == "Outlet Performance":
-    st.markdown('<div class="section-title">Top 20 Outlets by YTD Retailing Value</div>', unsafe_allow_html=True)
+    st.markdown('<div class="sh-section">Top 20 Outlets by YTD Retailing Value</div>', unsafe_allow_html=True)
     top20 = (df[df['YTD Retailing Value']>0]
              .nlargest(20,'YTD Retailing Value')
              [['Shop Name','Retailer Subtype','YTD Retailing Value','Opportunity']]
@@ -1121,7 +661,7 @@ elif page == "Outlet Performance":
     top20['YTD Retailing Value'] = top20['YTD Retailing Value'].apply(lambda x: f"\u20a6{x:,.1f}K")
     st.dataframe(top20, use_container_width=True)
 
-    st.markdown('<div class="section-title">YTD Revenue Distribution</div>', unsafe_allow_html=True)
+    st.markdown('<div class="sh-section">YTD Revenue Distribution</div>', unsafe_allow_html=True)
     active_df = df[df['YTD Retailing Value'] > 0]
     fig_hist = px.histogram(active_df, x='YTD Retailing Value', nbins=60,
                              color='Retailer Subtype',
@@ -1131,14 +671,14 @@ elif page == "Outlet Performance":
 
     c1, c2 = st.columns(2)
     with c1:
-        st.markdown('<div class="section-title">Avg YTD by Opportunity Category</div>', unsafe_allow_html=True)
+        st.markdown('<div class="sh-section">Avg YTD by Opportunity Category</div>', unsafe_allow_html=True)
         avg_opp = df[df['YTD Retailing Value']>0].groupby('Opportunity')['YTD Retailing Value'].mean().reset_index()
         fig_avg = px.bar(avg_opp, x='YTD Retailing Value', y='Opportunity', orientation='h',
                          color='Opportunity', color_discrete_map=color_map)
         fig_avg.update_layout(**chart_layout)
         st.plotly_chart(fig_avg, use_container_width=True)
     with c2:
-        st.markdown('<div class="section-title">Avg YTD by Retailer Subtype</div>', unsafe_allow_html=True)
+        st.markdown('<div class="sh-section">Avg YTD by Retailer Subtype</div>', unsafe_allow_html=True)
         avg_sub = df[df['YTD Retailing Value']>0].groupby('Retailer Subtype')['YTD Retailing Value'].mean().reset_index()
         fig_sub = px.bar(avg_sub, x='Retailer Subtype', y='YTD Retailing Value',
                          color='Retailer Subtype',
@@ -1191,7 +731,7 @@ elif page == "Whitespace Detection":
         </div>
     </div>""", unsafe_allow_html=True)
 
-    st.markdown('<div class="section-title">Whitespace Outlets Map</div>', unsafe_allow_html=True)
+    st.markdown('<div class="sh-section">Whitespace Outlets Map</div>', unsafe_allow_html=True)
     _ws_valid = (
         df_country['latitude'].notna()  & df_country['longitude'].notna() &
         (df_country['latitude']  != 0)  & (df_country['longitude']  != 0) &
@@ -1211,7 +751,7 @@ elif page == "Whitespace Detection":
         margin=dict(l=0,r=0,t=0,b=0))
     st.plotly_chart(fig_ws, use_container_width=True)
 
-    st.markdown('<div class="section-title">Dead Whitespace Outlet List</div>', unsafe_allow_html=True)
+    st.markdown('<div class="sh-section">Dead Whitespace Outlet List</div>', unsafe_allow_html=True)
     dead_show = dead[['Shop Name','Retailer Subtype','latitude','longitude']].reset_index(drop=True)
     dead_show.index += 1
     st.dataframe(dead_show, use_container_width=True)
@@ -1230,32 +770,32 @@ elif page == "Expansion Strategy":
     sec_dead = dead[~dead['Retailer Subtype'].str.contains('Primary', case=False, na=False)]
 
     st.markdown(f"""
-    <div class="insight-card">
+    <div class="sh-insight sh-card">
         <span class="badge badge-dead">Critical Priority</span>
-        <div class="insight-title">Activate {len(pri_dead):,} Dead Primary Outlets</div>
-        <div class="insight-detail">Primary outlets with zero YTD sales require immediate field sales intervention.
+        <div class="sh-insight-title">Activate {len(pri_dead):,} Dead Primary Outlets</div>
+        <div class="sh-insight-body">Primary outlets with zero YTD sales require immediate field sales intervention.
         Revenue potential: <strong style="color:#FFFFFF">&#8358;{len(pri_dead)*mean_val/1000:,.0f}M</strong></div>
     </div>
-    <div class="insight-card">
+    <div class="sh-insight sh-card">
         <span class="badge badge-under">High Priority</span>
-        <div class="insight-title">Convert {len(sec_dead):,} Dead Secondary Outlets</div>
-        <div class="insight-detail">Secondary outlets with zero sales — largest untapped pool.
+        <div class="sh-insight-title">Convert {len(sec_dead):,} Dead Secondary Outlets</div>
+        <div class="sh-insight-body">Secondary outlets with zero sales — largest untapped pool.
         Revenue potential: <strong style="color:#FFFFFF">&#8358;{len(sec_dead)*mean_val/1000:,.0f}M</strong></div>
     </div>
-    <div class="insight-card">
+    <div class="sh-insight sh-card">
         <span class="badge badge-low">Medium Priority</span>
-        <div class="insight-title">Scale Up {len(under):,} Underperforming Outlets</div>
-        <div class="insight-detail">Outlets selling below &#8358;{p25:,.0f}K YTD. Incremental revenue potential:
+        <div class="sh-insight-title">Scale Up {len(under):,} Underperforming Outlets</div>
+        <div class="sh-insight-body">Outlets selling below &#8358;{p25:,.0f}K YTD. Incremental revenue potential:
         <strong style="color:#FFFFFF">&#8358;{len(under)*(mean_val-p25)/1000:,.0f}M</strong></div>
     </div>
-    <div class="insight-card">
+    <div class="sh-insight sh-card">
         <span class="badge badge-high">Growth Opportunity</span>
-        <div class="insight-title">Replicate {len(active):,} High-Performing Outlet Profiles</div>
-        <div class="insight-detail">Analyse shared characteristics of active and high-performing outlets
+        <div class="sh-insight-title">Replicate {len(active):,} High-Performing Outlet Profiles</div>
+        <div class="sh-insight-body">Analyse shared characteristics of active and high-performing outlets
         to identify new locations with equivalent potential.</div>
     </div>""", unsafe_allow_html=True)
 
-    st.markdown('<div class="section-title">Active vs Whitespace by Retailer Type</div>', unsafe_allow_html=True)
+    st.markdown('<div class="sh-section">Active vs Whitespace by Retailer Type</div>', unsafe_allow_html=True)
     summary = df.groupby(['Retailer Subtype','Opportunity']).size().reset_index(name='Count')
     fig_grp = px.bar(summary, x='Retailer Subtype', y='Count', color='Opportunity',
                      color_discrete_map=color_map, barmode='stack')

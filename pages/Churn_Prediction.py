@@ -13,187 +13,14 @@ import sys, os
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from fabric_connector import load_data as _load_data
+from styles import apply_styles, sidebar_nav
 from src.churn_model import train, active_at_risk, RISK_COLORS, RISK_LABELS
 
 # Page config is set by app.py — do not call set_page_config here
 
-# ── SIDEBAR NAVIGATION ──────────────────────────────────────────────────────
-with st.sidebar:
-    st.markdown('<div style="padding:20px 8px 10px 8px;">'
-        '<div style="font-family:Inter,sans-serif;font-size:10px;font-weight:700;'
-        'color:rgba(100,180,220,0.7);text-transform:uppercase;letter-spacing:2px;'
-        'margin-bottom:20px;">Navigation</div></div>', unsafe_allow_html=True)
-    st.page_link('app.py',                    label='Dashboard')
-    st.page_link('pages/Command_Center.py',   label='Command Center')
-    st.page_link('pages/RFM_Analysis.py',     label='RFM Analysis')
-    st.page_link('pages/Churn_Prediction.py',  label='Churn Prediction')
-    st.page_link('pages/Revenue_Forecast.py', label='Revenue Forecast')
-    st.page_link('pages/Upload_Data.py',      label='Upload Data')
-    st.markdown('<div style="margin-top:16px;padding:0 8px;">'
-        '<div style="height:1px;background:linear-gradient(90deg,transparent,'
-        'rgba(33,150,196,0.35),transparent);"></div></div>',
-        unsafe_allow_html=True)
-    import streamlit.components.v1 as _sc2
-    _sc2.html('<script>(function(){'
-        'function r(){var n=window.parent.document.querySelector("[data-testid=\\"stSidebarNav\\"]");'
-        'if(n){n.remove();}else{setTimeout(r,200);}}'
-        'r();setTimeout(r,800);setTimeout(r,2500);'
-        '})();</script>', height=0)
-
-
-# ── SHARED CSS ────────────────────────────────────────────────────────────────
-st.markdown("""
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap');
-* { box-sizing: border-box; }
-.stApp {
-    font-family: 'Inter', sans-serif; color: #E2E8F0;
-    background: #0d1526; min-height: 100vh;
-}
-.stApp::before {
-    content: ''; position: fixed; inset: 0;
-    background:
-        radial-gradient(ellipse 80% 50% at 10% 0%,  rgba(20,100,220,0.22) 0%, transparent 60%),
-        radial-gradient(ellipse 50% 40% at 90% 10%,  rgba(100,30,200,0.18) 0%, transparent 55%),
-        radial-gradient(ellipse 60% 60% at 50% 100%, rgba(15,60,160,0.20) 0%, transparent 60%);
-    pointer-events: none; z-index: 0;
-}
-.main .block-container {
-    background: transparent; padding-top: 1.5rem;
-    padding-left: 1.5rem; padding-right: 1.5rem;
-    max-width: 1500px; position: relative; z-index: 1;
-}
-section[data-testid="stSidebar"] {
-    background: rgba(8,13,26,0.95) !important;
-    border-right: 1px solid rgba(255,255,255,0.06) !important;
-}
-section[data-testid="stSidebar"] * { color:#94A3B8 !important; font-family:'Inter',sans-serif !important; }
-[data-testid="stDecoration"],
-#MainMenu,footer { display:none !important; }
-[data-testid="stToolbar"] { display:flex !important; background:transparent !important; }
-header[data-testid="stHeader"] { background:transparent !important; }
-[data-testid="collapsedControl"],[data-testid="stSidebarCollapseButton"],button[kind="header"] {
-    display:flex !important;
-    visibility:visible !important;
-    opacity:1 !important;
-    z-index:999999 !important;
-}
-[data-testid="stSidebarCollapseButton"] *,
-[data-testid="collapsedControl"] *,
-[data-testid="stExpandSidebarButton"] * { font-size:0 !important; }
-[data-testid="stSidebarCollapseButton"]::before {
-    content:"‹";
-    color:#94A3B8;
-    font-size:26px;
-    line-height:1;
-}
-[data-testid="collapsedControl"]::before,
-[data-testid="stExpandSidebarButton"]::before {
-    content:"›";
-    color:#94A3B8;
-    font-size:26px;
-    line-height:1;
-}
-[data-testid="stExpandSidebarButton"] {
-    display:flex !important;
-    visibility:visible !important;
-    opacity:1 !important;
-    position:fixed !important;
-    top:16px !important;
-    left:16px !important;
-    width:34px !important;
-    height:34px !important;
-    min-width:34px !important;
-    z-index:999999 !important;
-    align-items:center !important;
-    justify-content:center !important;
-    background:rgba(8,13,26,0.82) !important;
-    border:1px solid rgba(255,255,255,0.12) !important;
-    border-radius:8px !important;
-}
-
-.page-header {
-    padding: 20px 0 16px 0;
-    border-bottom: 1px solid rgba(255,255,255,0.06);
-    margin-bottom: 24px;
-}
-.page-eyebrow {
-    font-size: 10px; font-weight: 600; letter-spacing: 3px;
-    text-transform: uppercase; color: #475569; margin-bottom: 6px;
-}
-.page-title {
-    font-size: 24px; font-weight: 800; color: #F1F5F9;
-    letter-spacing: -0.5px;
-}
-.page-title span { color: #A855F7; }
-
-.kpi-row { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:24px; }
-.kpi-card {
-    border-radius: 12px; padding: 20px 20px 16px 20px;
-    position: relative; overflow: hidden; min-height: 110px;
-    border: 1px solid rgba(255,255,255,0.08);
-    transition: transform 0.2s ease;
-}
-.kpi-card:hover { transform: translateY(-2px); }
-.kpi-card.mc-purple { background:linear-gradient(135deg,#0f0a1a 0%,#3b1f6e 100%); box-shadow:0 4px 24px rgba(139,92,246,0.15),inset 0 1px 0 rgba(139,92,246,0.2); border-color:rgba(139,92,246,0.25); }
-.kpi-card.mc-red    { background:linear-gradient(135deg,#1a0505 0%,#5c1010 100%); box-shadow:0 4px 24px rgba(239,68,68,0.15),inset 0 1px 0 rgba(239,68,68,0.2);   border-color:rgba(239,68,68,0.25); }
-.kpi-card.mc-amber  { background:linear-gradient(135deg,#1a1400 0%,#5c4500 100%); box-shadow:0 4px 24px rgba(245,158,11,0.15),inset 0 1px 0 rgba(245,158,11,0.2); border-color:rgba(245,158,11,0.25); }
-.kpi-card.mc-green  { background:linear-gradient(135deg,#051a0f 0%,#0d5c2a 100%); box-shadow:0 4px 24px rgba(34,197,94,0.15),inset 0 1px 0 rgba(34,197,94,0.2);  border-color:rgba(34,197,94,0.25); }
-.kpi-card.mc-blue   { background:linear-gradient(135deg,#0f172a 0%,#1e3a5f 100%); box-shadow:0 4px 24px rgba(59,130,246,0.15),inset 0 1px 0 rgba(59,130,246,0.2); border-color:rgba(59,130,246,0.25); }
-.kpi-accent-line { height:2px; width:40px; border-radius:1px; margin-bottom:12px; }
-.kpi-label { font-size:10px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color:#64748B; margin-bottom:6px; }
-.kpi-value { font-size:32px; font-weight:800; color:#F8FAFC; line-height:1; letter-spacing:-1px; }
-.kpi-delta { font-size:11px; color:#475569; margin-top:6px; }
-
-.section-title {
-    font-size:11px; font-weight:700; letter-spacing:2px;
-    text-transform:uppercase; color:#475569;
-    margin-top:24px; margin-bottom:12px;
-    display:flex; align-items:center; gap:10px;
-}
-.section-title::after {
-    content:''; flex:1; height:1px;
-    background:linear-gradient(90deg,rgba(255,255,255,0.08),transparent);
-}
-
-.risk-badge {
-    display:inline-block; padding:3px 10px; border-radius:4px;
-    font-size:10px; font-weight:700; letter-spacing:0.5px; text-transform:uppercase;
-}
-.risk-high   { background:rgba(239,68,68,0.12);  color:#FCA5A5; border:1px solid rgba(239,68,68,0.3); }
-.risk-medium { background:rgba(245,158,11,0.12); color:#FCD34D; border:1px solid rgba(245,158,11,0.3); }
-.risk-low    { background:rgba(34,197,94,0.12);  color:#86EFAC; border:1px solid rgba(34,197,94,0.3); }
-
-.insight-card {
-    background:rgba(255,255,255,0.025); border-radius:12px;
-    padding:16px 20px; border:1px solid rgba(255,255,255,0.07);
-    margin-bottom:10px;
-}
-.insight-title  { font-size:14px; font-weight:700; color:#F1F5F9; margin-bottom:4px; }
-.insight-detail { font-size:12px; color:#64748B; line-height:1.6; }
-
-.model-badge {
-    display:inline-flex; align-items:center; gap:6px;
-    background:rgba(139,92,246,0.1); border:1px solid rgba(139,92,246,0.3);
-    border-radius:6px; padding:4px 12px;
-    font-size:10px; font-weight:700; letter-spacing:1px;
-    text-transform:uppercase; color:#C4B5FD; margin-bottom:20px;
-}
-
-[data-baseweb="select"] > div {
-    background:rgba(255,255,255,0.04) !important;
-    border:1px solid rgba(255,255,255,0.08) !important;
-    border-radius:8px !important; color:#E2E8F0 !important;
-}
-[data-baseweb="select"] svg { fill:#475569 !important; }
-[data-baseweb="popover"] { background:#0f172a !important; border:1px solid rgba(255,255,255,0.1) !important; }
-[role="option"] { background:#0f172a !important; color:#E2E8F0 !important; }
-[role="option"]:hover { background:rgba(139,92,246,0.15) !important; }
-.stSelectbox label { color:#475569 !important; font-size:10px !important; font-weight:700 !important; text-transform:uppercase; letter-spacing:1px; }
-[data-testid="stDataFrame"] { border-radius:10px !important; border:1px solid rgba(255,255,255,0.07) !important; }
-.stDownloadButton > button { background:rgba(139,92,246,0.15) !important; color:#C4B5FD !important; border:1px solid rgba(139,92,246,0.3) !important; border-radius:8px !important; font-weight:600 !important; }
-</style>
-""", unsafe_allow_html=True)
+# ── SIDEBAR + STYLES ─────────────────────────────────────────────────────────
+sidebar_nav(refresh_key="churn_refresh")
+apply_styles()
 
 # ── PAGE HEADER ───────────────────────────────────────────────────────────────
 st.markdown("""
@@ -267,30 +94,30 @@ rev_at_risk   = active_at_risk(total_view if country_sel != "All" else scored_df
                     [active_at_risk(total_view if country_sel != "All" else scored_df)["risk_tier"] == "High Risk"]["ytd_value"].sum()
 
 st.markdown(f"""
-<div class="kpi-row">
-    <div class="kpi-card mc-purple">
+<div class="sh-kpi-row">
+    <div class="sh-kpi mc-purple">
         <div class="kpi-accent-line" style="background:linear-gradient(90deg,#8B5CF6,#A78BFA);"></div>
-        <div class="kpi-label">Model AUC Score</div>
-        <div class="kpi-value">{metrics['auc']}</div>
-        <div class="kpi-delta">CV AUC {metrics['cv_auc_mean']} &plusmn; {metrics['cv_auc_std']}</div>
+        <div class="sh-kpi-label">Model AUC Score</div>
+        <div class="sh-kpi-value">{metrics['auc']}</div>
+        <div class="sh-kpi-delta">CV AUC {metrics['cv_auc_mean']} &plusmn; {metrics['cv_auc_std']}</div>
     </div>
-    <div class="kpi-card mc-red">
+    <div class="sh-kpi mc-red">
         <div class="kpi-accent-line" style="background:linear-gradient(90deg,#EF4444,#F87171);"></div>
-        <div class="kpi-label">High Risk Active Outlets</div>
-        <div class="kpi-value">{high_risk_n:,}</div>
-        <div class="kpi-delta">Churn probability &gt; 65%</div>
+        <div class="sh-kpi-label">High Risk Active Outlets</div>
+        <div class="sh-kpi-value">{high_risk_n:,}</div>
+        <div class="sh-kpi-delta">Churn probability &gt; 65%</div>
     </div>
-    <div class="kpi-card mc-amber">
+    <div class="sh-kpi mc-amber">
         <div class="kpi-accent-line" style="background:linear-gradient(90deg,#F59E0B,#FCD34D);"></div>
-        <div class="kpi-label">Medium Risk Outlets</div>
-        <div class="kpi-value">{med_risk_n:,}</div>
-        <div class="kpi-delta">Churn probability 35&ndash;65%</div>
+        <div class="sh-kpi-label">Medium Risk Outlets</div>
+        <div class="sh-kpi-value">{med_risk_n:,}</div>
+        <div class="sh-kpi-delta">Churn probability 35&ndash;65%</div>
     </div>
-    <div class="kpi-card mc-green">
+    <div class="sh-kpi mc-green">
         <div class="kpi-accent-line" style="background:linear-gradient(90deg,#22C55E,#4ADE80);"></div>
-        <div class="kpi-label">Revenue at Risk</div>
-        <div class="kpi-value">&#8358;{rev_at_risk/1000:,.0f}M</div>
-        <div class="kpi-delta">YTD from high-risk active outlets</div>
+        <div class="sh-kpi-label">Revenue at Risk</div>
+        <div class="sh-kpi-value">&#8358;{rev_at_risk/1000:,.0f}M</div>
+        <div class="sh-kpi-delta">YTD from high-risk active outlets</div>
     </div>
 </div>
 """, unsafe_allow_html=True)
@@ -299,7 +126,7 @@ st.markdown(f"""
 c1, c2 = st.columns(2)
 
 with c1:
-    st.markdown('<div class="section-title">Feature Importance</div>', unsafe_allow_html=True)
+    st.markdown('<div class="sh-section">Feature Importance</div>', unsafe_allow_html=True)
     fi_df = pd.DataFrame(metrics["feat_imp"], columns=["Feature", "Importance"])
     fi_df["Importance_pct"] = (fi_df["Importance"] / fi_df["Importance"].sum() * 100).round(1)
 
@@ -309,11 +136,11 @@ with c1:
         color_continuous_scale=[[0,"rgba(139,92,246,0.3)"], [1,"rgba(139,92,246,1)"]],
         text=fi_df["Importance_pct"].apply(lambda x: f"{x:.1f}%"),
     )
-    fig_fi.update_traces(textposition="outside", textfont=dict(color="#94A3B8", size=10))
+    fig_fi.update_traces(textposition="outside", textfont=dict(color="#555", size=10))
     fig_fi.update_coloraxes(showscale=False)
     fig_fi.update_layout(
         paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(255,255,255,0.02)",
-        font=dict(color="#64748B", size=11), height=340,
+        font=dict(color="#333", size=11), height=340,
         xaxis=dict(gridcolor="rgba(255,255,255,0.04)", showticklabels=False, title=""),
         yaxis=dict(gridcolor="rgba(255,255,255,0.04)", title=""),
         margin=dict(l=0, r=60, t=10, b=0),
@@ -321,7 +148,7 @@ with c1:
     st.plotly_chart(fig_fi, use_container_width=True)
 
 with c2:
-    st.markdown('<div class="section-title">Risk Tier Distribution (Active Outlets)</div>', unsafe_allow_html=True)
+    st.markdown('<div class="sh-section">Risk Tier Distribution (Active Outlets)</div>', unsafe_allow_html=True)
     _active_filtered = active_at_risk(total_view if country_sel != "All" else scored_df)
     risk_counts = _active_filtered["risk_tier"].value_counts().reset_index()
     risk_counts.columns = ["Tier", "Count"]
@@ -336,8 +163,8 @@ with c2:
     )
     fig_risk.update_layout(
         paper_bgcolor="rgba(0,0,0,0)",
-        legend=dict(font=dict(color="#94A3B8")),
-        font=dict(color="#94A3B8"), height=340,
+        legend=dict(font=dict(color="#555")),
+        font=dict(color="#555"), height=340,
         margin=dict(l=0, r=0, t=10, b=0),
         annotations=[dict(
             text=f"{len(_active_filtered):,}<br><span style='font-size:10px'>Active</span>",
@@ -348,7 +175,7 @@ with c2:
     st.plotly_chart(fig_risk, use_container_width=True)
 
 # ── MODEL QUALITY ─────────────────────────────────────────────────────────────
-st.markdown('<div class="section-title">Model Performance</div>', unsafe_allow_html=True)
+st.markdown('<div class="sh-section">Model Performance</div>', unsafe_allow_html=True)
 
 mq1, mq2, mq3, mq4, mq5 = st.columns(5)
 _metrics_items = [
@@ -364,14 +191,14 @@ for col, label, val, detail in _metrics_items:
         <div style="background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.07);
              border-radius:10px;padding:14px 16px;text-align:center;">
             <div style="font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;
-                 color:#475569;margin-bottom:6px;">{label}</div>
+                 color:#333;margin-bottom:6px;">{label}</div>
             <div style="font-size:22px;font-weight:800;color:#F1F5F9;letter-spacing:-0.5px;">
                 {val}</div>
-            <div style="font-size:10px;color:#64748B;margin-top:4px;line-height:1.4;">{detail}</div>
+            <div style="font-size:10px;color:#333;margin-top:4px;line-height:1.4;">{detail}</div>
         </div>""", unsafe_allow_html=True)
 
 # ── CHURN RISK MAP ────────────────────────────────────────────────────────────
-st.markdown('<div class="section-title">Churn Risk Map &mdash; Active Outlets</div>',
+st.markdown('<div class="sh-section">Churn Risk Map &mdash; Active Outlets</div>',
             unsafe_allow_html=True)
 
 # Validate coordinates before mapping
@@ -433,11 +260,11 @@ if len(map_sample) > 0:
         mapbox_style="carto-darkmatter",
         paper_bgcolor="rgba(0,0,0,0)",
         legend=dict(
-            font=dict(color="#94A3B8", size=11),
+            font=dict(color="#555", size=11),
             bgcolor="rgba(8,13,26,0.85)",
             bordercolor="rgba(255,255,255,0.08)",
             borderwidth=1,
-            title=dict(text="Churn Risk", font=dict(color="#94A3B8")),
+            title=dict(text="Churn Risk", font=dict(color="#555")),
         ),
         margin=dict(l=0, r=0, t=0, b=0),
     )
@@ -445,13 +272,13 @@ if len(map_sample) > 0:
 else:
     st.markdown(
         '<div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);'
-        'border-radius:10px;padding:20px;text-align:center;color:#64748B;font-size:13px;">'
+        'border-radius:10px;padding:20px;text-align:center;color:#333;font-size:13px;">'
         'No outlets with valid GPS coordinates match the current filters.</div>',
         unsafe_allow_html=True
     )
 
 # ── TOP AT-RISK TABLE ─────────────────────────────────────────────────────────
-st.markdown('<div class="section-title">Top At-Risk Active Outlets</div>', unsafe_allow_html=True)
+st.markdown('<div class="sh-section">Top At-Risk Active Outlets</div>', unsafe_allow_html=True)
 
 _display = active_at_risk(total_view if country_sel != "All" else scored_df).copy()
 if risk_sel != "All":
@@ -492,7 +319,7 @@ if country_sel != "All":
     _pre_churn = _pre_churn[_pre_churn["country"] == country_sel]
 
 if len(_pre_churn) > 0:
-    st.markdown('<div class="section-title">Pre-Churn Alerts — Active but Declining</div>',
+    st.markdown('<div class="sh-section">Pre-Churn Alerts — Active but Declining</div>',
                 unsafe_allow_html=True)
     st.markdown(f"""
     <div style="background:rgba(249,115,22,0.07);border:1px solid rgba(249,115,22,0.25);
@@ -501,7 +328,7 @@ if len(_pre_churn) > 0:
         <div>
             <div style="font-size:13px;font-weight:700;color:#FDBA74;margin-bottom:3px;">
                 {len(_pre_churn):,} outlets are currently active but have a declining 3-month revenue trend</div>
-            <div style="font-size:11px;color:#64748B;">
+            <div style="font-size:11px;color:#333;">
                 These outlets are not yet High Risk but are showing early churn signals.
                 Early intervention now is cheaper than retention later.
             </div>
@@ -528,7 +355,7 @@ if len(_pre_churn) > 0:
     st.dataframe(_pc_display, use_container_width=True)
 
 # ── EXPORT BUTTONS ────────────────────────────────────────────────────────────
-st.markdown('<div class="section-title">Export</div>', unsafe_allow_html=True)
+st.markdown('<div class="sh-section">Export</div>', unsafe_allow_html=True)
 
 _export_df = active_at_risk(total_view if country_sel != "All" else scored_df)[[
     "Shop Name", "country", "Retailer Subtype",
@@ -568,13 +395,13 @@ with exp_col2:
     )
 
 # ── WRITE-BACK TO FABRIC ──────────────────────────────────────────────────────
-st.markdown('<div class="section-title">Fabric Write-Back</div>', unsafe_allow_html=True)
+st.markdown('<div class="sh-section">Fabric Write-Back</div>', unsafe_allow_html=True)
 st.markdown("""
 <div style="background:rgba(59,130,246,0.06);border:1px solid rgba(59,130,246,0.2);
      border-radius:12px;padding:14px 20px;margin-bottom:12px;">
     <div style="font-size:12px;color:#93C5FD;font-weight:600;margin-bottom:4px;">
         Save predictions back to your Fabric warehouse</div>
-    <div style="font-size:11px;color:#64748B;line-height:1.6;">
+    <div style="font-size:11px;color:#333;line-height:1.6;">
         This creates a <code style="color:#93C5FD">ChurnPredictions</code> table in your Fabric warehouse
         so these scores are available in Power BI and other tools.
         Requires FABRIC_SQL_ENDPOINT to be configured.
@@ -594,7 +421,7 @@ if st.button("Push Churn Predictions to Fabric", use_container_width=False,
         st.error(f"❌ Write-back failed: {result['error']}")
 
 # ── STRATEGIC INSIGHTS ────────────────────────────────────────────────────────
-st.markdown('<div class="section-title">Retention Strategy</div>', unsafe_allow_html=True)
+st.markdown('<div class="sh-section">Retention Strategy</div>', unsafe_allow_html=True)
 
 _all_active   = active_at_risk(scored_df)
 _hr_outlets   = _all_active[_all_active["risk_tier"] == "High Risk"]
@@ -612,41 +439,41 @@ _zone_count   = (
 )
 
 st.markdown(f"""
-<div class="insight-card">
+<div class="sh-insight sh-card">
     <span style="display:inline-block;padding:3px 10px;border-radius:4px;font-size:10px;
          font-weight:700;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:8px;
          background:rgba(239,68,68,0.12);color:#FCA5A5;border:1px solid rgba(239,68,68,0.3);">
         Immediate Action</span>
-    <div class="insight-title">
+    <div class="sh-insight-title">
         {len(_hr_primary):,} High-Risk Primary Outlets Need Urgent Attention</div>
-    <div class="insight-detail">
+    <div class="sh-insight-body">
         These are primary trade channels currently active but showing strong churn signals.
         Combined YTD revenue at stake:
         <strong style="color:#FFFFFF">&#8358;{_hr_rev_prim/1000:,.0f}M</strong>.
         Assign dedicated field reps for personal engagement visits within the next 30 days.
     </div>
 </div>
-<div class="insight-card">
+<div class="sh-insight sh-card">
     <span style="display:inline-block;padding:3px 10px;border-radius:4px;font-size:10px;
          font-weight:700;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:8px;
          background:rgba(245,158,11,0.12);color:#FCD34D;border:1px solid rgba(245,158,11,0.3);">
         Geographic Focus</span>
-    <div class="insight-title">
+    <div class="sh-insight-title">
         Cluster Zone {_top_zone} Has the Highest Concentration of At-Risk Outlets</div>
-    <div class="insight-detail">
+    <div class="sh-insight-body">
         {_zone_count:,} high-risk outlets cluster in a single geographic zone &mdash;
         indicating a localised distribution or relationship breakdown. A targeted area
         blitz by regional sales would be more efficient than scattered individual visits.
     </div>
 </div>
-<div class="insight-card">
+<div class="sh-insight sh-card">
     <span style="display:inline-block;padding:3px 10px;border-radius:4px;font-size:10px;
          font-weight:700;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:8px;
          background:rgba(59,130,246,0.12);color:#93C5FD;border:1px solid rgba(59,130,246,0.3);">
         Revenue Protection</span>
-    <div class="insight-title">
+    <div class="sh-insight-title">
         &#8358;{_hr_rev/1000:,.0f}M YTD Revenue at Risk Across {len(_hr_outlets):,} Outlets</div>
-    <div class="insight-detail">
+    <div class="sh-insight-body">
         If all high-risk active outlets churn, this is the revenue exposure.
         Even retaining 50% of at-risk outlets would protect
         <strong style="color:#FFFFFF">&#8358;{_hr_rev/2000:,.0f}M</strong>.
