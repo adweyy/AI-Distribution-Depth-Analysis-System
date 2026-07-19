@@ -575,7 +575,7 @@ _NAV_CSS = """
 <style>
 /* ── Custom sidebar nav ── */
 .sh-nav-brand {
-    padding: 18px 14px 14px;
+    padding: 20px 16px 16px;
     border-bottom: 1px solid rgba(255,255,255,0.07);
     margin-bottom: 6px;
 }
@@ -634,20 +634,58 @@ _NAV_ACTIVE_JS = """
 
 
 def sidebar_nav(refresh_key: str = "refresh_data"):
-    with st.sidebar:
-        st.markdown(_NAV_CSS + """
+    import base64 as _b64, os as _os
+
+    # ── Load Shalina logo ──
+    _logo_file = next(
+        (f for f in [
+            'shalina_healthcare_logo.jfif',
+            'shalina_healthcare_logo.png',
+            'shalina_logo.png',
+            'logo.png', 'logo.jfif',
+        ] if _os.path.exists(f)), None
+    )
+    if _logo_file:
+        _ext      = 'jpeg' if _logo_file.endswith('.jfif') else 'png'
+        _logo_b64 = _b64.b64encode(open(_logo_file, 'rb').read()).decode()
+        _logo_img = (
+            f'<img src="data:image/{_ext};base64,{_logo_b64}" '
+            f'style="height:56px;width:auto;border-radius:8px;'
+            f'display:block;margin-bottom:14px;" />'
+        )
+    else:
+        # Fallback: navy pill with initials
+        _logo_img = (
+            '<div style="width:56px;height:56px;border-radius:12px;'
+            'background:linear-gradient(135deg,#1e3a8a,#3b82f6);'
+            'display:flex;align-items:center;justify-content:center;'
+            'margin-bottom:14px;">'
+            '<span style="color:#fff;font-size:18px;font-weight:800;letter-spacing:-1px;">SH</span>'
+            '</div>'
+        )
+
+    _brand_html = f"""
 <div class="sh-nav-brand">
+  {_logo_img}
   <div class="sh-nav-brand-sub">Shalina Healthcare</div>
   <div class="sh-nav-brand-title">Distribution Intelligence</div>
 </div>
 <div class="sh-nav-links">
-""" + _nav_item("/",                 "Dashboard",        _ICON['dashboard'], "#f97316")
-  + _nav_item("/Command_Center",     "Command Center",   _ICON['command'],   "#635bff")
-  + _nav_item("/RFM_Analysis",       "RFM Analysis",     _ICON['rfm'],       "#ec4899")
-  + _nav_item("/Churn_Prediction",   "Churn Prediction", _ICON['churn'],     "#f59e0b")
-  + _nav_item("/Revenue_Forecast",   "Revenue Forecast", _ICON['revenue'],   "#10b981")
-  + _nav_item("/Upload_Data",        "Upload Data",      _ICON['upload'],    "#06b6d4")
-  + "</div>" + _NAV_ACTIVE_JS, unsafe_allow_html=True)
+"""
+
+    with st.sidebar:
+        st.markdown(
+            _NAV_CSS
+            + _brand_html
+            + _nav_item("/",               "Dashboard",        _ICON['dashboard'], "#f97316")
+            + _nav_item("/Command_Center", "Command Center",   _ICON['command'],   "#635bff")
+            + _nav_item("/RFM_Analysis",   "RFM Analysis",     _ICON['rfm'],       "#ec4899")
+            + _nav_item("/Churn_Prediction","Churn Prediction", _ICON['churn'],    "#f59e0b")
+            + _nav_item("/Revenue_Forecast","Revenue Forecast", _ICON['revenue'],  "#10b981")
+            + _nav_item("/Upload_Data",    "Upload Data",      _ICON['upload'],    "#06b6d4")
+            + "</div>" + _NAV_ACTIVE_JS,
+            unsafe_allow_html=True
+        )
 
         st.markdown('<div class="sh-sidebar-divider"></div>', unsafe_allow_html=True)
         st.markdown('<span class="sh-sidebar-label">Data</span>', unsafe_allow_html=True)
