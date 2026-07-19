@@ -433,13 +433,9 @@ def load_data():
             return {"sql": "Fabric SQL", "dax": "Fabric DAX", "csv": "CSV"}[m]
 
         if ng_live and ao_live:
-            if ng_method == ao_method == "sql":
-                label  = "Connected to Microsoft Fabric SQL Analytics Endpoint"
-                status = "live"
-            else:
-                label  = (f"Nigeria: {_method_label(ng_method)}  |  "
-                          f"Angola: {_method_label(ao_method)}")
-                status = "hybrid"
+            label  = (f"Nigeria: {_method_label(ng_method)}  |  "
+                      f"Angola: {_method_label(ao_method)}")
+            status = "live"
         elif ng_live or ao_live:
             live_c  = "Nigeria" if ng_live else "Angola"
             csv_c   = "Angola"  if ng_live else "Nigeria"

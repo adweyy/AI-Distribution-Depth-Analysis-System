@@ -381,13 +381,10 @@ is_hybrid = data_status == "hybrid"
 dot_color = "#4CAF50" if is_live else ("#6EC6F5" if is_hybrid else "#F9A825")
 dot_glow  = ("rgba(76,175,80,0.6)"    if is_live  else
              ("rgba(110,198,245,0.6)" if is_hybrid else "rgba(249,168,37,0.6)"))
-status_label = (
-    "Connected to Microsoft Fabric Warehouse" if is_live else
-    data_source   # use actual label from fabric_connector (includes diagnostic info)
-)
+status_label = data_source  # always use actual label from fabric_connector
 status_sub = (
-    "Live data — auto-refreshes every hour" if is_live else
-    ("Hybrid mode — Nigeria uses full CSV, Angola pulls live from Fabric" if is_hybrid else
+    "Live data — both countries pulling from Microsoft Fabric" if is_live else
+    ("Hybrid mode — one country live, one using CSV fallback" if is_hybrid else
      "Fabric unreachable — using CSV fallback for both countries")
 )
 
