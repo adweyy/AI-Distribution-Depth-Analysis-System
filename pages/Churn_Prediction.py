@@ -20,13 +20,18 @@ from src.churn_model import train, active_at_risk, RISK_COLORS, RISK_LABELS
 
 # ── SIDEBAR + STYLES ─────────────────────────────────────────────────────────
 sidebar_nav(refresh_key="churn_refresh")
-apply_styles()
+apply_styles(active_page="Churn Prediction", active_country=st.session_state.get("country", "Nigeria"))
 
 # ── PAGE HEADER ───────────────────────────────────────────────────────────────
 st.markdown("""
-<div class="page-header">
-    <div class="page-eyebrow">Shalina Healthcare &nbsp;&middot;&nbsp; Predictive Analytics</div>
-    <div class="page-title">Customer <span>Churn</span> Prediction</div>
+<div class="sh-topbar">
+    <div>
+        <div class="sh-eyebrow">Shalina Healthcare &nbsp;&middot;&nbsp; Predictive Analytics</div>
+        <div class="sh-title">Customer <span class="sh-title-dim">Churn</span> Prediction</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;">
+        <div class="sh-pill"><span class="sh-dot sh-dot-amber"></span> Model Active</div>
+    </div>
 </div>
 """, unsafe_allow_html=True)
 
@@ -52,9 +57,12 @@ with st.spinner("Training churn model — this takes about 20 seconds on first l
 
 _model_label = metrics.get("model_type", "XGBoost")
 st.markdown(f"""
-<div class="model-badge">
-    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-         stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+<div style="display:inline-flex;align-items:center;gap:8px;background:#f8f5ff;
+     border:1px solid rgba(99,91,255,0.22);border-radius:8px;
+     padding:6px 14px;font-size:11px;font-weight:700;color:#635bff;
+     letter-spacing:0.06em;margin-bottom:20px;">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#635bff"
+         stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
         <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
     </svg>
     {_model_label} &nbsp;&middot;&nbsp; 500 Trees &nbsp;&middot;&nbsp; scale_pos_weight
@@ -168,7 +176,7 @@ with c2:
         margin=dict(l=0, r=0, t=10, b=0),
         annotations=[dict(
             text=f"{len(_active_filtered):,}<br><span style='font-size:10px'>Active</span>",
-            x=0.5, y=0.5, font_size=18, font_color="#F1F5F9",
+            x=0.5, y=0.5, font_size=18, font_color="#0b1936",
             showarrow=False,
         )]
     )
@@ -188,13 +196,14 @@ _metrics_items = [
 for col, label, val, detail in _metrics_items:
     with col:
         st.markdown(f"""
-        <div style="background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.07);
-             border-radius:10px;padding:14px 16px;text-align:center;">
+        <div style="background:#ffffff;border:1px solid #e2e8f0;
+             border-radius:10px;padding:14px 16px;text-align:center;
+             box-shadow:0 1px 3px rgba(0,0,0,0.05);">
             <div style="font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;
-                 color:#333;margin-bottom:6px;">{label}</div>
-            <div style="font-size:22px;font-weight:800;color:#F1F5F9;letter-spacing:-0.5px;">
+                 color:#64748b;margin-bottom:6px;">{label}</div>
+            <div style="font-size:22px;font-weight:800;color:#0b1936;letter-spacing:-0.5px;">
                 {val}</div>
-            <div style="font-size:10px;color:#333;margin-top:4px;line-height:1.4;">{detail}</div>
+            <div style="font-size:10px;color:#94a3b8;margin-top:4px;line-height:1.4;">{detail}</div>
         </div>""", unsafe_allow_html=True)
 
 # ── CHURN RISK MAP ────────────────────────────────────────────────────────────
@@ -257,14 +266,14 @@ if len(map_sample) > 0:
         category_orders={"risk_tier": RISK_LABELS},
     )
     fig_map.update_layout(
-        mapbox_style="carto-darkmatter",
+        mapbox_style="carto-positron",
         paper_bgcolor="rgba(0,0,0,0)",
         legend=dict(
-            font=dict(color="#555", size=11),
-            bgcolor="rgba(8,13,26,0.85)",
-            bordercolor="rgba(255,255,255,0.08)",
+            font=dict(color="#374151", size=11),
+            bgcolor="rgba(255,255,255,0.92)",
+            bordercolor="#e2e8f0",
             borderwidth=1,
-            title=dict(text="Churn Risk", font=dict(color="#555")),
+            title=dict(text="Churn Risk", font=dict(color="#374151")),
         ),
         margin=dict(l=0, r=0, t=0, b=0),
     )
@@ -322,13 +331,13 @@ if len(_pre_churn) > 0:
     st.markdown('<div class="sh-section">Pre-Churn Alerts — Active but Declining</div>',
                 unsafe_allow_html=True)
     st.markdown(f"""
-    <div style="background:rgba(249,115,22,0.07);border:1px solid rgba(249,115,22,0.25);
+    <div style="background:rgba(249,115,22,0.06);border:1px solid rgba(249,115,22,0.22);
          border-radius:12px;padding:14px 20px;margin-bottom:14px;display:flex;align-items:center;gap:14px;">
         <div style="font-size:24px;">⚠️</div>
         <div>
-            <div style="font-size:13px;font-weight:700;color:#FDBA74;margin-bottom:3px;">
+            <div style="font-size:13px;font-weight:700;color:#ea580c;margin-bottom:3px;">
                 {len(_pre_churn):,} outlets are currently active but have a declining 3-month revenue trend</div>
-            <div style="font-size:11px;color:#333;">
+            <div style="font-size:11px;color:#64748b;">
                 These outlets are not yet High Risk but are showing early churn signals.
                 Early intervention now is cheaper than retention later.
             </div>
@@ -397,12 +406,12 @@ with exp_col2:
 # ── WRITE-BACK TO FABRIC ──────────────────────────────────────────────────────
 st.markdown('<div class="sh-section">Fabric Write-Back</div>', unsafe_allow_html=True)
 st.markdown("""
-<div style="background:rgba(59,130,246,0.06);border:1px solid rgba(59,130,246,0.2);
+<div style="background:rgba(99,91,255,0.04);border:1px solid rgba(99,91,255,0.20);
      border-radius:12px;padding:14px 20px;margin-bottom:12px;">
-    <div style="font-size:12px;color:#93C5FD;font-weight:600;margin-bottom:4px;">
+    <div style="font-size:12px;color:#635bff;font-weight:600;margin-bottom:4px;">
         Save predictions back to your Fabric warehouse</div>
-    <div style="font-size:11px;color:#333;line-height:1.6;">
-        This creates a <code style="color:#93C5FD">ChurnPredictions</code> table in your Fabric warehouse
+    <div style="font-size:11px;color:#64748b;line-height:1.6;">
+        This creates a <code style="color:#635bff;background:rgba(99,91,255,0.06);padding:1px 5px;border-radius:4px;">ChurnPredictions</code> table in your Fabric warehouse
         so these scores are available in Power BI and other tools.
         Requires FABRIC_SQL_ENDPOINT to be configured.
     </div>
@@ -439,25 +448,19 @@ _zone_count   = (
 )
 
 st.markdown(f"""
-<div class="sh-insight sh-card">
-    <span style="display:inline-block;padding:3px 10px;border-radius:4px;font-size:10px;
-         font-weight:700;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:8px;
-         background:rgba(239,68,68,0.12);color:#FCA5A5;border:1px solid rgba(239,68,68,0.3);">
-        Immediate Action</span>
+<div class="sh-insight">
+    <span class="sh-badge sh-badge-red" style="margin-bottom:10px;display:inline-block;">Immediate Action</span>
     <div class="sh-insight-title">
         {len(_hr_primary):,} High-Risk Primary Outlets Need Urgent Attention</div>
     <div class="sh-insight-body">
         These are primary trade channels currently active but showing strong churn signals.
         Combined YTD revenue at stake:
-        <strong style="color:#FFFFFF">&#8358;{_hr_rev_prim/1000:,.0f}M</strong>.
+        <strong style="color:#0b1936">&#8358;{_hr_rev_prim/1000:,.0f}M</strong>.
         Assign dedicated field reps for personal engagement visits within the next 30 days.
     </div>
 </div>
-<div class="sh-insight sh-card">
-    <span style="display:inline-block;padding:3px 10px;border-radius:4px;font-size:10px;
-         font-weight:700;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:8px;
-         background:rgba(245,158,11,0.12);color:#FCD34D;border:1px solid rgba(245,158,11,0.3);">
-        Geographic Focus</span>
+<div class="sh-insight">
+    <span class="sh-badge sh-badge-amber" style="margin-bottom:10px;display:inline-block;">Geographic Focus</span>
     <div class="sh-insight-title">
         Cluster Zone {_top_zone} Has the Highest Concentration of At-Risk Outlets</div>
     <div class="sh-insight-body">
@@ -466,17 +469,14 @@ st.markdown(f"""
         blitz by regional sales would be more efficient than scattered individual visits.
     </div>
 </div>
-<div class="sh-insight sh-card">
-    <span style="display:inline-block;padding:3px 10px;border-radius:4px;font-size:10px;
-         font-weight:700;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:8px;
-         background:rgba(59,130,246,0.12);color:#93C5FD;border:1px solid rgba(59,130,246,0.3);">
-        Revenue Protection</span>
+<div class="sh-insight">
+    <span class="sh-badge sh-badge-blue" style="margin-bottom:10px;display:inline-block;">Revenue Protection</span>
     <div class="sh-insight-title">
         &#8358;{_hr_rev/1000:,.0f}M YTD Revenue at Risk Across {len(_hr_outlets):,} Outlets</div>
     <div class="sh-insight-body">
         If all high-risk active outlets churn, this is the revenue exposure.
         Even retaining 50% of at-risk outlets would protect
-        <strong style="color:#FFFFFF">&#8358;{_hr_rev/2000:,.0f}M</strong>.
+        <strong style="color:#0b1936">&#8358;{_hr_rev/2000:,.0f}M</strong>.
         Prioritise by current YTD value &mdash; use the export above sorted by revenue.
     </div>
 </div>
