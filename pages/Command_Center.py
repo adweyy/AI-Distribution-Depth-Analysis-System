@@ -83,12 +83,16 @@ df["gps_valid"] = df.apply(gps_in_bounds, axis=1)
 
 st.markdown(
     """
-    <div class="cc-header">
-        <div class="cc-eyebrow">Shalina Healthcare &nbsp;&middot;&nbsp; Boardroom Decision Layer</div>
-        <div class="cc-title">AI Whitespace <span>Command Center</span></div>
-        <div class="cc-subtitle">
-            Converts outlet, revenue, GPS, and opportunity signals into a prioritized commercial action plan.
-            Existing dashboards remain unchanged; this page sits on top as the presentation-ready decision view.
+    <div class="sh-topbar">
+        <div>
+            <div class="sh-eyebrow">Shalina Healthcare &nbsp;&middot;&nbsp; Boardroom Decision Layer</div>
+            <div class="sh-title">AI Whitespace <span class="sh-title-dim">Command Center</span></div>
+            <div style="font-size:13px;color:#4a5568;margin-top:6px;max-width:720px;line-height:1.6;">
+                Converts outlet, revenue, GPS, and opportunity signals into a prioritized commercial action plan.
+            </div>
+        </div>
+        <div class="sh-pill-group">
+            <div class="sh-pill"><div class="sh-dot"></div>SYSTEM ONLINE</div>
         </div>
     </div>
     """,
@@ -176,26 +180,30 @@ valid_gps_pct = float(view["gps_valid"].mean() * 100) if len(view) else 0
 
 st.markdown(
     f"""
-    <div class="kpi-grid">
-        <div class="sh-kpi blue">
+    <div class="sh-kpi-row">
+        <div class="sh-kpi">
+            <div class="sh-kpi-accent" style="background:linear-gradient(90deg,#635bff,transparent);"></div>
             <div class="sh-kpi-label">Outlets In Scope</div>
             <div class="sh-kpi-value">{compact(len(view))}</div>
-            <div class="kpi-note">{country if country != "All" else "Nigeria + Angola"} filtered commercial universe</div>
+            <div class="sh-kpi-delta">{country if country != "All" else "Nigeria + Angola"} filtered commercial universe</div>
         </div>
-        <div class="sh-kpi red">
+        <div class="sh-kpi">
+            <div class="sh-kpi-accent" style="background:linear-gradient(90deg,#ef4444,transparent);"></div>
             <div class="sh-kpi-label">Dead Whitespace</div>
             <div class="sh-kpi-value">{compact(dead_count)}</div>
-            <div class="kpi-note">Outlets with zero YTD value requiring recovery validation</div>
+            <div class="sh-kpi-delta">Outlets with zero YTD value requiring recovery validation</div>
         </div>
-        <div class="sh-kpi amber">
+        <div class="sh-kpi">
+            <div class="sh-kpi-accent" style="background:linear-gradient(90deg,#f59e0b,transparent);"></div>
             <div class="sh-kpi-label">Underperforming</div>
             <div class="sh-kpi-value">{compact(under_count)}</div>
-            <div class="kpi-note">Active but below local commercial threshold</div>
+            <div class="sh-kpi-delta">Active but below local commercial threshold</div>
         </div>
-        <div class="sh-kpi green">
+        <div class="sh-kpi">
+            <div class="sh-kpi-accent" style="background:linear-gradient(90deg,#10b981,transparent);"></div>
             <div class="sh-kpi-label">Scenario Value Gap</div>
             <div class="sh-kpi-value">{money(scenario_uplift)}</div>
-            <div class="kpi-note">At {int(conversion_rate * 100)}% recovery on top {activation_count} priorities</div>
+            <div class="sh-kpi-delta">At {int(conversion_rate * 100)}% recovery on top {activation_count} priorities</div>
         </div>
     </div>
     """,
@@ -227,21 +235,21 @@ quality_text = (
 st.markdown('<div class="sh-section">Executive Briefing</div>', unsafe_allow_html=True)
 st.markdown(
     f"""
-    <div class="briefing-grid">
-        <div class="brief-card">
-            <div class="brief-tag">Where To Attack</div>
-            <div class="brief-title">Highest-density opportunity zone</div>
-            <div class="brief-body">{top_zone_text}</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
+        <div class="sh-card">
+            <div class="sh-eyebrow" style="margin-bottom:8px;">Where To Attack</div>
+            <div style="font-size:15px;font-weight:700;color:#e2e8f0;margin-bottom:8px;">Highest-density opportunity zone</div>
+            <div style="font-size:13px;color:#64748b;line-height:1.7;">{top_zone_text}</div>
         </div>
-        <div class="brief-card">
-            <div class="brief-tag">Who To Visit First</div>
-            <div class="brief-title">Priority outlet recommendation</div>
-            <div class="brief-body">{top_outlet_text}</div>
+        <div class="sh-card">
+            <div class="sh-eyebrow" style="margin-bottom:8px;">Who To Visit First</div>
+            <div style="font-size:15px;font-weight:700;color:#e2e8f0;margin-bottom:8px;">Priority outlet recommendation</div>
+            <div style="font-size:13px;color:#64748b;line-height:1.7;">{top_outlet_text}</div>
         </div>
-        <div class="brief-card">
-            <div class="brief-tag">Data Confidence</div>
-            <div class="brief-title">GPS reliability check</div>
-            <div class="brief-body">{quality_text}</div>
+        <div class="sh-card">
+            <div class="sh-eyebrow" style="margin-bottom:8px;">Data Confidence</div>
+            <div style="font-size:15px;font-weight:700;color:#e2e8f0;margin-bottom:8px;">GPS reliability check</div>
+            <div style="font-size:13px;color:#64748b;line-height:1.7;">{quality_text}</div>
         </div>
     </div>
     """,
