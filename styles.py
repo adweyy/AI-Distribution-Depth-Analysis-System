@@ -340,8 +340,8 @@ p, .stMarkdown p { font-size: 14px !important; color: #64748b !important; line-h
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .sh-kpi-value {
-    font-size: clamp(24px, 2.6vw, 40px); font-weight: 800; color: #0b1936;
-    line-height: 1.05; letter-spacing: -1.5px; margin-bottom: 10px;
+    font-size: clamp(20px, 1.9vw, 30px); font-weight: 800; color: #0b1936;
+    line-height: 1.1; letter-spacing: -0.8px; margin-bottom: 10px;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .sh-kpi-delta { font-size: 12px; color: #94a3b8; font-weight: 500; line-height: 1.5; }
