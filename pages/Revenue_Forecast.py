@@ -20,9 +20,7 @@ from styles import apply_styles, sidebar_nav
 
 # ── SIDEBAR ───────────────────────────────────────────────────────────────────
 sidebar_nav(refresh_key="rev_refresh")
-
-# ── CSS ───────────────────────────────────────────────────────────────────────
-apply_styles()
+apply_styles(active_page="Revenue Forecast", active_country=st.session_state.get("country", "Nigeria"))
 
 # ── LOAD DATA ─────────────────────────────────────────────────────────────────
 @st.cache_data(show_spinner=False)
@@ -37,9 +35,14 @@ if df_all is None:
 
 # ── PAGE HEADER ───────────────────────────────────────────────────────────────
 st.markdown("""
-<div class="page-header">
-    <div class="page-eyebrow">Shalina Healthcare &nbsp;&middot;&nbsp; Predictive Analytics</div>
-    <div class="page-title">Revenue <span>Forecast</span></div>
+<div class="sh-topbar">
+    <div>
+        <div class="sh-eyebrow">Shalina Healthcare &nbsp;&middot;&nbsp; Predictive Analytics</div>
+        <div class="sh-title">Revenue <span class="sh-title-dim">Forecast</span></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;">
+        <div class="sh-pill"><span class="sh-dot"></span> Live Projections</div>
+    </div>
 </div>""", unsafe_allow_html=True)
 
 # ── FORECAST ENGINE ───────────────────────────────────────────────────────────
@@ -112,31 +115,41 @@ active_outlets  = int((df_base["ytd"] > 0).sum())
 ytd_per_active  = df_base[df_base["ytd"] > 0]["ytd"].mean()
 
 # ── KPI CARDS ─────────────────────────────────────────────────────────────────
+def _fmt(v):
+    """Auto-scale naira value to B/M/K so it always fits in a card."""
+    if abs(v) >= 1_000_000_000:
+        return f"&#8358;{v/1_000_000_000:.1f}B"
+    elif abs(v) >= 1_000_000:
+        return f"&#8358;{v/1_000_000:.1f}M"
+    elif abs(v) >= 1_000:
+        return f"&#8358;{v/1_000:.1f}K"
+    return f"&#8358;{v:,.0f}"
+
 st.markdown(f"""
 <div class="sh-kpi-row">
-    <div class="sh-kpi mc-blue">
-        <div class="kpi-accent-line" style="background:linear-gradient(90deg,#3B82F6,#60A5FA);"></div>
+    <div class="sh-kpi">
+        <div class="sh-kpi-accent" style="background:linear-gradient(90deg,#3B82F6,#60A5FA);"></div>
         <div class="sh-kpi-label">YTD Revenue ({datetime.now().strftime('%b %Y')})</div>
-        <div class="sh-kpi-value">&#8358;{ytd_total/1_000_000:.1f}M</div>
+        <div class="sh-kpi-value">{_fmt(ytd_total)}</div>
         <div class="sh-kpi-delta">{months_elapsed} months elapsed &mdash; {active_outlets:,} active outlets</div>
     </div>
-    <div class="sh-kpi mc-green">
-        <div class="kpi-accent-line" style="background:linear-gradient(90deg,#22C55E,#4ADE80);"></div>
+    <div class="sh-kpi">
+        <div class="sh-kpi-accent" style="background:linear-gradient(90deg,#22C55E,#4ADE80);"></div>
         <div class="sh-kpi-label">Base Year-End Forecast</div>
-        <div class="sh-kpi-value">&#8358;{base_year_end/1_000_000:.1f}M</div>
+        <div class="sh-kpi-value">{_fmt(base_year_end)}</div>
         <div class="sh-kpi-delta">At current run-rate through Dec</div>
     </div>
-    <div class="sh-kpi mc-purple">
-        <div class="kpi-accent-line" style="background:linear-gradient(90deg,#8B5CF6,#A78BFA);"></div>
+    <div class="sh-kpi">
+        <div class="sh-kpi-accent" style="background:linear-gradient(90deg,#8B5CF6,#A78BFA);"></div>
         <div class="sh-kpi-label">Bull Forecast (Optimistic)</div>
-        <div class="sh-kpi-value">&#8358;{bull_year_end/1_000_000:.1f}M</div>
+        <div class="sh-kpi-value">{_fmt(bull_year_end)}</div>
         <div class="sh-kpi-delta">+30% acceleration on remaining months</div>
     </div>
-    <div class="sh-kpi mc-amber">
-        <div class="kpi-accent-line" style="background:linear-gradient(90deg,#F59E0B,#FCD34D);"></div>
+    <div class="sh-kpi">
+        <div class="sh-kpi-accent" style="background:linear-gradient(90deg,#F59E0B,#FCD34D);"></div>
         <div class="sh-kpi-label">Forecast Range</div>
-        <div class="sh-kpi-value">&#8358;{(bull_year_end - bear_year_end)/1_000_000:.1f}M</div>
-        <div class="sh-kpi-delta">Bear &#8358;{bear_year_end/1_000_000:.1f}M &rarr; Bull &#8358;{bull_year_end/1_000_000:.1f}M</div>
+        <div class="sh-kpi-value">{_fmt(bull_year_end - bear_year_end)}</div>
+        <div class="sh-kpi-delta">Bear {_fmt(bear_year_end)} &rarr; Bull {_fmt(bull_year_end)}</div>
     </div>
 </div>""", unsafe_allow_html=True)
 
@@ -231,14 +244,14 @@ for col, label, val, cls, color, desc in [
     with col:
         uplift = val - ytd_total
         st.markdown(f"""
-        <div class="scenario-card {cls}">
+        <div class="sh-card" style="border-top:3px solid {color};">
             <div style="font-size:10px;font-weight:700;letter-spacing:1.5px;
                 text-transform:uppercase;color:{color};margin-bottom:8px;">{label}</div>
-            <div style="font-size:28px;font-weight:800;color:#F1F5F9;letter-spacing:-0.5px;">
-                &#8358;{val/1_000_000:.1f}M</div>
+            <div style="font-size:28px;font-weight:800;color:#0b1936;letter-spacing:-0.5px;">
+                {_fmt(val)}</div>
             <div style="font-size:11px;color:{color};margin-top:4px;font-weight:600;">
-                + &#8358;{uplift/1_000_000:.1f}M remaining</div>
-            <div style="font-size:11px;color:#333;margin-top:6px;line-height:1.5;">{desc}</div>
+                + {_fmt(uplift)} remaining</div>
+            <div style="font-size:11px;color:#64748b;margin-top:6px;line-height:1.5;">{desc}</div>
         </div>""", unsafe_allow_html=True)
 
 # ── BY COUNTRY ────────────────────────────────────────────────────────────────
@@ -282,8 +295,8 @@ fig_country.add_trace(go.Scatter(
     x=country_df["Country"],
     y=country_df["YTD Revenue"] / 1_000_000,
     mode="markers",
-    marker=dict(symbol="diamond", size=14, color="#FFFFFF",
-                line=dict(color="#555", width=2)),
+    marker=dict(symbol="diamond", size=14, color="#0b1936",
+                line=dict(color="#635bff", width=2)),
     hovertemplate="<b>YTD Actual</b><br>%{x}: ₦%{y:.1f}M<extra></extra>",
 ))
 
@@ -424,46 +437,37 @@ total_recoverable = opp_df[
 bull_upside = (bull_year_end - base_year_end) / 1_000_000
 
 st.markdown(f"""
-<div class="sh-insight sh-card">
-    <span style="display:inline-block;padding:3px 10px;border-radius:4px;font-size:10px;
-         font-weight:700;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:8px;
-         background:rgba(34,197,94,0.12);color:#86EFAC;border:1px solid rgba(34,197,94,0.3);">
-        Growth Opportunity</span>
+<div class="sh-insight">
+    <span class="sh-badge sh-badge-green" style="margin-bottom:10px;display:inline-block;">Growth Opportunity</span>
     <div class="sh-insight-title">
-        &#8358;{total_recoverable:.1f}M Recoverable from Underperforming Outlets</div>
+        {_fmt(total_recoverable * 1_000_000)} Recoverable from Underperforming Outlets</div>
     <div class="sh-insight-body">
         If underperforming and low-performer outlets were brought up to the active outlet median,
-        Shalina could recover an additional <strong style="color:#FFFFFF">&#8358;{total_recoverable:.1f}M</strong>
+        Shalina could recover an additional <strong style="color:#0b1936">{_fmt(total_recoverable * 1_000_000)}</strong>
         in annual revenue without acquiring a single new outlet.
         Focus the commercial team on these existing but underactivated accounts first.
     </div>
 </div>
-<div class="sh-insight sh-card">
-    <span style="display:inline-block;padding:3px 10px;border-radius:4px;font-size:10px;
-         font-weight:700;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:8px;
-         background:rgba(59,130,246,0.12);color:#93C5FD;border:1px solid rgba(59,130,246,0.3);">
-        Scenario Gap</span>
+<div class="sh-insight">
+    <span class="sh-badge sh-badge-blue" style="margin-bottom:10px;display:inline-block;">Scenario Gap</span>
     <div class="sh-insight-title">
-        Bull vs Base Gap is &#8358;{bull_upside:.1f}M — Achievable with Right Actions</div>
+        Bull vs Base Gap is {_fmt((bull_year_end - base_year_end))} — Achievable with Right Actions</div>
     <div class="sh-insight-body">
         The difference between the base and optimistic scenario is
-        <strong style="color:#FFFFFF">&#8358;{bull_upside:.1f}M</strong>.
+        <strong style="color:#0b1936">{_fmt(bull_year_end - base_year_end)}</strong>.
         This gap is closeable through three levers: activating dead whitespace outlets,
         upselling underperformers, and protecting high-risk active accounts from churning.
         The Churn Prediction and Command Center pages identify exactly which outlets to act on.
     </div>
 </div>
-<div class="sh-insight sh-card">
-    <span style="display:inline-block;padding:3px 10px;border-radius:4px;font-size:10px;
-         font-weight:700;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:8px;
-         background:rgba(245,158,11,0.12);color:#FCD34D;border:1px solid rgba(245,158,11,0.3);">
-        Time Sensitivity</span>
+<div class="sh-insight">
+    <span class="sh-badge sh-badge-amber" style="margin-bottom:10px;display:inline-block;">Time Sensitivity</span>
     <div class="sh-insight-title">
         {months_remaining} Months Left — Every Month of Delay Costs Revenue</div>
     <div class="sh-insight-body">
         With {months_remaining} months remaining in the year, each month of inaction on
         dead whitespace outlets costs approximately
-        <strong style="color:#FFFFFF">&#8358;{(bull_year_end - base_year_end) / max(months_remaining,1) / 1_000_000:.1f}M</strong>
+        <strong style="color:#0b1936">{_fmt((bull_year_end - base_year_end) / max(months_remaining, 1))}</strong>
         in potential upside. The activation campaigns should begin immediately to maximise year-end capture.
     </div>
 </div>
