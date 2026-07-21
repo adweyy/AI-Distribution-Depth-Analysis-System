@@ -46,14 +46,32 @@ if df_all is None:
     st.error("No data available. Please check your data source.")
     st.stop()
 
-# ── TRAIN MODEL (cached — only trains once per session) ──────────────────────
-@st.cache_data(show_spinner=False)
-def run_model(data_hash: int, _df: pd.DataFrame):
-    return train(_df)
+# ── TRAIN MODEL (cache_resource = trains once, shared across ALL users/sessions)
+@st.cache_resource(show_spinner=False)
+def _get_model():
+    import hashlib, pickle, os
+    # Optionally load a pre-saved model to skip training entirely
+    _cache_path = ".churn_model_cache.pkl"
+    _data_sig   = str(len(df_all))   # lightweight fingerprint
+    if os.path.exists(_cache_path):
+        try:
+            with open(_cache_path, "rb") as f:
+                saved = pickle.load(f)
+            if saved.get("sig") == _data_sig:
+                return saved["model"], saved["scored_df"], saved["metrics"]
+        except Exception:
+            pass
+    # Train fresh
+    m, s, mx = train(df_all)
+    try:
+        with open(_cache_path, "wb") as f:
+            pickle.dump({"sig": _data_sig, "model": m, "scored_df": s, "metrics": mx}, f)
+    except Exception:
+        pass
+    return m, s, mx
 
-with st.spinner("Training churn model — this takes about 20 seconds on first load..."):
-    _hash = hash(str(len(df_all)))
-    model, scored_df, metrics = run_model(_hash, df_all)
+with st.spinner("Loading churn model..."):
+    model, scored_df, metrics = _get_model()
 
 _model_label = metrics.get("model_type", "XGBoost")
 st.markdown(f"""

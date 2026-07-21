@@ -6,6 +6,9 @@
 # Data files
 shalina_real_data.csv
 
+# Model cache
+.churn_model_cache.pkl
+
 # Python
 __pycache__/
 *.pyc
